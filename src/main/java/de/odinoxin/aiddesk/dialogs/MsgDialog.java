@@ -1,8 +1,10 @@
 package de.odinoxin.aiddesk.dialogs;
 
+import de.odinoxin.aiddesk.Login;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -15,6 +17,7 @@ public class MsgDialog
     {
         Stage stage = new Stage();
         stage.setTitle(title);
+        stage.getIcons().add(new Image(MsgDialog.class.getResource("/AidDesk.png").toString()));
 
         GridPane msgGrid = null;
         try

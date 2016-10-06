@@ -32,7 +32,7 @@
     </rowConstraints>
 
     <Text id="lblRefBox"
-          text="Name"
+          text="&#128100;"
           GridPane.rowIndex="0"
           GridPane.columnIndex="0"/>
 
@@ -42,7 +42,7 @@
             GridPane.columnIndex="1"/>
 
     <Text id="lblPwd"
-          text="Password"
+          text="&#128273;"
           GridPane.rowIndex="1"
           GridPane.columnIndex="0"/>
     <PasswordField id="pwfPwd"
@@ -51,7 +51,7 @@
                    GridPane.columnIndex="1"/>
 
     <Button id="btnLogin"
-            text="Login"
+            text="&#128275;"
             GridPane.rowIndex="2"
             GridPane.columnIndex="0"
             GridPane.columnSpan="2"

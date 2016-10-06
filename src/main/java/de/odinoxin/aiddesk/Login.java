@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -31,7 +32,8 @@ public class Login extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.stage = primaryStage;
-        stage.setTitle("Login");
+        this.stage.setTitle("Login");
+        this.stage.getIcons().add(new Image(Login.class.getResource("/AidDesk.png").toString()));
 
         GridPane rootGrid = FXMLLoader.load(this.getClass().getResource("/login.fxml"));
         this.refboxUser = (RefBox) rootGrid.lookup("#refboxUser");

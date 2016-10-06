@@ -2,7 +2,9 @@ package de.odinoxin.aiddesk.plugins;
 
 import de.odinoxin.aiddesk.Database;
 import de.odinoxin.aiddesk.Login;
-import javafx.scene.control.Button;
+import de.odinoxin.aiddesk.controls.RefBox;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 
 import java.sql.PreparedStatement;
@@ -10,8 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Humans extends Plugin {
-    private TextField txfKey;
-    private Button btnKey;
+    private RefBox refBoxKey;
 
     private TextField txfID;
     private TextField txfForename;
@@ -21,18 +22,8 @@ public class Humans extends Plugin {
     public Humans() {
         super("/plugins/humans.fxml", "Humans");
 
-        this.txfKey = (TextField) this.mainGrid.lookup("#txfKey");
-        this.btnKey = (Button) this.mainGrid.lookup("#btnKey");
-        this.btnKey.setOnAction(ev ->
-        {
-            try {
-                int id = Integer.parseInt(this.txfKey.getText());
-                this.loadHuman(id);
-            } catch (NumberFormatException ex) {
-                ex.printStackTrace();
-            }
-        });
-
+        this.refBoxKey = (RefBox) this.mainGrid.lookup("#refBoxKey");
+        this.refBoxKey.refProperty().addListener((observable, oldValue, newValue) -> this.loadHuman((int) newValue));
         this.txfID = (TextField) this.mainGrid.lookup("#txfID");
         this.txfForename = (TextField) this.mainGrid.lookup("#txfForename");
         this.txfName = (TextField) this.mainGrid.lookup("#txfName");

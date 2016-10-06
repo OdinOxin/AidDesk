@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.text.Text?>
+
+<fx:root type="javafx.scene.layout.HBox"
+         xmlns:fx="http://javafx.com/fxml"
+         spacing="5"
+         alignment="CENTER_LEFT">
+
+    <Separator orientation="HORIZONTAL"
+               prefWidth="15"/>
+
+    <Text fx:id="txtHeader"
+          style="-fx-font-weight: bold"/>
+
+    <Separator orientation="HORIZONTAL"
+               HBox.hgrow="ALWAYS"/>
+
+</fx:root>
