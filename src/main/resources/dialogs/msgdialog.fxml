@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+
+<GridPane xmlns="http://javafx.com/javafx/8"
+          id="msgGrid"
+          vgap="5"
+          hgap="5">
+
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
+
+    <Text id="txtMsg"
+          GridPane.rowIndex="0"
+          GridPane.columnIndex="0"
+          GridPane.halignment="CENTER"/>
+
+    <Button id="btnOK"
+            text="OK"
+            GridPane.rowIndex="1"
+            GridPane.columnIndex="0"
+            GridPane.halignment="CENTER"/>
+
+</GridPane>

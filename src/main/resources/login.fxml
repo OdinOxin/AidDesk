@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.control.PasswordField?>
+<?import de.odinoxin.aiddesk.controls.RefBox?>
+<GridPane xmlns="http://javafx.com/javafx/8"
+          id="dbGrid"
+          vgap="5"
+          hgap="5">
+
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
+
+    <Text id="lblRefBox"
+          text="Name"
+          GridPane.rowIndex="0"
+          GridPane.columnIndex="0"/>
+
+    <RefBox id="refboxUser"
+            view="V_Login"
+            GridPane.rowIndex="0"
+            GridPane.columnIndex="1"/>
+
+    <Text id="lblPwd"
+          text="Password"
+          GridPane.rowIndex="1"
+          GridPane.columnIndex="0"/>
+    <PasswordField id="pwfPwd"
+                   text="12345"
+                   GridPane.rowIndex="1"
+                   GridPane.columnIndex="1"/>
+
+    <Button id="btnLogin"
+            text="Login"
+            GridPane.rowIndex="2"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="2"
+            GridPane.halignment="CENTER"/>
+
+</GridPane>

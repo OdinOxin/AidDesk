@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+
+<GridPane xmlns="http://javafx.com/javafx/8"
+          id="humansGrid"
+          vgap="5"
+          hgap="5">
+
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="ALWAYS"/>
+    </rowConstraints>
+
+    <GridPane id="grdKey"
+              GridPane.rowIndex="0"
+              GridPane.columnIndex="0"
+              vgap="5"
+              hgap="5">
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER"/>
+            <ColumnConstraints hgrow="NEVER"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <Text id="txtKey"
+              text="Auswahl"
+              GridPane.rowIndex="0"
+              GridPane.columnIndex="0"/>
+        <TextField id="txfKey"
+                   GridPane.rowIndex="0"
+                   GridPane.columnIndex="1"/>
+        <Button id="btnKey"
+                text="Öffnen"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="2"/>
+        <Separator id="sepKey"
+                   GridPane.rowIndex="1"
+                   GridPane.columnIndex="0"
+                   GridPane.columnSpan="3"/>
+    </GridPane>
+
+    <GridPane id="grdDetail"
+              GridPane.rowIndex="1"
+              GridPane.columnIndex="0"
+              vgap="5"
+              hgap="5">
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER"/>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="400"/>
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <Text id="txtID"
+              text="ID"
+              GridPane.rowIndex="0"
+              GridPane.columnIndex="0"/>
+        <TextField id="txfID"
+                   disable="true"
+                   maxWidth="75"
+                   alignment="CENTER_RIGHT"
+                   GridPane.rowIndex="0"
+                   GridPane.columnIndex="1"/>
+
+        <Text id="txtForename"
+              text="Vorname"
+              GridPane.rowIndex="1"
+              GridPane.columnIndex="0"/>
+        <TextField id="txfForename"
+                   GridPane.rowIndex="1"
+                   GridPane.columnIndex="1"/>
+
+        <Text id="txtName"
+              text="Name"
+              GridPane.rowIndex="2"
+              GridPane.columnIndex="0"/>
+        <TextField id="txfName"
+                   GridPane.rowIndex="2"
+                   GridPane.columnIndex="1"/>
+
+        <Text id="txtShortKey"
+              text="Kürzel"
+              GridPane.rowIndex="3"
+              GridPane.columnIndex="0"/>
+        <TextField id="txfShortKey"
+                   GridPane.rowIndex="3"
+                   GridPane.columnIndex="1"/>
+
+        <Text id="txtPwd"
+              text="Passwort"
+              GridPane.rowIndex="4"
+              GridPane.columnIndex="0"/>
+        <Button id="btnPwd"
+                text="Ändern"
+                GridPane.rowIndex="4"
+                GridPane.columnIndex="1"/>
+
+    </GridPane>
+
+</GridPane>
