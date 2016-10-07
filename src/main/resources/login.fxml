@@ -38,6 +38,7 @@
 
     <RefBox id="refboxUser"
             view="V_Login"
+            ref="3"
             GridPane.rowIndex="0"
             GridPane.columnIndex="1"/>
 

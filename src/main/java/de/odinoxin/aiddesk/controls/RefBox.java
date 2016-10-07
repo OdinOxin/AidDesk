@@ -8,10 +8,16 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -19,16 +25,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 
-public class RefBox extends HBox {
+public class RefBox extends StackPane {
 
     @FXML
     private TextField txfRefBox;
     @FXML
     private Button btnRefBox;
+    @FXML
+    private Label lblDetails;
+
     private RefBoxList refBoxList;
 
-    private IntegerProperty refProperty = new SimpleIntegerProperty(this, "ref");
-    private StringProperty viewProperty = new SimpleStringProperty(this, "view");
+    private IntegerProperty ref = new SimpleIntegerProperty(this, "ref", 0);
+    private StringProperty view = new SimpleStringProperty(this, "view");
+    private BooleanProperty detailsVisible = new SimpleBooleanProperty(this, "detailsVisible", false);
 
     private boolean ignoreTextChange;
 
@@ -50,11 +60,19 @@ public class RefBox extends HBox {
         });
         this.txfRefBox.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
         {
-            if (this.ignoreTextChange || viewProperty.get() == null)
+            if (this.ignoreTextChange || view.get() == null)
                 return;
             this.txfRefBox.setStyle("-fx-text-fill: black");
             this.search();
         });
+        this.detailsVisible.addListener((observable, oldValue, newValue) ->
+        {
+            this.lblDetails.setVisible(newValue);
+            this.lblDetails.setManaged(newValue);
+        });
+        this.lblDetails.setVisible(this.isDetailsVisible());
+        this.lblDetails.setManaged(this.isDetailsVisible());
+        this.setSelected();
         this.btnRefBox.setOnAction(ev ->
         {
             this.txfRefBox.requestFocus();
@@ -75,27 +93,39 @@ public class RefBox extends HBox {
     }
 
     public int getRef() {
-        return this.refProperty.get();
+        return this.ref.get();
     }
 
     public void setRef(int ref) {
-        this.refProperty.set(ref);
+        this.ref.set(ref);
     }
 
     public IntegerProperty refProperty() {
-        return this.refProperty;
+        return this.ref;
     }
 
     public String getView() {
-        return this.viewProperty.get();
+        return this.view.get();
     }
 
     public void setView(String view) {
-        this.viewProperty.set(view);
+        this.view.set(view);
     }
 
     public StringProperty viewProperty() {
-        return this.viewProperty;
+        return this.view;
+    }
+
+    public boolean isDetailsVisible() {
+        return detailsVisible.get();
+    }
+
+    public void setDetailsVisible(boolean detailsVisible) {
+        this.detailsVisible.set(detailsVisible);
+    }
+
+    public BooleanProperty detailsVisible() {
+        return this.detailsVisible;
     }
 
     public final void setOnAction(EventHandler<ActionEvent> value) {
@@ -104,24 +134,29 @@ public class RefBox extends HBox {
 
     public void setSelected() {
         RefBox.this.ignoreTextChange = true;
-        RefBoxListItem item = RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
+        RefBoxListItem item = null;
+        if (this.refBoxList != null)
+            item = RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
         if (item != null) {
             this.setRef(item.getId());
             this.setText(String.format("%d - %s", item.getId(), item.getText()));
             this.txfRefBox.setStyle("-fx-text-fill: green");
+            this.lblDetails.setText(item.getSubText());
         } else {
             this.setRef(0);
             this.setText(null);
             this.txfRefBox.setStyle("-fx-text-fill: black");
+            this.lblDetails.setText("");
         }
-        this.refBoxList.hide();
+        if (this.refBoxList != null)
+            this.refBoxList.hide();
         RefBox.this.ignoreTextChange = false;
     }
 
     private void search() {
         try {
             String[] highlight = this.txfRefBox.getText().isEmpty() ? null : this.txfRefBox.getText().split(" ");
-            String dbViewSelect = "SELECT * FROM " + this.viewProperty.get();
+            String dbViewSelect = "SELECT * FROM " + this.view.get();
             if (highlight != null && highlight.length > 0) {
                 dbViewSelect += " WHERE";
                 for (int i = 0; i < highlight.length; i++) {
@@ -141,7 +176,7 @@ public class RefBox extends HBox {
             ResultSet dbRes = stmt.executeQuery();
             if (this.refBoxList != null)
                 this.refBoxList.hide();
-            this.refBoxList = new RefBoxList(this.localToScreen(0, this.getHeight()));
+            this.refBoxList = new RefBoxList(this.localToScreen(0, this.txfRefBox.getHeight()));
             this.refBoxList.setPrefWidth(this.getWidth());
             this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
 
