@@ -3,8 +3,6 @@ package de.odinoxin.aiddesk.plugins;
 import de.odinoxin.aiddesk.Database;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.RefBox;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 
 import java.sql.PreparedStatement;
@@ -18,16 +16,18 @@ public class Humans extends Plugin {
     private TextField txfForename;
     private TextField txfName;
     private TextField txfShortKey;
+    private RefBox refBoxAddress;
 
     public Humans() {
         super("/plugins/humans.fxml", "Humans");
 
-        this.refBoxKey = (RefBox) this.mainGrid.lookup("#refBoxKey");
+        this.refBoxKey = (RefBox) this.grdMain.lookup("#refBoxKey");
         this.refBoxKey.refProperty().addListener((observable, oldValue, newValue) -> this.loadHuman((int) newValue));
-        this.txfID = (TextField) this.mainGrid.lookup("#txfID");
-        this.txfForename = (TextField) this.mainGrid.lookup("#txfForename");
-        this.txfName = (TextField) this.mainGrid.lookup("#txfName");
-        this.txfShortKey = (TextField) this.mainGrid.lookup("#txfShortKey");
+        this.txfID = (TextField) this.grdMain.lookup("#txfID");
+        this.txfForename = (TextField) this.grdMain.lookup("#txfForename");
+        this.txfName = (TextField) this.grdMain.lookup("#txfName");
+        this.txfShortKey = (TextField) this.grdMain.lookup("#txfShortKey");
+        this.refBoxAddress = (RefBox) this.grdMain.lookup("#refBoxAddress");
 
         this.loadHuman(Login.HumanID);
     }
@@ -42,6 +42,7 @@ public class Humans extends Plugin {
                 this.txfForename.setText(dbRes.getString("Forename"));
                 this.txfName.setText(dbRes.getString("Name"));
                 this.txfShortKey.setText(dbRes.getString("ShortKey"));
+                this.refBoxAddress.setRef(dbRes.getInt("Address"));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

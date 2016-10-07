@@ -55,6 +55,7 @@
                GridPane.columnIndex="0"/>
         <RefBox id="refBoxKey"
                 view="V_Humans"
+                showNewButton="true"
                 GridPane.rowIndex="0"
                 GridPane.columnIndex="1"/>
         <Separator id="sepKey"
@@ -173,13 +174,14 @@
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
 
-            <Header text="Addresse"
+            <Header text="Adresse"
                     GridPane.rowIndex="0"
                     GridPane.columnIndex="0"/>
 
-            <RefBox id="refBoxAdress"
+            <RefBox id="refBoxAddress"
                     view="V_Adresses"
-                    detailsVisible="true"
+                    showEditButton="true"
+                    showDetails="true"
                     GridPane.rowIndex="1"
                     GridPane.columnIndex="0"/>
 

@@ -15,7 +15,7 @@ public class RefBoxList extends Popup {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(RefBoxList.class.getResource("/controls/refboxlist.fxml"));
             this.lvSuggestions = fxmlLoader.load();
-            this.lvSuggestions.setStyle("-fx-selection-bar: #64d2EB");
+            this.lvSuggestions.setStyle("-fx-selection-bar: #039ED3");
         } catch (IOException ex) {
             ex.printStackTrace();
         }

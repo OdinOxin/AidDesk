@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -42,6 +43,11 @@ public class Login extends Application {
         this.refboxUser.setOnAction(ev -> this.tryLogin());
         this.pwfPwd.setOnAction(ev -> this.tryLogin());
         this.btnLogin.setOnAction(ev -> this.tryLogin());
+        this.btnLogin.setOnKeyPressed(ev ->
+        {
+            if(ev.getCode() == KeyCode.ENTER)
+                this.tryLogin();
+        });
 
         this.stage.setScene(new Scene(rootGrid));
         this.stage.show();

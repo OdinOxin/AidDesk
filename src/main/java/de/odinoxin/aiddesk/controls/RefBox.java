@@ -2,22 +2,24 @@ package de.odinoxin.aiddesk.controls;
 
 import de.odinoxin.aiddesk.Database;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -25,20 +27,28 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 
-public class RefBox extends StackPane {
+public class RefBox extends VBox {
 
     @FXML
-    private TextField txfRefBox;
+    private TextField txfText;
     @FXML
-    private Button btnRefBox;
+    private HBox hbxButtons;
     @FXML
-    private Label lblDetails;
-
+    private Button btnNew;
+    @FXML
+    private Button btnEdit;
+    @FXML
+    private Button btnSearch;
+    @FXML
+    private TextArea txfDetails;
     private RefBoxList refBoxList;
 
     private IntegerProperty ref = new SimpleIntegerProperty(this, "ref", 0);
     private StringProperty view = new SimpleStringProperty(this, "view");
-    private BooleanProperty detailsVisible = new SimpleBooleanProperty(this, "detailsVisible", false);
+    private BooleanProperty showNewButton = new SimpleBooleanProperty(this, "showNewButton", false);
+    private BooleanProperty showEditButton = new SimpleBooleanProperty(this, "showEditButton", false);
+    private BooleanProperty showDetails = new SimpleBooleanProperty(this, "showDetails", false);
+    private IntegerProperty detailsRows = new SimpleIntegerProperty(this, "detailsRows", 2);
 
     private boolean ignoreTextChange;
 
@@ -53,43 +63,119 @@ public class RefBox extends StackPane {
             ex.printStackTrace();
         }
 
-        this.txfRefBox.setOnKeyPressed(ev ->
+        this.txfText.setOnKeyPressed(ev ->
         {
             if (ev.getCode() == KeyCode.DOWN)
                 this.search();
         });
-        this.txfRefBox.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
+        this.txfText.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
         {
             if (this.ignoreTextChange || view.get() == null)
                 return;
-            this.txfRefBox.setStyle("-fx-text-fill: black");
+            this.setRef(0);
             this.search();
         });
-        this.detailsVisible.addListener((observable, oldValue, newValue) ->
+        this.ref.addListener((observable, oldValue, newValue) ->
         {
-            this.lblDetails.setVisible(newValue);
-            this.lblDetails.setManaged(newValue);
+            try {
+                PreparedStatement stmt = Database.DB.prepareStatement("SELECT * FROM " + this.view.get() + " WHERE ID = ?");
+                stmt.setInt(1, (int) newValue);
+                ResultSet dbRes = stmt.executeQuery();
+                this.ignoreTextChange = true;
+                if (dbRes.next()) {
+                    this.setText(String.format("%d - %s", dbRes.getInt("ID"), dbRes.getString("Text")));
+                    this.txfText.setStyle("-fx-text-fill: black");
+                    this.txfDetails.setText(dbRes.getString("SubText"));
+                } else {
+                    this.txfText.setStyle("-fx-text-fill: orange; -fx-font-weight: bold");
+                    this.txfDetails.setText("");
+                }
+                this.ignoreTextChange = false;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
-        this.lblDetails.setVisible(this.isDetailsVisible());
-        this.lblDetails.setManaged(this.isDetailsVisible());
-        this.setSelected();
-        this.btnRefBox.setOnAction(ev ->
+
+        this.hbxButtons.widthProperty().addListener((observable, oldValue, newValue) -> this.txfText.setPadding(new Insets(5, (double) newValue, 5, 5)));
+        this.showNewButton.addListener((observable, oldValue, newValue) ->
         {
-            this.txfRefBox.requestFocus();
-            this.search();
+            this.btnNew.setVisible(newValue);
+            this.btnNew.setManaged(newValue);
         });
+        this.btnNew.setOnKeyPressed(ev ->
+        {
+            switch (ev.getCode())
+            {
+                case ENTER:
+                    ev.consume();
+                    break;
+                case DOWN:
+                    this.search();
+                    ev.consume();
+                    break;
+            }
+        });
+        this.btnNew.setVisible(this.isShowNewButton());
+        this.btnNew.setManaged(this.isShowNewButton());
+        this.btnNew.focusedProperty().addListener(this.getBtnHighlighter(this.btnNew));
+        this.showEditButton.addListener((observable, oldValue, newValue) ->
+        {
+            this.btnEdit.setVisible(newValue);
+            this.btnEdit.setManaged(newValue);
+        });
+        this.btnEdit.setOnKeyPressed(ev ->
+        {
+            switch (ev.getCode())
+            {
+                case ENTER:
+                    ev.consume();
+                    break;
+                case DOWN:
+                    this.search();
+                    ev.consume();
+                    break;
+            }
+        });
+        this.btnEdit.setVisible(this.isShowEditButton());
+        this.btnEdit.setManaged(this.isShowEditButton());
+        this.btnEdit.focusedProperty().addListener(this.getBtnHighlighter(this.btnEdit));
+        this.btnSearch.setOnKeyPressed(ev ->
+        {
+            switch (ev.getCode())
+            {
+                case ENTER:
+                case DOWN:
+                    this.search();
+                    ev.consume();
+                    break;
+            }
+        });
+        this.btnSearch.setOnAction(ev -> this.search());
+        this.btnSearch.focusedProperty().addListener(this.getBtnHighlighter(this.btnSearch));
+
+        this.showDetails.addListener((observable, oldValue, newValue) ->
+        {
+            this.txfDetails.setVisible(newValue);
+            this.txfDetails.setManaged(newValue);
+        });
+        this.txfDetails.setVisible(this.isShowDetails());
+        this.txfDetails.setManaged(this.isShowDetails());
+        this.detailsRows.addListener((observable, oldValue, newValue) -> this.txfDetails.setPrefHeight((int) newValue * 20 + 15));
+        this.txfDetails.setPrefHeight(this.getDetailsRows() * 20 + 15);
+
+        this.setRef(0);
     }
 
     public String getText() {
-        return this.txfRefBox.getText();
+        return this.txfText.getText();
     }
 
     public void setText(String text) {
-        this.txfRefBox.setText(text);
+        this.txfText.setText(text);
     }
 
     public StringProperty textProperty() {
-        return this.txfRefBox.textProperty();
+        return this.txfText.textProperty();
     }
 
     public int getRef() {
@@ -98,6 +184,8 @@ public class RefBox extends StackPane {
 
     public void setRef(int ref) {
         this.ref.set(ref);
+        if (this.refBoxList != null)
+            this.refBoxList.hide();
     }
 
     public IntegerProperty refProperty() {
@@ -116,46 +204,62 @@ public class RefBox extends StackPane {
         return this.view;
     }
 
-    public boolean isDetailsVisible() {
-        return detailsVisible.get();
+    public boolean isShowNewButton() {
+        return showNewButton.get();
     }
 
-    public void setDetailsVisible(boolean detailsVisible) {
-        this.detailsVisible.set(detailsVisible);
+    public void setShowNewButton(boolean showNewButton) {
+        this.showNewButton.set(showNewButton);
     }
 
-    public BooleanProperty detailsVisible() {
-        return this.detailsVisible;
+    public BooleanProperty showNewButton() {
+        return showNewButton;
+    }
+
+    public boolean isShowEditButton() {
+        return showEditButton.get();
+    }
+
+    public void setShowEditButton(boolean showEditButton) {
+        this.showEditButton.set(showEditButton);
+    }
+
+    public BooleanProperty showEditButton() {
+        return showEditButton;
+    }
+
+    public boolean isShowDetails() {
+        return showDetails.get();
+    }
+
+    public void setShowDetails(boolean showDetails) {
+        this.showDetails.set(showDetails);
+    }
+
+    public BooleanProperty showDetails() {
+        return this.showDetails;
+    }
+
+    public int getDetailsRows() {
+        return detailsRows.get();
+    }
+
+    public void setDetailsRows(int detailsRows) {
+        this.detailsRows.set(detailsRows);
+    }
+
+    public IntegerProperty detailsRowsProperty() {
+        return detailsRows;
     }
 
     public final void setOnAction(EventHandler<ActionEvent> value) {
-        this.txfRefBox.onActionProperty().set(value);
-    }
-
-    public void setSelected() {
-        RefBox.this.ignoreTextChange = true;
-        RefBoxListItem item = null;
-        if (this.refBoxList != null)
-            item = RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
-        if (item != null) {
-            this.setRef(item.getId());
-            this.setText(String.format("%d - %s", item.getId(), item.getText()));
-            this.txfRefBox.setStyle("-fx-text-fill: green");
-            this.lblDetails.setText(item.getSubText());
-        } else {
-            this.setRef(0);
-            this.setText(null);
-            this.txfRefBox.setStyle("-fx-text-fill: black");
-            this.lblDetails.setText("");
-        }
-        if (this.refBoxList != null)
-            this.refBoxList.hide();
-        RefBox.this.ignoreTextChange = false;
+        this.txfText.onActionProperty().set(value);
     }
 
     private void search() {
+        this.txfText.requestFocus();
         try {
-            String[] highlight = this.txfRefBox.getText().isEmpty() ? null : this.txfRefBox.getText().split(" ");
+            String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
             String dbViewSelect = "SELECT * FROM " + this.view.get();
             if (highlight != null && highlight.length > 0) {
                 dbViewSelect += " WHERE";
@@ -176,7 +280,7 @@ public class RefBox extends StackPane {
             ResultSet dbRes = stmt.executeQuery();
             if (this.refBoxList != null)
                 this.refBoxList.hide();
-            this.refBoxList = new RefBoxList(this.localToScreen(0, this.txfRefBox.getHeight()));
+            this.refBoxList = new RefBoxList(this.localToScreen(0, this.txfText.getHeight()));
             this.refBoxList.setPrefWidth(this.getWidth());
             this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
 
@@ -190,9 +294,10 @@ public class RefBox extends StackPane {
                 {
                     switch (ev.getCode()) {
                         case TAB:
-                            this.btnRefBox.requestFocus();
+                            this.btnSearch.requestFocus();
                         case ENTER:
-                            RefBox.this.setSelected();
+                            RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
+                            this.setRef(item == null ? 0 : item.getId());
                             break;
                         case ESCAPE:
                             this.refBoxList.hide();
@@ -201,8 +306,10 @@ public class RefBox extends StackPane {
                 });
                 this.refBoxList.getSuggestionsList().setOnMouseClicked(ev ->
                 {
-                    if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2)
-                        RefBox.this.setSelected();
+                    if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2) {
+                        RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
+                        this.setRef(item == null ? 0 : item.getId());
+                    }
                 });
                 for (RefBoxListItem item : this.refBoxList.getSuggestionsList().getItems()) {
                     item.matchProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
@@ -224,5 +331,22 @@ public class RefBox extends StackPane {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private ChangeListener<Boolean> getBtnHighlighter(Button btn) {
+        return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if (newValue)
+            {
+                Glow glow = new Glow();
+                glow.setLevel(1d / 3d);
+                btn.setTextFill(Color.web("#039ED3"));
+                btn.setEffect(glow);
+            }
+            else
+            {
+                btn.setTextFill(new Color(0, 0, 0, 1));
+                btn.setEffect(null);
+            }
+        };
     }
 }

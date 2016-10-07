@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public abstract class Plugin extends Stage
 {
-    protected GridPane mainGrid;
+    protected GridPane grdMain;
 
     public Plugin(String res, String title)
     {
@@ -17,14 +17,14 @@ public abstract class Plugin extends Stage
 
         try
         {
-            this.mainGrid = FXMLLoader.load(Humans.class.getResource(res));
+            this.grdMain = FXMLLoader.load(Humans.class.getResource(res));
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
 
-        this.setScene(new Scene(this.mainGrid));
+        this.setScene(new Scene(this.grdMain));
         this.show();
     }
 }

@@ -3,33 +3,61 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
 
-<fx:root type="javafx.scene.layout.StackPane"
-         xmlns:fx="http://javafx.com/fxml">
+<fx:root type="javafx.scene.layout.VBox"
+         xmlns:fx="http://javafx.com/fxml"
+         maxWidth="400">
 
-    <HBox style="-fx-border-color: #C4C4C4; -fx-border-radius: 5">
-        <padding>
-            <Insets top="25"/>
-        </padding>
-        <Label fx:id="lblDetails">
-            <padding>
-                <Insets left="5" top="10" right="5" bottom="5"/>
-            </padding>
-        </Label>
-    </HBox>
+    <StackPane alignment="CENTER_RIGHT">
 
-    <HBox>
-        <TextField fx:id="txfRefBox"
+        <TextField fx:id="txfText"
+                   style="-fx-text-fill: orange"
                    HBox.hgrow="ALWAYS"/>
 
-        <Button fx:id="btnRefBox"
-                minWidth="35"
-                maxWidth="35"
-                text="&#128269;"
-                HBox.hgrow="NEVER"/>
-    </HBox>
+        <HBox fx:id="hbxButtons"
+              maxWidth="0"
+              alignment="CENTER_RIGHT">
+            <StackPane.margin>
+                <Insets right="1"/>
+            </StackPane.margin>
+
+            <Button fx:id="btnNew"
+                    style="-fx-font-size: 14pt; -fx-background-color: transparent"
+                    minWidth="25"
+                    maxWidth="25"
+                    text="&#43;">
+                <padding>
+                    <Insets left="-10" right="-10"/>
+                </padding>
+            </Button>
+
+            <Button fx:id="btnEdit"
+                    style="-fx-font-size: 14pt; -fx-background-color: transparent"
+                    minWidth="25"
+                    maxWidth="25"
+                    text="&#128393;">
+                <padding>
+                    <Insets left="-10" right="-10"/>
+                </padding>
+            </Button>
+
+            <Button fx:id="btnSearch"
+                    style="-fx-font-size: 14pt; -fx-background-color: transparent"
+                    minWidth="25"
+                    maxWidth="25"
+                    text="&#128269;">
+                <padding>
+                    <Insets left="-10" right="-10"/>
+                </padding>
+            </Button>
+
+        </HBox>
+    </StackPane>
+
+    <TextArea fx:id="txfDetails"
+              editable="false"/>
 
 </fx:root>

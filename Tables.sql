@@ -25,11 +25,10 @@ SELECT * FROM Addresses
 
 DROP VIEW V_Adresses
 CREATE VIEW V_Adresses AS SELECT
-Adr.ID AS ID.
-ISNULL(CONVERT(varchar(50), Adr.Street), '') + ' ' + ISNULL(CONVERT(varchar(50), Adr.HsNo), '') AS Text,
-ISNULL(CONVERT(varchar(50), Adr.Street), '') + ' ' + ISNULL(CONVERT(varchar(50), Adr.HsNo), '') + '
-' + ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ' ' + ISNULL(CONVERT(varchar(50), Adr.City), '') + '
-' + ISNULL(CONVERT(varchar(50), C.Name), '') AS SubText
+Adr.ID AS ID,
+ISNULL(CONVERT(varchar(50), Adr.Street), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.HsNo), '') AS Text,
+ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.City), '') + ISNULL('
+' + CONVERT(varchar(50), C.Name), '') AS SubText
 FROM Addresses Adr
 INNER JOIN Countries C ON Adr.Country = C.ID
 SELECT * FROM V_Adresses
@@ -57,10 +56,10 @@ SELECT * FROM V_Login
 DROP VIEW V_Humans
 CREATE VIEW V_Humans AS SELECT
 H.ID AS ID,
-ISNULL(CONVERT(varchar(50), Forename), '') + ' ' + ISNULL(CONVERT(varchar(50), Name), '') AS Text,
+ISNULL(CONVERT(varchar(50), Forename), '') + ISNULL(' ' + CONVERT(varchar(50), Name), '') AS Text,
 ISNULL(CONVERT(varchar(50), ShortKey), '') + '
-' + ISNULL(CONVERT(varchar(50), Adr.Street), '') + ' ' + ISNULL(CONVERT(varchar(50), Adr.HsNo), '') + '
-' + ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ' ' + ISNULL(CONVERT(varchar(50), Adr.City), '') AS SubText
+' + ISNULL(CONVERT(varchar(50), Adr.Street), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.HsNo), '') + '
+' + ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.City), '') AS SubText
 FROM Humans H
 INNER JOIN Addresses Adr ON H.Address = Adr.ID
 SELECT * FROM V_Humans

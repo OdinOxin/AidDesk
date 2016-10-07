@@ -35,7 +35,6 @@
           text="&#128100;"
           GridPane.rowIndex="0"
           GridPane.columnIndex="0"/>
-
     <RefBox id="refboxUser"
             view="V_Login"
             ref="3"
