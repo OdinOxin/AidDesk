@@ -3,40 +3,54 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.geometry.Insets?>
 
-<?import javafx.scene.text.Text?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Separator?>
 
 <?import de.odinoxin.aiddesk.controls.RefBox?>
 <?import de.odinoxin.aiddesk.controls.Header?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
 <GridPane xmlns="http://javafx.com/javafx/8"
           id="humansGrid"
           vgap="5"
           hgap="5">
 
     <padding>
-        <Insets top="5" left="5" right="5" bottom="5"/>
+        <Insets left="5" top="5" right="5" bottom="5"/>
     </padding>
 
     <columnConstraints>
-        <ColumnConstraints hgrow="ALWAYS"/>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
     </columnConstraints>
 
     <rowConstraints>
         <RowConstraints vgrow="NEVER"/>
-        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints vgrow="NEVER"/>
     </rowConstraints>
 
-    <GridPane id="grdKey"
-              GridPane.rowIndex="0"
+    <HBox GridPane.rowIndex="0"
+          GridPane.columnIndex="0"
+          GridPane.columnSpan="2"
+          spacing="5"
+          alignment="CENTER_LEFT">
+
+        <Label id="txtID"
+               prefWidth="125"
+               text="ID"/>
+        <TextField id="txfID"
+                   editable="false"
+                   maxWidth="75"
+                   alignment="CENTER_RIGHT"/>
+
+    </HBox>
+
+    <GridPane GridPane.rowIndex="1"
               GridPane.columnIndex="0"
-              vgap="5"
-              hgap="5">
+              hgap="5"
+              vgap="5">
 
         <columnConstraints>
             <ColumnConstraints hgrow="NEVER"/>
@@ -46,146 +60,81 @@
         <rowConstraints>
             <RowConstraints vgrow="NEVER"/>
             <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
         </rowConstraints>
 
-        <Label id="txtKey"
-               text="Auswahl"
-               prefWidth="125"
-               GridPane.rowIndex="0"
-               GridPane.columnIndex="0"/>
-        <RefBox id="refBoxKey"
-                view="V_Humans"
-                showNewButton="true"
+        <Header text="Person"
                 GridPane.rowIndex="0"
-                GridPane.columnIndex="1"/>
-        <Separator id="sepKey"
+                GridPane.columnIndex="0"
+                GridPane.columnSpan="2"/>
+
+        <Label id="txtForename"
+               text="Vorname"
+               prefWidth="125"
+               GridPane.rowIndex="1"
+               GridPane.columnIndex="0"/>
+        <TextField id="txfForename"
+                   maxWidth="400"
                    GridPane.rowIndex="1"
-                   GridPane.columnIndex="0"
-                   GridPane.columnSpan="2"/>
+                   GridPane.columnIndex="1"/>
+
+        <Label id="txtName"
+               text="Name"
+               prefWidth="125"
+               GridPane.rowIndex="2"
+               GridPane.columnIndex="0"/>
+        <TextField id="txfName"
+                   maxWidth="400"
+                   GridPane.rowIndex="2"
+                   GridPane.columnIndex="1"/>
+
+        <Label id="txtShortKey"
+               text="Kürzel"
+               prefWidth="125"
+               GridPane.rowIndex="3"
+               GridPane.columnIndex="0"/>
+        <TextField id="txfShortKey"
+                   maxWidth="400"
+                   GridPane.rowIndex="3"
+                   GridPane.columnIndex="1"/>
+
+        <Label id="txtPwd"
+               text="Passwort"
+               prefWidth="125"
+               GridPane.rowIndex="4"
+               GridPane.columnIndex="0"/>
+        <Button id="btnPwd"
+                text="Ändern"
+                GridPane.rowIndex="4"
+                GridPane.columnIndex="1"/>
+
     </GridPane>
 
-    <GridPane id="grdDetail"
-              GridPane.rowIndex="1"
-              GridPane.columnIndex="0"
-              vgap="5"
-              hgap="5">
+    <GridPane GridPane.rowIndex="1"
+              GridPane.columnIndex="1"
+              hgap="5"
+              vgap="5">
 
         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
-            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
 
         <rowConstraints>
             <RowConstraints vgrow="NEVER"/>
-            <RowConstraints vgrow="NEVER"/>
         </rowConstraints>
 
-        <HBox GridPane.rowIndex="0"
-              GridPane.columnIndex="0"
-              GridPane.columnSpan="2"
-              spacing="5"
-              alignment="CENTER_LEFT">
+        <Header text="Adresse"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="0"/>
 
-            <Label id="txtID"
-                   prefWidth="125"
-                   text="ID"/>
-            <TextField id="txfID"
-                       editable="false"
-                       maxWidth="75"
-                       alignment="CENTER_RIGHT"/>
-
-        </HBox>
-
-        <GridPane GridPane.rowIndex="1"
-                  GridPane.columnIndex="0"
-                  hgap="5"
-                  vgap="5">
-
-            <columnConstraints>
-                <ColumnConstraints hgrow="NEVER"/>
-                <ColumnConstraints hgrow="ALWAYS"/>
-            </columnConstraints>
-
-            <rowConstraints>
-                <RowConstraints vgrow="NEVER"/>
-                <RowConstraints vgrow="NEVER"/>
-                <RowConstraints vgrow="NEVER"/>
-                <RowConstraints vgrow="NEVER"/>
-                <RowConstraints vgrow="NEVER"/>
-            </rowConstraints>
-
-            <Header text="Person"
-                    GridPane.rowIndex="0"
-                    GridPane.columnIndex="0"
-                    GridPane.columnSpan="2"/>
-
-            <Label id="txtForename"
-                   text="Vorname"
-                   prefWidth="125"
-                   GridPane.rowIndex="1"
-                   GridPane.columnIndex="0"/>
-            <TextField id="txfForename"
-                       maxWidth="400"
-                       GridPane.rowIndex="1"
-                       GridPane.columnIndex="1"/>
-
-            <Label id="txtName"
-                   text="Name"
-                   prefWidth="125"
-                   GridPane.rowIndex="2"
-                   GridPane.columnIndex="0"/>
-            <TextField id="txfName"
-                       maxWidth="400"
-                       GridPane.rowIndex="2"
-                       GridPane.columnIndex="1"/>
-
-            <Label id="txtShortKey"
-                   text="Kürzel"
-                   prefWidth="125"
-                   GridPane.rowIndex="3"
-                   GridPane.columnIndex="0"/>
-            <TextField id="txfShortKey"
-                       maxWidth="400"
-                       GridPane.rowIndex="3"
-                       GridPane.columnIndex="1"/>
-
-            <Label id="txtPwd"
-                   text="Passwort"
-                   prefWidth="125"
-                   GridPane.rowIndex="4"
-                   GridPane.columnIndex="0"/>
-            <Button id="btnPwd"
-                    text="Ändern"
-                    GridPane.rowIndex="4"
-                    GridPane.columnIndex="1"/>
-
-        </GridPane>
-
-        <GridPane GridPane.rowIndex="1"
-                  GridPane.columnIndex="1"
-                  hgap="5"
-                  vgap="5">
-
-            <columnConstraints>
-                <ColumnConstraints hgrow="ALWAYS"/>
-            </columnConstraints>
-
-            <rowConstraints>
-                <RowConstraints vgrow="NEVER"/>
-            </rowConstraints>
-
-            <Header text="Adresse"
-                    GridPane.rowIndex="0"
-                    GridPane.columnIndex="0"/>
-
-            <RefBox id="refBoxAddress"
-                    view="V_Adresses"
-                    showEditButton="true"
-                    showDetails="true"
-                    GridPane.rowIndex="1"
-                    GridPane.columnIndex="0"/>
-
-        </GridPane>
+        <RefBox id="refBoxAddress"
+                view="V_Adresses"
+                showEditButton="true"
+                showDetails="true"
+                GridPane.rowIndex="1"
+                GridPane.columnIndex="0"/>
 
     </GridPane>
 

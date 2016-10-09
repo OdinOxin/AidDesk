@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Humans extends Plugin {
+public class Humans extends RecordEditor {
     private RefBox refBoxKey;
 
     private TextField txfID;
@@ -21,13 +21,13 @@ public class Humans extends Plugin {
     public Humans() {
         super("/plugins/humans.fxml", "Humans");
 
-        this.refBoxKey = (RefBox) this.grdMain.lookup("#refBoxKey");
+        this.refBoxKey = (RefBox) this.root.lookup("#refBoxKey");
         this.refBoxKey.refProperty().addListener((observable, oldValue, newValue) -> this.loadHuman((int) newValue));
-        this.txfID = (TextField) this.grdMain.lookup("#txfID");
-        this.txfForename = (TextField) this.grdMain.lookup("#txfForename");
-        this.txfName = (TextField) this.grdMain.lookup("#txfName");
-        this.txfShortKey = (TextField) this.grdMain.lookup("#txfShortKey");
-        this.refBoxAddress = (RefBox) this.grdMain.lookup("#refBoxAddress");
+        this.txfID = (TextField) this.root.lookup("#txfID");
+        this.txfForename = (TextField) this.root.lookup("#txfForename");
+        this.txfName = (TextField) this.root.lookup("#txfName");
+        this.txfShortKey = (TextField) this.root.lookup("#txfShortKey");
+        this.refBoxAddress = (RefBox) this.root.lookup("#refBoxAddress");
 
         this.loadHuman(Login.HumanID);
     }
