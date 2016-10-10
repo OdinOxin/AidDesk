@@ -1,6 +1,7 @@
-package de.odinoxin.aiddesk.controls;
+package de.odinoxin.aiddesk.controls.refbox;
 
 import de.odinoxin.aiddesk.Database;
+import de.odinoxin.aiddesk.controls.translateable.Translator;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,6 +19,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -49,6 +51,7 @@ public class RefBox extends VBox {
     private IntegerProperty detailsRows = new SimpleIntegerProperty(this, "detailsRows", 2);
 
     private boolean ignoreTextChange;
+    private String seperator;
 
     public RefBox() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/controls/refbox.fxml"));
@@ -81,7 +84,7 @@ public class RefBox extends VBox {
                 ResultSet dbRes = stmt.executeQuery();
                 this.ignoreTextChange = true;
                 if (dbRes.next()) {
-                    this.setText(String.format("%d - %s", dbRes.getInt("ID"), dbRes.getString("Text")));
+                    this.setText(String.format("%d " + this.seperator + " %s", dbRes.getInt("ID"), dbRes.getString("Text")));
                     this.txfText.setStyle("-fx-text-fill: black");
                     this.txfDetails.setText(dbRes.getString("SubText"));
                 } else {
@@ -100,6 +103,8 @@ public class RefBox extends VBox {
             this.btnNew.setVisible(newValue);
             this.btnNew.setManaged(newValue);
         });
+        this.btnNew.minHeightProperty().bind(this.txfText.heightProperty());
+        this.btnNew.maxHeightProperty().bind(this.txfText.heightProperty());
         this.btnNew.setOnKeyPressed(ev ->
         {
             switch (ev.getCode())
@@ -121,6 +126,8 @@ public class RefBox extends VBox {
             this.btnEdit.setVisible(newValue);
             this.btnEdit.setManaged(newValue);
         });
+        this.btnEdit.minHeightProperty().bind(this.txfText.heightProperty());
+        this.btnEdit.maxHeightProperty().bind(this.txfText.heightProperty());
         this.btnEdit.setOnKeyPressed(ev ->
         {
             switch (ev.getCode())
@@ -137,6 +144,8 @@ public class RefBox extends VBox {
         this.btnEdit.setVisible(this.isShowEditButton());
         this.btnEdit.setManaged(this.isShowEditButton());
         this.btnEdit.focusedProperty().addListener(this.getBtnHighlighter(this.btnEdit));
+        this.btnSearch.minHeightProperty().bind(this.txfText.heightProperty());
+        this.btnSearch.maxHeightProperty().bind(this.txfText.heightProperty());
         this.btnSearch.setOnKeyPressed(ev ->
         {
             switch (ev.getCode())
@@ -160,6 +169,10 @@ public class RefBox extends VBox {
         this.txfDetails.setManaged(this.isShowDetails());
         this.detailsRows.addListener((observable, oldValue, newValue) -> this.txfDetails.setPrefHeight((int) newValue * 20 + 15));
         this.txfDetails.setPrefHeight(this.getDetailsRows() * 20 + 15);
+
+        this.seperator = Translator.getTranslation(16);
+        if(this.seperator == null)
+            this.seperator = "-";
 
         this.setRef(0);
     }
@@ -337,12 +350,18 @@ public class RefBox extends VBox {
             {
                 Glow glow = new Glow();
                 glow.setLevel(1d / 3d);
+                SVGPath svg = (SVGPath) btn.getGraphic();
+                if(svg != null)
+                    svg.setFill(Color.web("#039ED3"));
                 btn.setTextFill(Color.web("#039ED3"));
                 btn.setEffect(glow);
             }
             else
             {
-                btn.setTextFill(new Color(0, 0, 0, 1));
+                btn.setTextFill(Color.BLACK);
+                SVGPath svg = (SVGPath) btn.getGraphic();
+                if(svg != null)
+                    svg.setFill(Color.BLACK);
                 btn.setEffect(null);
             }
         };

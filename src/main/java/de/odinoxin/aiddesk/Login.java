@@ -1,6 +1,6 @@
 package de.odinoxin.aiddesk;
 
-import de.odinoxin.aiddesk.controls.RefBox;
+import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.Humans;
 import javafx.application.Application;
@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import sun.rmi.runtime.Log;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ import java.sql.SQLException;
 
 public class Login extends Application {
 
-    public static int HumanID;
+    private static Human human;
 
     private Stage stage;
     private RefBox refboxUser;
@@ -45,7 +46,7 @@ public class Login extends Application {
         this.btnLogin.setOnAction(ev -> this.tryLogin());
         this.btnLogin.setOnKeyPressed(ev ->
         {
-            if(ev.getCode() == KeyCode.ENTER)
+            if (ev.getCode() == KeyCode.ENTER)
                 this.tryLogin();
         });
 
@@ -55,18 +56,22 @@ public class Login extends Application {
 
     private void tryLogin() {
         try {
-            PreparedStatement statement = Database.DB.prepareStatement("SELECT 'OK' FROM Humans WHERE ID = ? AND Pwd = ?");
+            PreparedStatement statement = Database.DB.prepareStatement("SELECT * FROM Humans WHERE ID = ? AND Pwd = ?");
             statement.setInt(1, this.refboxUser.getRef());
             statement.setString(2, this.pwfPwd.getText());
             ResultSet dbRes = statement.executeQuery();
-            if (dbRes.next() && dbRes.getString(1).equals("OK")) {
+            if (dbRes.next()) {
                 this.stage.close();
-                Login.HumanID = this.refboxUser.getRef();
+                Login.human = new Human(this.refboxUser.getRef(), dbRes.getString("Name"), dbRes.getString("Forename"), dbRes.getString("ShortKey"), dbRes.getString("Language"), dbRes.getInt("Address"));
                 new Humans();
             } else
                 MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static Human getHuman() {
+        return Login.human;
     }
 }

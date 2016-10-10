@@ -1,4 +1,4 @@
-package de.odinoxin.aiddesk.controls;
+package de.odinoxin.aiddesk.controls.refbox;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

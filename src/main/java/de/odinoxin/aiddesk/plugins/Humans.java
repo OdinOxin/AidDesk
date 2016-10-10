@@ -2,7 +2,7 @@ package de.odinoxin.aiddesk.plugins;
 
 import de.odinoxin.aiddesk.Database;
 import de.odinoxin.aiddesk.Login;
-import de.odinoxin.aiddesk.controls.RefBox;
+import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import javafx.scene.control.TextField;
 
 import java.sql.PreparedStatement;
@@ -29,7 +29,7 @@ public class Humans extends RecordEditor {
         this.txfShortKey = (TextField) this.root.lookup("#txfShortKey");
         this.refBoxAddress = (RefBox) this.root.lookup("#refBoxAddress");
 
-        this.loadHuman(Login.HumanID);
+        this.loadHuman(Login.getHuman().getId());
     }
 
     private void loadHuman(int id) {

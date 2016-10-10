@@ -1,4 +1,4 @@
-package de.odinoxin.aiddesk.controls;
+package de.odinoxin.aiddesk.controls.refbox;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;

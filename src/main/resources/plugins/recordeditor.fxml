@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import de.odinoxin.aiddesk.controls.RefBox?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-
+<?import javafx.geometry.Insets?>
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import de.odinoxin.aiddesk.controls.translateable.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+
+<?import de.odinoxin.aiddesk.controls.translateable.Button?>
 <VBox xmlns="http://javafx.com/javafx/8"
       id="humansGrid"
       spacing="5">
@@ -18,23 +17,17 @@
         <Insets top="5" left="5" right="5" bottom="5"/>
     </padding>
 
-    <HBox>
+    <HBox alignment="CENTER_LEFT">
         <Label id="txtKey"
-               text="Auswahl"
-               prefWidth="125"
-               GridPane.rowIndex="0"
-               GridPane.columnIndex="0"/>
+               textId="8"
+               text="Auswähl"
+               prefWidth="125"/>
         <RefBox id="refBoxKey"
                 view="V_Humans"
-                showNewButton="true"
-                GridPane.rowIndex="0"
-                GridPane.columnIndex="1"/>
+                showNewButton="true"/>
     </HBox>
 
-    <Separator id="sepKey"
-               GridPane.rowIndex="1"
-               GridPane.columnIndex="0"
-               GridPane.columnSpan="2"/>
+    <Separator id="sepKey"/>
 
     <ScrollPane id="scpDetails"
                 fitToWidth="true"
@@ -45,16 +38,12 @@
         </padding>
     </ScrollPane>
 
-    <Separator id="sepButtons"
-               GridPane.rowIndex="3"
-               GridPane.columnIndex="0"
-               GridPane.columnSpan="2"/>
+    <Separator id="sepButtons"/>
 
     <HBox>
         <Button id="btnSave"
                 text="Speichern"
-                GridPane.rowIndex="4"
-                GridPane.columnIndex="0"/>
+                textId="5"/>
     </HBox>
 
 </VBox>
