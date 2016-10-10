@@ -2,7 +2,8 @@ package de.odinoxin.aiddesk;
 
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
-import de.odinoxin.aiddesk.plugins.Humans;
+import de.odinoxin.aiddesk.plugins.people.People;
+import de.odinoxin.aiddesk.plugins.people.Person;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import sun.rmi.runtime.Log;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 public class Login extends Application {
 
-    private static Human human;
+    private static Person person;
 
     private Stage stage;
     private RefBox refboxUser;
@@ -56,14 +56,14 @@ public class Login extends Application {
 
     private void tryLogin() {
         try {
-            PreparedStatement statement = Database.DB.prepareStatement("SELECT * FROM Humans WHERE ID = ? AND Pwd = ?");
+            PreparedStatement statement = Database.DB.prepareStatement("SELECT * FROM People WHERE ID = ? AND Pwd = ?");
             statement.setInt(1, this.refboxUser.getRef());
             statement.setString(2, this.pwfPwd.getText());
             ResultSet dbRes = statement.executeQuery();
             if (dbRes.next()) {
                 this.stage.close();
-                Login.human = new Human(this.refboxUser.getRef(), dbRes.getString("Name"), dbRes.getString("Forename"), dbRes.getString("ShortKey"), dbRes.getString("Language"), dbRes.getInt("Address"));
-                new Humans();
+                Login.person = new Person(this.refboxUser.getRef(), dbRes.getString("Name"), dbRes.getString("Forename"), dbRes.getString("Code"), dbRes.getString("Language"), dbRes.getInt("Address"));
+                new People();
             } else
                 MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
         } catch (SQLException ex) {
@@ -71,7 +71,7 @@ public class Login extends Application {
         }
     }
 
-    public static Human getHuman() {
-        return Login.human;
+    public static Person getPerson() {
+        return Login.person;
     }
 }

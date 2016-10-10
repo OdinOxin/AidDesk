@@ -138,6 +138,7 @@
 
         <RefBox id="refBoxAddress"
                 view="V_Adresses"
+                showNewButton="true"
                 showEditButton="true"
                 showDetails="true"
                 GridPane.rowIndex="1"

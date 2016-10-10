@@ -1,40 +1,32 @@
 package de.odinoxin.aiddesk.dialogs;
 
- import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
+import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import de.odinoxin.aiddesk.controls.translateable.Label;
+import de.odinoxin.aiddesk.controls.translateable.Button;
 
 public class MsgDialog {
     public static void showMsg(Window owner, String title, String msg) {
-        Stage stage = new Stage();
-        stage.setTitle(title);
-        stage.getIcons().add(new Image(MsgDialog.class.getResource("/AidDesk.png").toString()));
+        MsgDialog.showMsg(owner, title, msg, 0, 0);
+    }
 
-        GridPane msgGrid = null;
-        try {
-            msgGrid = FXMLLoader.load(MsgDialog.class.getResource("/dialogs/msgdialog.fxml"));
-            ((Text) msgGrid.lookup("#txtMsg")).setText(msg);
-            Button btnOK = (Button) msgGrid.lookup("#btnOK");
-            btnOK.setOnAction(ev -> stage.close());
-            btnOK.setOnKeyPressed(ev ->
-            {
-                if (ev.getCode() == KeyCode.ENTER)
-                    stage.close();
-            });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public static void showMsg(Window owner, String title, String msg, int titleId, int msgId) {
+        Stage stage = Dialog.getStage(owner, title, titleId, "msgdialog", msg, msgId);
 
-        stage.setScene(new Scene(msgGrid));
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initOwner(owner);
+        Parent root = stage.getScene().getRoot();
+        Label lblMsg = (Label) root.lookup("#lblMsg");
+        lblMsg.setText(msg);
+        lblMsg.setTextId(msgId);
+
+        Button btnOK = (Button) root.lookup("#btnOK");
+        btnOK.setOnAction(ev -> stage.close());
+        btnOK.setOnKeyPressed(ev ->
+        {
+            if (ev.getCode() == KeyCode.ENTER)
+                stage.close();
+        });
         stage.show();
     }
 }

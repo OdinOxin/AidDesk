@@ -23,7 +23,6 @@
                text="Auswähl"
                prefWidth="125"/>
         <RefBox id="refBoxKey"
-                view="V_Humans"
                 showNewButton="true"/>
     </HBox>
 
@@ -40,10 +39,14 @@
 
     <Separator id="sepButtons"/>
 
-    <HBox>
+    <HBox alignment="CENTER_RIGHT"
+          spacing="5">
         <Button id="btnSave"
                 text="Speichern"
                 textId="5"/>
+        <Button id="btnDiscard"
+                text="Verwerfen"
+                textId="6"/>
     </HBox>
 
 </VBox>

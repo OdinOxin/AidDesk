@@ -1,7 +1,6 @@
 package de.odinoxin.aiddesk.controls.refbox;
 
 import de.odinoxin.aiddesk.Database;
-import de.odinoxin.aiddesk.controls.translateable.Translator;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -51,7 +50,8 @@ public class RefBox extends VBox {
     private IntegerProperty detailsRows = new SimpleIntegerProperty(this, "detailsRows", 2);
 
     private boolean ignoreTextChange;
-    private String seperator;
+    private boolean keepText;
+    private String format = "%d - %s";
 
     public RefBox() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/controls/refbox.fxml"));
@@ -73,7 +73,9 @@ public class RefBox extends VBox {
         {
             if (this.ignoreTextChange || view.get() == null)
                 return;
+            this.keepText = true;
             this.setRef(0);
+            this.keepText = false;
             this.search();
         });
         this.ref.addListener((observable, oldValue, newValue) ->
@@ -84,11 +86,13 @@ public class RefBox extends VBox {
                 ResultSet dbRes = stmt.executeQuery();
                 this.ignoreTextChange = true;
                 if (dbRes.next()) {
-                    this.setText(String.format("%d " + this.seperator + " %s", dbRes.getInt("ID"), dbRes.getString("Text")));
+                    this.setText(String.format(this.format, dbRes.getInt("ID"), dbRes.getString("Text")));
                     this.txfText.setStyle("-fx-text-fill: black");
                     this.txfDetails.setText(dbRes.getString("SubText"));
                 } else {
                     this.txfText.setStyle("-fx-text-fill: orange; -fx-font-weight: bold");
+                    if (!this.keepText)
+                        this.txfText.setText("");
                     this.txfDetails.setText("");
                 }
                 this.ignoreTextChange = false;
@@ -107,9 +111,9 @@ public class RefBox extends VBox {
         this.btnNew.maxHeightProperty().bind(this.txfText.heightProperty());
         this.btnNew.setOnKeyPressed(ev ->
         {
-            switch (ev.getCode())
-            {
+            switch (ev.getCode()) {
                 case ENTER:
+                    this.btnNew.fire();
                     ev.consume();
                     break;
                 case DOWN:
@@ -130,9 +134,9 @@ public class RefBox extends VBox {
         this.btnEdit.maxHeightProperty().bind(this.txfText.heightProperty());
         this.btnEdit.setOnKeyPressed(ev ->
         {
-            switch (ev.getCode())
-            {
+            switch (ev.getCode()) {
                 case ENTER:
+                    this.btnNew.fire();
                     ev.consume();
                     break;
                 case DOWN:
@@ -148,8 +152,7 @@ public class RefBox extends VBox {
         this.btnSearch.maxHeightProperty().bind(this.txfText.heightProperty());
         this.btnSearch.setOnKeyPressed(ev ->
         {
-            switch (ev.getCode())
-            {
+            switch (ev.getCode()) {
                 case ENTER:
                 case DOWN:
                     this.search();
@@ -169,10 +172,6 @@ public class RefBox extends VBox {
         this.txfDetails.setManaged(this.isShowDetails());
         this.detailsRows.addListener((observable, oldValue, newValue) -> this.txfDetails.setPrefHeight((int) newValue * 20 + 15));
         this.txfDetails.setPrefHeight(this.getDetailsRows() * 20 + 15);
-
-        this.seperator = Translator.getTranslation(16);
-        if(this.seperator == null)
-            this.seperator = "-";
 
         this.setRef(0);
     }
@@ -227,6 +226,10 @@ public class RefBox extends VBox {
         return showNewButton;
     }
 
+    public void setOnNewAction(EventHandler<ActionEvent> eventHandler) {
+        this.btnNew.setOnAction(eventHandler);
+    }
+
     public boolean isShowEditButton() {
         return showEditButton.get();
     }
@@ -237,6 +240,10 @@ public class RefBox extends VBox {
 
     public BooleanProperty showEditButton() {
         return showEditButton;
+    }
+
+    public void setOnEditAction(EventHandler<ActionEvent> eventHandler) {
+        this.btnEdit.setOnAction(eventHandler);
     }
 
     public boolean isShowDetails() {
@@ -346,21 +353,18 @@ public class RefBox extends VBox {
 
     private ChangeListener<Boolean> getBtnHighlighter(Button btn) {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (newValue)
-            {
+            if (newValue) {
                 Glow glow = new Glow();
                 glow.setLevel(1d / 3d);
                 SVGPath svg = (SVGPath) btn.getGraphic();
-                if(svg != null)
+                if (svg != null)
                     svg.setFill(Color.web("#039ED3"));
                 btn.setTextFill(Color.web("#039ED3"));
                 btn.setEffect(glow);
-            }
-            else
-            {
+            } else {
                 btn.setTextFill(Color.BLACK);
                 SVGPath svg = (SVGPath) btn.getGraphic();
-                if(svg != null)
+                if (svg != null)
                     svg.setFill(Color.BLACK);
                 btn.setEffect(null);
             }

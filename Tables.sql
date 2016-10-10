@@ -20,10 +20,13 @@ INSERT INTO Translations VALUES ('Vorname', 'Forename')
 INSERT INTO Translations VALUES ('Kürzel', 'Code')
 INSERT INTO Translations VALUES ('Passwort', 'Password')
 INSERT INTO Translations VALUES ('Adresse', 'Address')
-INSERT INTO Translations VALUES ('-', '-')
-INSERT INTO Translations VALUES ('+', '+')
-INSERT INTO Translations VALUES ('🖉', '🖉')
-INSERT INTO Translations VALUES ('🔍', '🔍')
+INSERT INTO Translations VALUES ('Personen', 'People')
+INSERT INTO Translations VALUES ('Änderugen verwerfen?', 'Discard changes?')
+INSERT INTO Translations VALUES ('Es sind noch nicht gespeicherte Änderungen vorhanden!
+
+Möchten Sie diese Änderungen verwerfen?', 'There are unsaved changes!
+
+Do you want to discard these changes?')
 --INSERT INTO Translations VALUES ('', '')
 SELECT * FROM Translations
 
@@ -65,11 +68,11 @@ FROM Addresses Adr
 INNER JOIN Countries C ON Adr.Country = C.ID
 SELECT * FROM V_Adresses
 
-DROP TABLE Humans
-CREATE TABLE Humans
+DROP TABLE People
+CREATE TABLE People
 (
 	ID INT IDENTITY(1,1) PRIMARY KEY,
-	ShortKey VARCHAR(16),
+	Code VARCHAR(16),
 	Name VARCHAR(250),
 	Forename VARCHAR(250),
 	Pwd VARCHAR(250),
@@ -77,25 +80,25 @@ CREATE TABLE Humans
 	Address INT,
 	CONSTRAINT fkAddress FOREIGN KEY (Address) REFERENCES Addresses(ID),
 )
-INSERT INTO Humans VALUES ('DavTo', 'Toboll', 'David', '13579', 'DEU', 3)
-INSERT INTO Humans VALUES ('InBa', 'Bahloul', 'Ines', '67890', 'DEU', 2)
-INSERT INTO Humans VALUES ('LuWec', 'Weckermann', 'Lucas', '12345', 'DEU', 1)
-INSERT INTO Humans VALUES ('Chriss', 'Weckermann', 'Christian', '24680', 'DEU', 1)
-SELECT * FROM Humans
+INSERT INTO People VALUES ('DavTo', 'Toboll', 'David', '13579', 'DEU', 3)
+INSERT INTO People VALUES ('InBa', 'Bahloul', 'Ines', '67890', 'DEU', 2)
+INSERT INTO People VALUES ('LuWec', 'Weckermann', 'Lucas', '12345', 'DEU', 1)
+INSERT INTO People VALUES ('Chriss', 'Weckermann', 'Christian', '24680', 'DEU', 1)
+SELECT * FROM People
 
-UPDATE Humans SET Language = 'DEU' WHERE ID = 3
+UPDATE People SET Language = 'DEU' WHERE ID = 3
 
 DROP VIEW V_Login
-CREATE VIEW V_Login AS SELECT ID, Forename + ' ' + Name AS Text, ShortKey AS SubText FROM Humans
+CREATE VIEW V_Login AS SELECT ID, Forename + ' ' + Name AS Text, Code AS SubText FROM People
 SELECT * FROM V_Login
 
-DROP VIEW V_Humans
-CREATE VIEW V_Humans AS SELECT
-H.ID AS ID,
+DROP VIEW V_People
+CREATE VIEW V_People AS SELECT
+P.ID AS ID,
 ISNULL(CONVERT(varchar(50), Forename), '') + ISNULL(' ' + CONVERT(varchar(50), Name), '') AS Text,
-ISNULL(CONVERT(varchar(50), ShortKey), '') + '
+ISNULL(CONVERT(varchar(50), Code), '') + '
 ' + ISNULL(CONVERT(varchar(50), Adr.Street), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.HsNo), '') + '
 ' + ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.City), '') AS SubText
-FROM Humans H
-INNER JOIN Addresses Adr ON H.Address = Adr.ID
-SELECT * FROM V_Humans
+FROM People P
+INNER JOIN Addresses Adr ON P.Address = Adr.ID
+SELECT * FROM V_People

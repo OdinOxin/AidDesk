@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import de.odinoxin.aiddesk.controls.translateable.Label?>
 <?import de.odinoxin.aiddesk.controls.translateable.Button?>
 
@@ -16,8 +17,15 @@
 
     <Label id="lblMsg"/>
 
-    <Button id="btnOK"
-            text="OK"
-            textId="1"/>
-
+    <HBox id="hbxButtons"
+          minWidth="-Infinity"
+          maxWidth="-Infinity"
+          spacing="5">
+        <Button id="btnPositive"
+                text="Ja"
+                textId="2"/>
+        <Button id="btnNegative"
+                text="Nein"
+                textId="3"/>
+    </HBox>
 </VBox>

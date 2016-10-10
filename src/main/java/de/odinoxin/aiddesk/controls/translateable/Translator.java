@@ -11,17 +11,17 @@ public abstract class Translator {
 
     public static String getTranslation(int textId) {
         try {
-            if(Login.getHuman() == null)
+            if(Login.getPerson() == null)
                 return null;
-            String languageCode = Login.getHuman().getLanguageCode();
+            String languageCode = Login.getPerson().getLanguageCode();
             if(languageCode == null || languageCode.isEmpty())
                 languageCode = "USA";
             PreparedStatement statement = Database.DB.prepareStatement("SELECT " + languageCode + " FROM Translations WHERE ID = ?");
             statement.setInt(1, textId);
             ResultSet dbRes = statement.executeQuery();
             if (dbRes.next()) {
-                return dbRes.getString(1);
-                //return "<" + dbRes.getString(1) + ">";
+                //return dbRes.getString(1);
+                return "<" + dbRes.getString(1) + ">";
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
