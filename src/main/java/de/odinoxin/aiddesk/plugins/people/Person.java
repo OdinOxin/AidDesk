@@ -12,6 +12,7 @@ public class Person extends RecordItem {
     private StringProperty name = new SimpleStringProperty();
     private StringProperty forename = new SimpleStringProperty();
     private StringProperty code = new SimpleStringProperty();
+    private StringProperty pwd = new SimpleStringProperty();
     private StringProperty languageCode = new SimpleStringProperty();
     private IntegerProperty addressId = new SimpleIntegerProperty();
 
@@ -20,6 +21,7 @@ public class Person extends RecordItem {
         nameProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
         forenameProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
         codeProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
+        pwdProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
         languageCodeProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
         addressIdProperty().addListener((observable, oldValue, newValue) ->
         {
@@ -65,6 +67,10 @@ public class Person extends RecordItem {
         return code.get();
     }
 
+    public String getPwd() {
+        return pwd.get();
+    }
+
     public String getLanguageCode() {
         return languageCode.get();
     }
@@ -89,6 +95,10 @@ public class Person extends RecordItem {
         this.code.set(code);
     }
 
+    public void setPwd(String pwd) {
+        this.pwd.set(pwd);
+    }
+
     public void setLanguageCode(String languageCode) {
         this.languageCode.set(languageCode);
     }
@@ -111,6 +121,10 @@ public class Person extends RecordItem {
 
     public StringProperty codeProperty() {
         return code;
+    }
+
+    public StringProperty pwdProperty() {
+        return pwd;
     }
 
     public StringProperty languageCodeProperty() {

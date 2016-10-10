@@ -3,6 +3,8 @@ package de.odinoxin.aiddesk.plugins.people;
 import de.odinoxin.aiddesk.Database;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
+import de.odinoxin.aiddesk.dialogs.DecisionDialog;
+import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import javafx.scene.control.TextField;
 
@@ -22,10 +24,6 @@ public class People extends RecordEditor<Person> {
     public People() {
         super("/plugins/people.fxml", "People", 16);
 
-        RefBox refBoxKey = (RefBox) this.root.lookup("#refBoxKey");
-        refBoxKey.setView("V_People");
-        refBoxKey.setOnNewAction(ev -> this.setRecordItem(new Person()));
-
         this.refBoxKey = (RefBox) this.root.lookup("#refBoxKey");
         this.txfID = (TextField) this.root.lookup("#txfID");
         this.txfName = (TextField) this.root.lookup("#txfName");
@@ -37,6 +35,58 @@ public class People extends RecordEditor<Person> {
         this.txfForename.textProperty().addListener((observable, oldValue, newValue) -> this.getRecordItem().setForename(newValue));
         this.txfShortKey.textProperty().addListener((observable, oldValue, newValue) -> this.getRecordItem().setCode(newValue));
         this.refBoxAddress.refProperty().addListener((observable, oldValue, newValue) -> this.getRecordItem().setAddressId((int) newValue));
+
+        this.refBoxKey.setView("V_People");
+        this.refBoxKey.setOnNewAction(ev ->
+        {
+            this.setRecordItem(new Person());
+            this.refBoxKey.setRef(0);
+            this.txfForename.requestFocus();
+        });
+        this.setSaveAction(() ->
+        {
+            if (this.getRecordItem().getId() == 0) {
+                try {
+                    PreparedStatement insertStmt = Database.DB.prepareStatement("INSERT INTO People VALUES (?, ?, ?, ?, ?, ?)");
+                    insertStmt.setString(1, this.getRecordItem().getCode());
+                    insertStmt.setString(2, this.getRecordItem().getName());
+                    insertStmt.setString(3, this.getRecordItem().getForename());
+                    insertStmt.setString(4, this.getRecordItem().getPwd());
+                    insertStmt.setString(5, this.getRecordItem().getLanguageCode());
+                    insertStmt.setInt(6, this.getRecordItem().getAddressId());
+                    if (insertStmt.executeUpdate() == 1) {
+                        PreparedStatement selectStmt = Database.DB.prepareStatement("SELECT ID FROM People WHERE Code = ?");
+                        selectStmt.setString(1, this.getRecordItem().getCode());
+                        ResultSet dbRes = selectStmt.executeQuery();
+                        if (dbRes.next()) {
+                            this.getRecordItem().setChanged(false);
+                            this.loadPerson(dbRes.getInt("ID"));
+                        }
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        this.setDeleteAction(() ->
+        {
+            if(this.getRecordItem().getId() != 0)
+            {
+                DecisionDialog.showDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?", () ->
+                {
+                    try {
+                        PreparedStatement deleteStmt = Database.DB.prepareStatement("DELETE FROM People WHERE ID = ?");
+                        deleteStmt.setInt(1, this.getRecordItem().getId());
+                        if (deleteStmt.executeUpdate() == 1) {
+                            this.setRecordItem(new Person());
+                            MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.", 22, 23);
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }, null, 20, 21);
+            }
+        });
 
         this.recordItemProperty().addListener((observable, oldValue, newValue) ->
         {

@@ -17,7 +17,8 @@
         <Insets top="5" left="5" right="5" bottom="5"/>
     </padding>
 
-    <HBox alignment="CENTER_LEFT">
+    <HBox alignment="CENTER_LEFT"
+          spacing="5">
         <Label id="txtKey"
                textId="8"
                text="Auswähl"
@@ -47,6 +48,9 @@
         <Button id="btnDiscard"
                 text="Verwerfen"
                 textId="6"/>
+        <Button id="btnDelete"
+                text="Löschen"
+                textId="19"/>
     </HBox>
 
 </VBox>

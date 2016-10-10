@@ -27,6 +27,11 @@ INSERT INTO Translations VALUES ('Es sind noch nicht gespeicherte Änderungen vo
 Möchten Sie diese Änderungen verwerfen?', 'There are unsaved changes!
 
 Do you want to discard these changes?')
+INSERT INTO Translations VALUES ('Löschen', 'Delete')
+INSERT INTO Translations VALUES ('Daten löschen?', 'Delete data?')
+INSERT INTO Translations VALUES ('Wollen Sie die Daten wirklich unwiderruflich löschen?', 'Are you sure you want to delete the data irrevocably?')
+INSERT INTO Translations VALUES ('Gelöscht!', 'Deleted!')
+INSERT INTO Translations VALUES ('Die Daten wurden erfolgreich gelöscht.', 'Data have been deleted successfully.')
 --INSERT INTO Translations VALUES ('', '')
 SELECT * FROM Translations
 
@@ -85,8 +90,6 @@ INSERT INTO People VALUES ('InBa', 'Bahloul', 'Ines', '67890', 'DEU', 2)
 INSERT INTO People VALUES ('LuWec', 'Weckermann', 'Lucas', '12345', 'DEU', 1)
 INSERT INTO People VALUES ('Chriss', 'Weckermann', 'Christian', '24680', 'DEU', 1)
 SELECT * FROM People
-
-UPDATE People SET Language = 'DEU' WHERE ID = 3
 
 DROP VIEW V_Login
 CREATE VIEW V_Login AS SELECT ID, Forename + ' ' + Name AS Text, Code AS SubText FROM People

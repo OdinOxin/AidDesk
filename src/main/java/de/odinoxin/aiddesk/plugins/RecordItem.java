@@ -1,9 +1,10 @@
 package de.odinoxin.aiddesk.plugins;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-public class RecordItem implements Cloneable {
+public abstract class RecordItem implements Cloneable {
 
     private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
 
@@ -16,6 +17,12 @@ public class RecordItem implements Cloneable {
         }
         return null;
     }
+
+    public abstract int getId();
+
+    public abstract void setId(int id);
+
+    public abstract IntegerProperty idProperty();
 
     public boolean isChanged() {
         return changed.get();
