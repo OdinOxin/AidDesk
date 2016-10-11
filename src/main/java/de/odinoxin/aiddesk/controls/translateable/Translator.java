@@ -10,10 +10,12 @@ import java.sql.SQLException;
 public abstract class Translator {
     public static String getTranslation(String text) {
         try {
-            if(Login.getPerson() == null)
+            if (text == null)
                 return null;
+            if (Login.getPerson() == null)
+                return text;
             String languageCode = Login.getPerson().getLanguageCode();
-            if(languageCode == null || languageCode.isEmpty())
+            if (languageCode == null || languageCode.isEmpty())
                 languageCode = "USA";
             PreparedStatement statement = Database.DB.prepareStatement("SELECT " + languageCode + " FROM Translations WHERE DEU LIKE ? OR USA LIKE ?");
             statement.setString(1, text);
@@ -26,6 +28,6 @@ public abstract class Translator {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return null;
+        return text;
     }
 }

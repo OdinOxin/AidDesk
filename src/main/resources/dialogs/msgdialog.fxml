@@ -14,10 +14,11 @@
         <Insets top="5" left="5" right="5" bottom="5"/>
     </padding>
 
-    <Label id="lblMsg"/>
+    <Label id="lblMsg"
+           minWidth="-Infinity"
+           maxWidth="-Infinity"/>
 
     <Button id="btnOK"
-            text="OK"
-            textId="1"/>
+            text="OK"/>
 
 </VBox>

@@ -52,7 +52,6 @@ public class RefBox extends VBox {
 
     private boolean ignoreTextChange;
     private boolean keepText;
-    private String format = "%d - %s";
 
     public RefBox() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/controls/refbox.fxml"));
@@ -87,7 +86,7 @@ public class RefBox extends VBox {
                 ResultSet dbRes = stmt.executeQuery();
                 this.ignoreTextChange = true;
                 if (dbRes.next()) {
-                    this.setText(String.format(this.format, dbRes.getInt("ID"), dbRes.getString("Text")));
+                    this.setText(dbRes.getString("Text"));
                     this.state.set(State.LOGGED_IN);
                     this.txfDetails.setText(dbRes.getString("SubText"));
                 } else {

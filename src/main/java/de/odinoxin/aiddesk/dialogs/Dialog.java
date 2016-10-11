@@ -14,19 +14,14 @@ import java.io.IOException;
 
 public abstract class Dialog {
 
-    public static Stage getStage(Window owner, String title, String res, String msg) {
+    public static Stage getStage(Window owner, String res, String title, String msg) {
         Stage stage = new Stage();
-        if (title != null) {
-            String translation = Translator.getTranslation(title);
-            if (translation != null)
-                stage.setTitle(translation);
-        } else
-            stage.setTitle(title);
-        stage.getIcons().add(new Image(MsgDialog.class.getResource("/AidDesk.png").toString()));
+        stage.setTitle(Translator.getTranslation(title));
+        stage.getIcons().add(new Image(Dialog.class.getResource("/AidDesk.png").toString()));
 
         Parent root = null;
         try {
-            root = FXMLLoader.load(MsgDialog.class.getResource("/dialogs/" + res + ".fxml"));
+            root = FXMLLoader.load(Dialog.class.getResource("/dialogs/" + res + ".fxml"));
             Label lblMsg = (Label) root.lookup("#lblMsg");
             lblMsg.setText(msg);
             stage.setScene(new Scene(root));

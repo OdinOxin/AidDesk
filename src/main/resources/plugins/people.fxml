@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -9,8 +8,8 @@
 <?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
 <?import de.odinoxin.aiddesk.controls.Header?>
 <?import de.odinoxin.aiddesk.controls.translateable.Label?>
-
 <?import de.odinoxin.aiddesk.controls.translateable.Button?>
+
 <GridPane xmlns="http://javafx.com/javafx/8"
           id="humansGrid"
           vgap="5"
@@ -30,23 +29,7 @@
         <RowConstraints vgrow="NEVER"/>
     </rowConstraints>
 
-    <HBox GridPane.rowIndex="0"
-          GridPane.columnIndex="0"
-          GridPane.columnSpan="2"
-          spacing="5"
-          alignment="CENTER_LEFT">
-
-        <Label id="txtID"
-               prefWidth="125"
-               text="ID"/>
-        <TextField id="txfID"
-                   editable="false"
-                   maxWidth="75"
-                   alignment="CENTER_RIGHT"/>
-
-    </HBox>
-
-    <GridPane GridPane.rowIndex="1"
+    <GridPane GridPane.rowIndex="0"
               GridPane.columnIndex="0"
               hgap="5"
               vgap="5">
@@ -109,10 +92,9 @@
                 text="Ändern"
                 GridPane.rowIndex="4"
                 GridPane.columnIndex="1"/>
-
     </GridPane>
 
-    <GridPane GridPane.rowIndex="1"
+    <GridPane GridPane.rowIndex="0"
               GridPane.columnIndex="1"
               hgap="5"
               vgap="5">
@@ -136,7 +118,5 @@
                 showDetails="true"
                 GridPane.rowIndex="1"
                 GridPane.columnIndex="0"/>
-
     </GridPane>
-
 </GridPane>

@@ -39,16 +39,7 @@ public class Label extends HBox {
             ex.printStackTrace();
         }
 
-        this.text.addListener((observable, oldValue, newValue) ->
-        {
-            if (newValue != null) {
-                String translation = Translator.getTranslation(newValue);
-                if (translation != null)
-                    this.lblText.setText(translation);
-                else
-                    this.lblText.setText(newValue);
-            }
-        });
+        this.text.addListener((observable, oldValue, newValue) -> this.lblText.setText(Translator.getTranslation(newValue)));
         this.required.addListener((observable, oldValue, newValue) ->
         {
             this.lblRequired.setVisible(newValue);

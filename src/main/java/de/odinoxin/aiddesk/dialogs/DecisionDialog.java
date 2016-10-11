@@ -10,7 +10,7 @@ import de.odinoxin.aiddesk.controls.translateable.Button;
 public class DecisionDialog {
 
     public static void showDialog(Window owner, String title, String msg, Callback positve, Callback negative) {
-        Stage stage = Dialog.getStage(owner, title, "decisiondialog", msg);
+        Stage stage = Dialog.getStage(owner, "decisiondialog", title, msg);
 
         Parent root = stage.getScene().getRoot();
         Label lblMsg = (Label) root.lookup("#lblMsg");
@@ -43,6 +43,7 @@ public class DecisionDialog {
                 ev.consume();
             }
         });
+        btnNegative.requestFocus();
         stage.show();
     }
 }

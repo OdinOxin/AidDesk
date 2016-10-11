@@ -12,14 +12,7 @@ public abstract class Plugin extends Stage {
     protected VBox root;
 
     public Plugin(String res, String title) {
-        if (title != null) {
-            String translation = Translator.getTranslation(title);
-            if (translation != null)
-                this.setTitle(translation);
-            else
-                this.setTitle(title);
-        }
-        this.setTitle(title);
+        this.setTitle(Translator.getTranslation(title));
         this.getIcons().add(new Image(Plugin.class.getResource("/AidDesk.png").toString()));
 
         try {

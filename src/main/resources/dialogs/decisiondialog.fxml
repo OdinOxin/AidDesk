@@ -15,17 +15,17 @@
         <Insets top="5" left="5" right="5" bottom="5"/>
     </padding>
 
-    <Label id="lblMsg"/>
+    <Label id="lblMsg"
+           minWidth="-Infinity"
+           maxWidth="-Infinity"/>
 
     <HBox id="hbxButtons"
           minWidth="-Infinity"
           maxWidth="-Infinity"
           spacing="5">
         <Button id="btnPositive"
-                text="Ja"
-                textId="2"/>
+                text="Ja"/>
         <Button id="btnNegative"
-                text="Nein"
-                textId="3"/>
+                text="Nein"/>
     </HBox>
 </VBox>

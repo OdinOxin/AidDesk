@@ -1,43 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
-<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
-<?import de.odinoxin.aiddesk.controls.translateable.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-
+<?import javafx.scene.control.TextField?>
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import de.odinoxin.aiddesk.controls.translateable.Label?>
 <?import de.odinoxin.aiddesk.controls.translateable.Button?>
+
 <VBox xmlns="http://javafx.com/javafx/8"
-      id="humansGrid"
-      spacing="5">
+      id="humansGrid">
 
     <padding>
         <Insets top="5" left="5" right="5" bottom="5"/>
     </padding>
 
-    <HBox alignment="CENTER_LEFT"
-          spacing="5">
-        <Label id="txtKey"
-               text="Auswahl"
-               prefWidth="125"/>
-        <RefBox id="refBoxKey"
-                showNewButton="true"/>
-    </HBox>
+    <GridPane hgap="5">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+        </columnConstraints>
 
-    <Separator id="sepKey"/>
+        <HBox GridPane.columnIndex="0"
+              alignment="CENTER_LEFT"
+              spacing="5">
+            <Label id="txtKey"
+                   text="Auswahl"
+                   prefWidth="125"/>
+            <RefBox id="refBoxKey"
+                    showNewButton="true"/>
+        </HBox>
+        <HBox GridPane.columnIndex="1"
+              alignment="CENTER_RIGHT"
+              spacing="5">
+            <Label id="lblId"
+                   text="ID"
+                   required="true"/>
+            <TextField id="txfId"
+                       editable="false"
+                       maxWidth="75"
+                       alignment="CENTER_RIGHT"/>
+        </HBox>
+    </GridPane>
+
+    <Separator id="sepKey">
+        <padding>
+            <Insets top="5"/>
+        </padding>
+    </Separator>
 
     <ScrollPane id="scpDetails"
                 fitToWidth="true"
                 fitToHeight="true"
+                VBox.vgrow="ALWAYS"
                 style="-fx-background-color: transparent">
         <padding>
-            <Insets left="-5" top="-5" right="-5" bottom="-5"/>
+            <Insets left="-5" right="-5"/>
         </padding>
     </ScrollPane>
 
-    <Separator id="sepButtons"/>
+    <Separator id="sepButtons">
+        <padding>
+            <Insets bottom="5"/>
+        </padding>
+    </Separator>
 
     <HBox alignment="CENTER_RIGHT"
           spacing="5">

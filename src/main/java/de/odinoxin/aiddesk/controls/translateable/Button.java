@@ -24,10 +24,6 @@ public class Button extends javafx.scene.control.Button {
     }
 
     private void loadTranslation() {
-        if (this.getText() != null) {
-            String translation = Translator.getTranslation(this.getText());
-            if (translation != null)
-                this.setText(translation);
-        }
+        this.setText(Translator.getTranslation(this.getText()));
     }
 }

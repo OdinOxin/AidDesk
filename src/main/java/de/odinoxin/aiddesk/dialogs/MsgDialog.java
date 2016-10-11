@@ -9,7 +9,7 @@ import de.odinoxin.aiddesk.controls.translateable.Button;
 
 public class MsgDialog {
     public static void showMsg(Window owner, String title, String msg) {
-        Stage stage = Dialog.getStage(owner, title, "msgdialog", msg);
+        Stage stage = Dialog.getStage(owner, "msgdialog", title, msg);
 
         Parent root = stage.getScene().getRoot();
         Label lblMsg = (Label) root.lookup("#lblMsg");
