@@ -38,8 +38,7 @@
 
         <Label id="txtID"
                prefWidth="125"
-               text="ID"
-               textId="9"/>
+               text="ID"/>
         <TextField id="txfID"
                    editable="false"
                    maxWidth="75"
@@ -66,14 +65,12 @@
         </rowConstraints>
 
         <Header text="Person"
-                textId="10"
                 GridPane.rowIndex="0"
                 GridPane.columnIndex="0"
                 GridPane.columnSpan="2"/>
 
         <Label id="txtForename"
                text="Vorname"
-               textId="12"
                prefWidth="125"
                GridPane.rowIndex="1"
                GridPane.columnIndex="0"/>
@@ -84,7 +81,6 @@
 
         <Label id="txtName"
                text="Name"
-               textId="11"
                prefWidth="125"
                GridPane.rowIndex="2"
                GridPane.columnIndex="0"/>
@@ -95,7 +91,6 @@
 
         <Label id="txtShortKey"
                text="Kürzel"
-               textId="13"
                prefWidth="125"
                GridPane.rowIndex="3"
                GridPane.columnIndex="0"/>
@@ -106,13 +101,12 @@
 
         <Label id="txtPwd"
                text="Passwort"
-               textId="14"
                prefWidth="125"
+               required="true"
                GridPane.rowIndex="4"
                GridPane.columnIndex="0"/>
         <Button id="btnPwd"
                 text="Ändern"
-                textId="7"
                 GridPane.rowIndex="4"
                 GridPane.columnIndex="1"/>
 
@@ -132,7 +126,6 @@
         </rowConstraints>
 
         <Header text="Adresse"
-                textId="15"
                 GridPane.rowIndex="0"
                 GridPane.columnIndex="0"/>
 

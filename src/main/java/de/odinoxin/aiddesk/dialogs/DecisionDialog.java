@@ -10,16 +10,11 @@ import de.odinoxin.aiddesk.controls.translateable.Button;
 public class DecisionDialog {
 
     public static void showDialog(Window owner, String title, String msg, Callback positve, Callback negative) {
-        DecisionDialog.showDialog(owner, title, msg, positve, negative, 0, 0);
-    }
-
-    public static void showDialog(Window owner, String title, String msg, Callback positve, Callback negative, int titleId, int msgId) {
-        Stage stage = Dialog.getStage(owner, title, titleId, "decisiondialog", msg, msgId);
+        Stage stage = Dialog.getStage(owner, title, "decisiondialog", msg);
 
         Parent root = stage.getScene().getRoot();
         Label lblMsg = (Label) root.lookup("#lblMsg");
         lblMsg.setText(msg);
-        lblMsg.setTextId(msgId);
         Button btnPositive = (Button) root.lookup("#btnPositive");
         btnPositive.setOnAction(ev ->
         {

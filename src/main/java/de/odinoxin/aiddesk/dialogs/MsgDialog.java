@@ -9,16 +9,11 @@ import de.odinoxin.aiddesk.controls.translateable.Button;
 
 public class MsgDialog {
     public static void showMsg(Window owner, String title, String msg) {
-        MsgDialog.showMsg(owner, title, msg, 0, 0);
-    }
-
-    public static void showMsg(Window owner, String title, String msg, int titleId, int msgId) {
-        Stage stage = Dialog.getStage(owner, title, titleId, "msgdialog", msg, msgId);
+        Stage stage = Dialog.getStage(owner, title, "msgdialog", msg);
 
         Parent root = stage.getScene().getRoot();
         Label lblMsg = (Label) root.lookup("#lblMsg");
         lblMsg.setText(msg);
-        lblMsg.setTextId(msgId);
 
         Button btnOK = (Button) root.lookup("#btnOK");
         btnOK.setOnAction(ev -> stage.close());

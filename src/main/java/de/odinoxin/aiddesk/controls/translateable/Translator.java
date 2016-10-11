@@ -8,16 +8,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class Translator {
-
-    public static String getTranslation(int textId) {
+    public static String getTranslation(String text) {
         try {
             if(Login.getPerson() == null)
                 return null;
             String languageCode = Login.getPerson().getLanguageCode();
             if(languageCode == null || languageCode.isEmpty())
                 languageCode = "USA";
-            PreparedStatement statement = Database.DB.prepareStatement("SELECT " + languageCode + " FROM Translations WHERE ID = ?");
-            statement.setInt(1, textId);
+            PreparedStatement statement = Database.DB.prepareStatement("SELECT " + languageCode + " FROM Translations WHERE DEU LIKE ? OR USA LIKE ?");
+            statement.setString(1, text);
+            statement.setString(2, text);
             ResultSet dbRes = statement.executeQuery();
             if (dbRes.next()) {
                 //return dbRes.getString(1);

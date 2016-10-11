@@ -17,7 +17,6 @@ public class Header extends HBox {
     private Label lblHeader;
 
     private StringProperty txtProperty = new SimpleStringProperty(this, "text");
-    private IntegerProperty textId = new SimpleIntegerProperty(this, "textId", 0);
 
     public Header() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/controls/header.fxml"));
@@ -27,7 +26,6 @@ public class Header extends HBox {
         try {
             fxmlLoader.load();
             this.txtProperty.addListener((observable, oldValue, newValue) -> this.lblHeader.setText(newValue));
-            this.textId.addListener((observable, oldValue, newValue) -> this.lblHeader.setTextId((int) newValue));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -37,23 +35,11 @@ public class Header extends HBox {
         return this.txtProperty.get();
     }
 
-    public int getTextId() {
-        return textId.get();
-    }
-
     public void setText(String text) {
         this.txtProperty.set(text);
     }
 
-    public void setTextId(int textId) {
-        this.textId.set(textId);
-    }
-
     public StringProperty txtProperty() {
         return this.txtProperty;
-    }
-
-    public IntegerProperty textIdProperty() {
-        return textId;
     }
 }

@@ -23,8 +23,8 @@ public class RecordEditor<T extends RecordItem> extends Plugin {
     private Callback saveAction;
     private Callback deleteAction;
 
-    public RecordEditor(String res, String title, int titleId) {
-        super("/plugins/recordeditor.fxml", title, titleId);
+    public RecordEditor(String res, String title) {
+        super("/plugins/recordeditor.fxml", title);
 
         try {
             this.grdRecord = FXMLLoader.load(People.class.getResource(res));
@@ -62,7 +62,7 @@ public class RecordEditor<T extends RecordItem> extends Plugin {
     private void discard() {
         DecisionDialog.showDialog(this, "Änderugen verwerfen?", "Es sind noch nicht gespeicherte Änderungen vorhanden!\n" +
                 "\n" +
-                "Möchten Sie diese Änderungen verwerfen?", () -> this.setRecordItem(this.original), null, 17, 18);
+                "Möchten Sie diese Änderungen verwerfen?", () -> this.setRecordItem(this.original), null);
     }
 
     public T getRecordItem() {

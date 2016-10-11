@@ -48,6 +48,7 @@ public class RefBox extends VBox {
     private BooleanProperty showEditButton = new SimpleBooleanProperty(this, "showEditButton", false);
     private BooleanProperty showDetails = new SimpleBooleanProperty(this, "showDetails", false);
     private IntegerProperty detailsRows = new SimpleIntegerProperty(this, "detailsRows", 2);
+    private ObjectProperty<State> state = new SimpleObjectProperty<>();
 
     private boolean ignoreTextChange;
     private boolean keepText;
@@ -87,10 +88,10 @@ public class RefBox extends VBox {
                 this.ignoreTextChange = true;
                 if (dbRes.next()) {
                     this.setText(String.format(this.format, dbRes.getInt("ID"), dbRes.getString("Text")));
-                    this.txfText.setStyle("-fx-text-fill: black");
+                    this.state.set(State.LOGGED_IN);
                     this.txfDetails.setText(dbRes.getString("SubText"));
                 } else {
-                    this.txfText.setStyle("-fx-text-fill: orange; -fx-font-weight: bold");
+                    this.state.set(State.SEARCHING);
                     if (!this.keepText)
                         this.txfText.setText("");
                     this.txfDetails.setText("");
@@ -98,6 +99,20 @@ public class RefBox extends VBox {
                 this.ignoreTextChange = false;
             } catch (SQLException ex) {
                 ex.printStackTrace();
+            }
+        });
+        this.state.addListener((observable, oldValue, newValue) ->
+        {
+            switch (newValue) {
+                case LOGGED_IN:
+                    this.txfText.setStyle("-fx-text-fill: black");
+                    break;
+                case NO_RESULTS:
+                    this.txfText.setStyle("-fx-text-fill: red; -fx-font-weight: bold");
+                    break;
+                case SEARCHING:
+                    this.txfText.setStyle("-fx-text-fill: orange; -fx-font-weight: bold");
+                    break;
             }
         });
 
@@ -277,6 +292,12 @@ public class RefBox extends VBox {
     private void search() {
         this.txfText.requestFocus();
         try {
+            if (this.refBoxList != null)
+                this.refBoxList.hide();
+            this.refBoxList = new RefBoxList(this.localToScreen(0, this.txfText.getHeight()));
+            this.refBoxList.setPrefWidth(this.getWidth());
+            this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
+
             String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
             String dbViewSelect = "SELECT * FROM " + this.view.get();
             if (highlight != null && highlight.length > 0) {
@@ -296,18 +317,13 @@ public class RefBox extends VBox {
                     stmt.setString(i * 3 + 3, "%" + highlight[i] + "%");
                 }
             ResultSet dbRes = stmt.executeQuery();
-            if (this.refBoxList != null)
-                this.refBoxList.hide();
-            this.refBoxList = new RefBoxList(this.localToScreen(0, this.txfText.getHeight()));
-            this.refBoxList.setPrefWidth(this.getWidth());
-            this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
-
-
             while (dbRes.next()) {
                 RefBoxListItem item = new RefBoxListItem(dbRes.getInt("ID"), dbRes.getString("Text"), dbRes.getString("SubText"), highlight);
                 this.refBoxList.getSuggestionsList().getItems().add(item);
             }
             if (this.refBoxList.getSuggestionsList().getItems().size() > 0) {
+                if (state.get() == State.NO_RESULTS)
+                    this.state.set(State.SEARCHING);
                 this.refBoxList.getSuggestionsList().setOnKeyPressed(ev ->
                 {
                     switch (ev.getCode()) {
@@ -345,6 +361,8 @@ public class RefBox extends VBox {
                 }
 
                 this.refBoxList.show(this.getScene().getWindow());
+            } else {
+                this.state.set(State.NO_RESULTS);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -369,5 +387,11 @@ public class RefBox extends VBox {
                 btn.setEffect(null);
             }
         };
+    }
+
+    private enum State {
+        NO_RESULTS,
+        SEARCHING,
+        LOGGED_IN,
     }
 }

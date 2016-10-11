@@ -22,7 +22,7 @@ public class People extends RecordEditor<Person> {
     private RefBox refBoxAddress;
 
     public People() {
-        super("/plugins/people.fxml", "People", 16);
+        super("/plugins/people.fxml", "People");
 
         this.refBoxKey = (RefBox) this.root.lookup("#refBoxKey");
         this.txfID = (TextField) this.root.lookup("#txfID");
@@ -79,12 +79,12 @@ public class People extends RecordEditor<Person> {
                         deleteStmt.setInt(1, this.getRecordItem().getId());
                         if (deleteStmt.executeUpdate() == 1) {
                             this.setRecordItem(new Person());
-                            MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.", 22, 23);
+                            MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.");
                         }
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
-                }, null, 20, 21);
+                }, null);
             }
         });
 

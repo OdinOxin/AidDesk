@@ -20,8 +20,7 @@
     <HBox alignment="CENTER_LEFT"
           spacing="5">
         <Label id="txtKey"
-               textId="8"
-               text="Auswähl"
+               text="Auswahl"
                prefWidth="125"/>
         <RefBox id="refBoxKey"
                 showNewButton="true"/>
@@ -43,14 +42,11 @@
     <HBox alignment="CENTER_RIGHT"
           spacing="5">
         <Button id="btnSave"
-                text="Speichern"
-                textId="5"/>
+                text="Speichern"/>
         <Button id="btnDiscard"
-                text="Verwerfen"
-                textId="6"/>
+                text="Verwerfen"/>
         <Button id="btnDelete"
-                text="Löschen"
-                textId="19"/>
+                text="Löschen"/>
     </HBox>
 
 </VBox>

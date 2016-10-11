@@ -1,12 +1,21 @@
 package de.odinoxin.aiddesk.controls.translateable;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.Node;
+import javafx.beans.property.*;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.HBox;
 
-public class Label extends javafx.scene.control.Label {
+import java.io.IOException;
 
-    private IntegerProperty textId = new SimpleIntegerProperty(this, "textId", 0);
+public class Label extends HBox {
+
+    private StringProperty text = new SimpleStringProperty(this, "text", null);
+    private BooleanProperty required = new SimpleBooleanProperty(this, "required", false);
+
+    @FXML
+    private javafx.scene.control.Label lblText;
+    @FXML
+    private javafx.scene.control.Label lblRequired;
 
     public Label() {
         super();
@@ -14,37 +23,62 @@ public class Label extends javafx.scene.control.Label {
     }
 
     public Label(String text) {
-        super(text);
-        this.init();
-    }
-
-    public Label(String text, Node graphic) {
-        super(text, graphic);
-        this.init();
+        this();
+        this.setText(text);
     }
 
     private void init() {
-        this.textIdProperty().addListener((observable, oldValue, newValue) -> loadTranslation());
-        this.textProperty().addListener((observable, oldValue, newValue) -> loadTranslation());
-    }
 
-    private void loadTranslation() {
-        if (this.getTextId() != 0) {
-            String translation = Translator.getTranslation(this.getTextId());
-            if (translation != null)
-                this.setText(translation);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/controls/label.fxml"));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
+
+        this.text.addListener((observable, oldValue, newValue) ->
+        {
+            if (newValue != null) {
+                String translation = Translator.getTranslation(newValue);
+                if (translation != null)
+                    this.lblText.setText(translation);
+                else
+                    this.lblText.setText(newValue);
+            }
+        });
+        this.required.addListener((observable, oldValue, newValue) ->
+        {
+            this.lblRequired.setVisible(newValue);
+            this.lblRequired.setManaged(newValue);
+        });
+        this.lblRequired.setVisible(this.isRequired());
+        this.lblRequired.setManaged(this.isRequired());
     }
 
-    public int getTextId() {
-        return textId.get();
+    public String getText() {
+        return text.get();
     }
 
-    public void setTextId(int textId) {
-        this.textId.set(textId);
+    public boolean isRequired() {
+        return required.get();
     }
 
-    public IntegerProperty textIdProperty() {
-        return textId;
+    public void setText(String text) {
+        this.text.set(text);
+    }
+
+    public void setRequired(boolean required) {
+        this.required.set(required);
+    }
+
+    public StringProperty textProperty() {
+        return text;
+    }
+
+    public BooleanProperty requiredProperty() {
+        return required;
     }
 }

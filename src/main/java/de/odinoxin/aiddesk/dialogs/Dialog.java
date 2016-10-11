@@ -14,10 +14,10 @@ import java.io.IOException;
 
 public abstract class Dialog {
 
-    public static Stage getStage(Window owner, String title, int titleId, String res, String msg, int msgId) {
+    public static Stage getStage(Window owner, String title, String res, String msg) {
         Stage stage = new Stage();
-        if (titleId != 0) {
-            String translation = Translator.getTranslation(titleId);
+        if (title != null) {
+            String translation = Translator.getTranslation(title);
             if (translation != null)
                 stage.setTitle(translation);
         } else
@@ -29,7 +29,6 @@ public abstract class Dialog {
             root = FXMLLoader.load(MsgDialog.class.getResource("/dialogs/" + res + ".fxml"));
             Label lblMsg = (Label) root.lookup("#lblMsg");
             lblMsg.setText(msg);
-            lblMsg.setTextId(msgId);
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(owner);
