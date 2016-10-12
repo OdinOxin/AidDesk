@@ -2,7 +2,7 @@ package de.odinoxin.aiddesk;
 
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
-import de.odinoxin.aiddesk.plugins.people.People;
+import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 import de.odinoxin.aiddesk.plugins.people.Person;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -63,7 +63,7 @@ public class Login extends Application {
             if (dbRes.next()) {
                 this.stage.close();
                 Login.person = new Person(this.refboxUser.getRef(), dbRes.getString("Name"), dbRes.getString("Forename"), dbRes.getString("Code"), dbRes.getString("Language"), dbRes.getInt("Address"));
-                new People();
+                new PersonEditor();
             } else
                 MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
         } catch (SQLException ex) {

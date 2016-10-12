@@ -1,13 +1,12 @@
 package de.odinoxin.aiddesk.plugins;
 
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
+import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import de.odinoxin.aiddesk.dialogs.Callback;
 import de.odinoxin.aiddesk.dialogs.DecisionDialog;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
@@ -25,12 +24,9 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     private Button btnDelete;
 
     private ObjectProperty<T> recordItem = new SimpleObjectProperty<>();
+    private ReadOnlyIntegerWrapper idWrapper = new ReadOnlyIntegerWrapper();
     private T original;
     private int loading = -1;
-
-    private Callback newAction;
-    private Callback saveAction;
-    private Callback deleteAction;
 
     public RecordEditor(String res, String title) {
         super("/plugins/recordeditor.fxml", title);
@@ -42,8 +38,8 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.refBoxKey.setView(this.getRefBoxKeyView());
             this.refBoxKey.setOnNewAction(ev ->
             {
-                if (this.newAction != null)
-                    this.newAction.call();
+                this.loadRecord(0);
+                this.onNew();
             });
             this.refBoxKey.refProperty().addListener((observable, oldValue, newValue) -> this.loadRecord((int) newValue));
             this.txfId = (TextField) this.root.lookup("#txfId");
@@ -52,14 +48,22 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.btnSave = (Button) this.root.lookup("#btnSave");
             this.btnSave.setOnAction(ev ->
             {
-                if (this.saveAction != null)
-                    this.saveAction.call();
+                int newId = 0;
+                try {
+                    newId = this.onSave();
+                } catch (SQLException ex) {
+                    MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
+                }
+                if (newId != 0) {
+                    this.getRecordItem().setChanged(false);
+                    this.loadRecord(newId);
+                }
             });
             setButtonEnter(this.btnSave);
             this.btnDiscard = (Button) this.root.lookup("#btnDiscard");
             this.btnDiscard.setOnAction(ev -> this.discard());
             setButtonEnter(this.btnDiscard);
-            this.recordItemProperty().addListener((observable, oldValue, newValue) ->
+            this.recordItem().addListener((observable, oldValue, newValue) ->
             {
                 if (newValue == null) {
                     this.original = null;
@@ -80,7 +84,17 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.btnDelete.setOnAction(ev ->
             {
                 if (this.getRecordItem() != null && this.getRecordItem().getId() != 0)
-                    DecisionDialog.showDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?", this.deleteAction, null);
+                    DecisionDialog.showDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?", () ->
+                    {
+                        boolean succeeded = false;
+                        try {
+                            succeeded = this.onDelete();
+                        } catch (SQLException ex) {
+                            MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
+                        }
+                        if (succeeded)
+                            MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.");
+                    }, null);
             });
             setButtonEnter(this.btnDelete);
             this.sizeToScene();
@@ -101,53 +115,17 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     protected void setRecordItem(T recordItem) {
         this.recordItem.set(recordItem);
+        if (idWrapper.isBound())
+            idWrapper.unbind();
+        idWrapper.bind(recordItem.idProperty());
     }
 
-    protected ObjectProperty<T> recordItemProperty() {
+    public ObjectProperty<T> recordItem() {
         return recordItem;
     }
 
-    protected void setNewAction(Callback newAction) {
-        this.newAction = () ->
-        {
-            this.loadRecord(0);
-            if (newAction != null)
-                newAction.call();
-        };
-    }
-
-    protected void setSaveAction(Action<Integer> saveAction) {
-        this.saveAction = () ->
-        {
-            int res = 0;
-            if (saveAction != null) {
-                try {
-                    res = saveAction.run();
-                } catch (SQLException ex) {
-                    MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
-                }
-            }
-            if (res != 0) {
-                this.getRecordItem().setChanged(false);
-                this.loadRecord(res);
-            }
-        };
-    }
-
-    protected void setDeleteAction(Action<Boolean> deleteAction) {
-        this.deleteAction = () ->
-        {
-            boolean succeeded = false;
-            if (deleteAction != null) {
-                try {
-                    succeeded = deleteAction.run();
-                } catch (SQLException ex) {
-                    MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
-                }
-            }
-            if (succeeded)
-                MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.");
-        };
+    public ReadOnlyIntegerProperty recordId() {
+        return idWrapper.getReadOnlyProperty();
     }
 
     protected void loadRecord(int id) {
@@ -158,8 +136,16 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         Callback load = () ->
         {
             this.loading = id;
-            this.refBoxKey.setRef(id);
-            this.setRecord(id);
+            if (this.refBoxKey.getRef() == id)
+                this.refBoxKey.update();
+            else
+                this.refBoxKey.setRef(id);
+            try {
+                if (this.setRecord(id))
+                    this.bind();
+            } catch (SQLException ex) {
+                MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
+            }
             this.loading = -1;
         };
 
@@ -169,7 +155,15 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             load.call();
     }
 
-    protected abstract void setRecord(int id);
+    protected abstract void onNew();
+
+    protected abstract int onSave() throws SQLException;
+
+    protected abstract boolean onDelete() throws SQLException;
+
+    protected abstract boolean setRecord(int id) throws SQLException;
+
+    protected abstract void bind();
 
     protected abstract String getRefBoxKeyView();
 

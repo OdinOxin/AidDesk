@@ -8,7 +8,6 @@ import javafx.beans.property.StringProperty;
 
 public class Person extends RecordItem {
 
-    private IntegerProperty id = new SimpleIntegerProperty();
     private StringProperty name = new SimpleStringProperty();
     private StringProperty forename = new SimpleStringProperty();
     private StringProperty code = new SimpleStringProperty();
@@ -17,17 +16,18 @@ public class Person extends RecordItem {
     private IntegerProperty addressId = new SimpleIntegerProperty();
 
     public Person() {
-        idProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
-        nameProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
-        forenameProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
-        codeProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
-        pwdProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
-        languageCodeProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
-        addressIdProperty().addListener((observable, oldValue, newValue) ->
+        super();
+        this.name.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.forename.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.code.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.pwd.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.languageCode.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.addressId.addListener((observable, oldValue, newValue) ->
         {
             if ((int) newValue != 0)
                 setChanged(true);
         });
+        this.setChanged(false);
     }
 
     public Person(int id) {
@@ -49,10 +49,6 @@ public class Person extends RecordItem {
     @Override
     protected Object clone() {
         return new Person(this.getId(), this.getName(), this.getForename(), this.getCode(), this.getLanguageCode(), this.getAddressId());
-    }
-
-    public int getId() {
-        return id.get();
     }
 
     public String getName() {
@@ -79,10 +75,6 @@ public class Person extends RecordItem {
         return addressId.get();
     }
 
-    public void setId(int id) {
-        this.id.set(id);
-    }
-
     public void setName(String name) {
         this.name.set(name);
     }
@@ -105,10 +97,6 @@ public class Person extends RecordItem {
 
     public void setAddressId(int addressId) {
         this.addressId.set(addressId);
-    }
-
-    public IntegerProperty idProperty() {
-        return id;
     }
 
     public StringProperty nameProperty() {

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import de.odinoxin.aiddesk.controls.translateable.Label?>
+
+<?import javafx.scene.control.TextField?>
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<GridPane xmlns="http://javafx.com/javafx/8"
+          id="humansGrid"
+          vgap="5"
+          hgap="5">
+
+    <padding>
+        <Insets left="5" top="5" right="5" bottom="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
+
+    <Label id="lblStreet"
+           text="Straße"
+           prefWidth="125"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfStreet"
+               maxWidth="400"
+               GridPane.rowIndex="0"
+               GridPane.columnIndex="1"/>
+    <Label id="lblHsNo"
+           text="Hausnummer"
+           prefWidth="125"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfHsNo"
+               maxWidth="400"
+               GridPane.rowIndex="1"
+               GridPane.columnIndex="1"/>
+
+    <Label id="lblZip"
+           text="PLZ"
+           prefWidth="125"
+           GridPane.rowIndex="2"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfZip"
+               maxWidth="400"
+               GridPane.rowIndex="2"
+               GridPane.columnIndex="1"/>
+    <Label id="lblCity"
+           text="Ort"
+           prefWidth="125"
+           GridPane.rowIndex="3"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfCity"
+               maxWidth="400"
+               GridPane.rowIndex="3"
+               GridPane.columnIndex="1"/>
+
+    <Label id="lblCountry"
+           text="Land"
+           prefWidth="125"
+           GridPane.rowIndex="4"
+           GridPane.columnIndex="0"/>
+    <RefBox id="refBoxCountry"
+            view="V_Country"
+            maxWidth="400"
+            showNewButton="true"
+            showEditButton="true"
+            GridPane.rowIndex="4"
+            GridPane.columnIndex="1"/>
+
+</GridPane>

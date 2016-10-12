@@ -2,8 +2,9 @@
 CREATE TABLE Translations
 (
 	ID INT IDENTITY(1,1) PRIMARY KEY,
-	DEU TEXT,
-	USA TEXT,
+	DEU VARCHAR(450),
+	USA VARCHAR(450),
+	CONSTRAINT cUnique UNIQUE(DEU, USA)
 )
 
 DROP TABLE Countries
@@ -15,6 +16,14 @@ CREATE TABLE Countries
 	Name VARCHAR(250),
 	AreaCode VARCHAR(5),
 )
+
+DROP VIEW V_Country
+CREATE VIEW V_Country AS SELECT
+C.ID AS ID,
+ISNULL(CONVERT(varchar(50), C.Name), '') AS Text,
+ISNULL(CONVERT(varchar(50), C.Alpha2), '') + ISNULL(' / ' + CONVERT(varchar(50), C.Alpha3), '') + ISNULL(' / ' + CONVERT(varchar(50), C.AreaCode), '') AS SubText
+FROM Countries C
+SELECT * FROM V_Country
 
 DROP TABLE Addresses
 CREATE TABLE Addresses

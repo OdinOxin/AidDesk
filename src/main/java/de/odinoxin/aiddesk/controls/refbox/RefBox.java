@@ -80,25 +80,7 @@ public class RefBox extends VBox {
         });
         this.ref.addListener((observable, oldValue, newValue) ->
         {
-            try {
-                PreparedStatement stmt = Database.DB.prepareStatement("SELECT * FROM " + this.view.get() + " WHERE ID = ?");
-                stmt.setInt(1, (int) newValue);
-                ResultSet dbRes = stmt.executeQuery();
-                this.ignoreTextChange = true;
-                if (dbRes.next()) {
-                    this.setText(dbRes.getString("Text"));
-                    this.state.set(State.LOGGED_IN);
-                    this.txfDetails.setText(dbRes.getString("SubText"));
-                } else {
-                    this.state.set(State.SEARCHING);
-                    if (!this.keepText)
-                        this.txfText.setText("");
-                    this.txfDetails.setText("");
-                }
-                this.ignoreTextChange = false;
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            this.update();
         });
         this.state.addListener((observable, oldValue, newValue) ->
         {
@@ -194,16 +176,32 @@ public class RefBox extends VBox {
         return this.txfText.getText();
     }
 
-    public void setText(String text) {
-        this.txfText.setText(text);
-    }
-
-    public StringProperty textProperty() {
-        return this.txfText.textProperty();
-    }
-
     public int getRef() {
         return this.ref.get();
+    }
+
+    public String getView() {
+        return this.view.get();
+    }
+
+    public boolean isShowNewButton() {
+        return showNewButton.get();
+    }
+
+    public boolean isShowEditButton() {
+        return showEditButton.get();
+    }
+
+    public boolean isShowDetails() {
+        return showDetails.get();
+    }
+
+    public int getDetailsRows() {
+        return detailsRows.get();
+    }
+
+    public void setText(String text) {
+        this.txfText.setText(text);
     }
 
     public void setRef(int ref) {
@@ -212,80 +210,86 @@ public class RefBox extends VBox {
             this.refBoxList.hide();
     }
 
-    public IntegerProperty refProperty() {
-        return this.ref;
-    }
-
-    public String getView() {
-        return this.view.get();
-    }
-
     public void setView(String view) {
         this.view.set(view);
-    }
-
-    public StringProperty viewProperty() {
-        return this.view;
-    }
-
-    public boolean isShowNewButton() {
-        return showNewButton.get();
     }
 
     public void setShowNewButton(boolean showNewButton) {
         this.showNewButton.set(showNewButton);
     }
 
-    public BooleanProperty showNewButton() {
-        return showNewButton;
-    }
-
-    public void setOnNewAction(EventHandler<ActionEvent> eventHandler) {
-        this.btnNew.setOnAction(eventHandler);
-    }
-
-    public boolean isShowEditButton() {
-        return showEditButton.get();
-    }
-
     public void setShowEditButton(boolean showEditButton) {
         this.showEditButton.set(showEditButton);
-    }
-
-    public BooleanProperty showEditButton() {
-        return showEditButton;
-    }
-
-    public void setOnEditAction(EventHandler<ActionEvent> eventHandler) {
-        this.btnEdit.setOnAction(eventHandler);
-    }
-
-    public boolean isShowDetails() {
-        return showDetails.get();
     }
 
     public void setShowDetails(boolean showDetails) {
         this.showDetails.set(showDetails);
     }
 
-    public BooleanProperty showDetails() {
-        return this.showDetails;
-    }
-
-    public int getDetailsRows() {
-        return detailsRows.get();
-    }
-
     public void setDetailsRows(int detailsRows) {
         this.detailsRows.set(detailsRows);
+    }
+
+    public StringProperty textProperty() {
+        return this.txfText.textProperty();
+    }
+
+    public IntegerProperty refProperty() {
+        return this.ref;
+    }
+
+    public StringProperty viewProperty() {
+        return this.view;
+    }
+
+    public BooleanProperty showNewButton() {
+        return showNewButton;
+    }
+
+    public BooleanProperty showEditButton() {
+        return showEditButton;
+    }
+
+    public BooleanProperty showDetails() {
+        return this.showDetails;
     }
 
     public IntegerProperty detailsRowsProperty() {
         return detailsRows;
     }
 
+    public void setOnNewAction(EventHandler<ActionEvent> eventHandler) {
+        this.btnNew.setOnAction(eventHandler);
+    }
+
+    public void setOnEditAction(EventHandler<ActionEvent> eventHandler) {
+        this.btnEdit.setOnAction(eventHandler);
+    }
+
     public final void setOnAction(EventHandler<ActionEvent> value) {
         this.txfText.onActionProperty().set(value);
+    }
+
+    public void update() {
+        try {
+            PreparedStatement stmt = Database.DB.prepareStatement("SELECT * FROM " + this.view.get() + " WHERE ID = ?");
+            stmt.setInt(1, this.getRef());
+            ResultSet dbRes = stmt.executeQuery();
+            this.ignoreTextChange = true;
+            if (dbRes.next()) {
+                this.setText(dbRes.getString("Text"));
+                this.state.set(State.LOGGED_IN);
+                this.txfDetails.setText(dbRes.getString("SubText"));
+            } else {
+                this.state.set(State.SEARCHING);
+                if (!this.keepText)
+                    this.txfText.setText("");
+                this.txfDetails.setText("");
+            }
+            this.ignoreTextChange = false;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void search() {
