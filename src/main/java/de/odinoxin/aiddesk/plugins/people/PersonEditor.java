@@ -28,7 +28,6 @@ public class PersonEditor extends RecordEditor<Person> {
         this.refBoxAddress = (RefBox) this.root.lookup("#refBoxAddress");
         this.refBoxAddress.setOnNewAction(ev -> new AddressEditor());
         this.refBoxAddress.setOnEditAction(ev -> new AddressEditor(this.refBoxAddress.getRef()).recordId().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setRef((int) newValue)));
-        this.loadRecord(Login.getPerson().getId());
     }
 
     public PersonEditor(int id) {

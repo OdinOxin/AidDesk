@@ -1,5 +1,8 @@
 package de.odinoxin.aiddesk;
 
+import de.odinoxin.aidcloud.LoginService;
+import de.odinoxin.aidcloud.PeopleService;
+import de.odinoxin.aidcloud.ServiceResult;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.people.PersonEditor;
@@ -14,11 +17,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.xml.ws.WebServiceRef;
 
 public class Login extends Application {
+
+    @WebServiceRef(wsdlLocation = "http://localhost:15123/AidCloud/LoginService?wsdl")
+    private static LoginService loginService;
+    @WebServiceRef(wsdlLocation = "http://localhost:15123/AidCloud/PeopleService?wsdl")
+    private static PeopleService peopleService;
 
     private static Person person;
 
@@ -29,6 +35,11 @@ public class Login extends Application {
 
     public static void main(String[] args) {
         Login.launch(args);
+    }
+
+    static {
+        Login.loginService = new LoginService();
+        Login.peopleService = new PeopleService();
     }
 
     @Override
@@ -55,20 +66,14 @@ public class Login extends Application {
     }
 
     private void tryLogin() {
-        try {
-            PreparedStatement statement = Database.DB.prepareStatement("SELECT * FROM People WHERE ID = ? AND Pwd = ?");
-            statement.setInt(1, this.refboxUser.getRef());
-            statement.setString(2, this.pwfPwd.getText());
-            ResultSet dbRes = statement.executeQuery();
-            if (dbRes.next()) {
-                this.stage.close();
-                Login.person = new Person(this.refboxUser.getRef(), dbRes.getString("Name"), dbRes.getString("Forename"), dbRes.getString("Code"), dbRes.getString("Language"), dbRes.getInt("Address"));
-                new PersonEditor();
-            } else
-                MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        ServiceResult res = Login.loginService.getLoginPort().checkLogin(this.refboxUser.getRef(), this.pwfPwd.getText());
+        if ((Boolean) res.getContent()) {
+            de.odinoxin.aidcloud.Person p = Login.peopleService.getPeoplePort().getPerson(this.refboxUser.getRef());
+            Login.person = new Person(p.getId(), p.getName(), p.getForename(), p.getCode(), p.getLanguage(), p.getAddressId());
+            this.stage.close();
+            new PersonEditor(Login.person.getId());
+        } else
+            MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
     }
 
     public static Person getPerson() {
