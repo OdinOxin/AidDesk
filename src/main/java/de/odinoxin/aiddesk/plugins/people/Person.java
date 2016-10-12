@@ -122,4 +122,16 @@ public class Person extends RecordItem {
     public IntegerProperty addressIdProperty() {
         return addressId;
     }
+
+    public de.odinoxin.aidcloud.Person toService()
+    {
+        de.odinoxin.aidcloud.Person p = new de.odinoxin.aidcloud.Person();
+        p.setId(this.getId());
+        p.setName(this.getName());
+        p.setForename(this.getForename());
+        p.setCode(this.getCode());
+        p.setLanguage(this.getLanguageCode());
+        p.setAddressId(this.getAddressId());
+        return p;
+    }
 }

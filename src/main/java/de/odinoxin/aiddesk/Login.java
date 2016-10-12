@@ -2,7 +2,6 @@ package de.odinoxin.aiddesk;
 
 import de.odinoxin.aidcloud.LoginService;
 import de.odinoxin.aidcloud.PeopleService;
-import de.odinoxin.aidcloud.ServiceResult;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.people.PersonEditor;
@@ -66,12 +65,12 @@ public class Login extends Application {
     }
 
     private void tryLogin() {
-        ServiceResult res = Login.loginService.getLoginPort().checkLogin(this.refboxUser.getRef(), this.pwfPwd.getText());
-        if ((Boolean) res.getContent()) {
+        if (Login.loginService.getLoginPort().checkLogin(this.refboxUser.getRef(), this.pwfPwd.getText())) {
             de.odinoxin.aidcloud.Person p = Login.peopleService.getPeoplePort().getPerson(this.refboxUser.getRef());
-            Login.person = new Person(p.getId(), p.getName(), p.getForename(), p.getCode(), p.getLanguage(), p.getAddressId());
+            if (p != null)
+                Login.person = new Person(p.getId(), p.getName(), p.getForename(), p.getCode(), p.getLanguage(), p.getAddressId());
             this.stage.close();
-            new PersonEditor(Login.person.getId());
+            new PersonEditor(Login.person != null ? Login.person.getId() : 0);
         } else
             MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
     }
