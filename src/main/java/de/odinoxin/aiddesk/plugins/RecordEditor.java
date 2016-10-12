@@ -1,9 +1,11 @@
 package de.odinoxin.aiddesk.plugins;
 
+import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.input.KeyCode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import de.odinoxin.aiddesk.dialogs.Callback;
@@ -16,13 +18,13 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     private TextField txfId;
     private RefBox refBoxKey;
-    private GridPane grdRecord;
     private Button btnSave;
     private Button btnDiscard;
     private Button btnDelete;
 
-    private ObjectProperty<T> recordItem = new SimpleObjectProperty<T>();
+    private ObjectProperty<T> recordItem = new SimpleObjectProperty<>();
     private T original;
+    private int loading = -1;
 
     private Callback newAction;
     private Callback saveAction;
@@ -32,20 +34,18 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         super("/plugins/recordeditor.fxml", title);
 
         try {
-            this.grdRecord = FXMLLoader.load(RecordEditor.class.getResource(res));
+            Node recordView = FXMLLoader.load(RecordEditor.class.getResource(res));
 
             this.refBoxKey = (RefBox) this.root.lookup("#refBoxKey");
             this.refBoxKey.setView(this.getRefBoxKeyView());
             this.refBoxKey.setOnNewAction(ev ->
             {
-                this.loadRecord(0);
-                this.refBoxKey.setRef(0);
                 if (this.newAction != null)
                     this.newAction.call();
             });
             this.refBoxKey.refProperty().addListener((observable, oldValue, newValue) -> this.loadRecord((int) newValue));
             this.txfId = (TextField) this.root.lookup("#txfId");
-            ((ScrollPane) this.root.lookup("#scpDetails")).setContent(this.grdRecord);
+            ((ScrollPane) this.root.lookup("#scpDetails")).setContent(recordView);
 
             this.btnSave = (Button) this.root.lookup("#btnSave");
             this.btnSave.setOnAction(ev ->
@@ -53,8 +53,10 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 if (this.saveAction != null)
                     this.saveAction.call();
             });
+            setButtonEnter(this.btnSave);
             this.btnDiscard = (Button) this.root.lookup("#btnDiscard");
             this.btnDiscard.setOnAction(ev -> this.discard());
+            setButtonEnter(this.btnDiscard);
             this.recordItemProperty().addListener((observable, oldValue, newValue) ->
             {
                 if (newValue == null) {
@@ -75,9 +77,10 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.btnDelete = (Button) this.root.lookup("#btnDelete");
             this.btnDelete.setOnAction(ev ->
             {
-                if (this.deleteAction != null)
-                    this.deleteAction.call();
+                if (this.getRecordItem() != null && this.getRecordItem().getId() != 0)
+                    DecisionDialog.showDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?", this.deleteAction, null);
             });
+            setButtonEnter(this.btnDelete);
             this.sizeToScene();
             this.centerOnScreen();
         } catch (Exception ex) {
@@ -86,41 +89,85 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     }
 
     private void discard() {
-        if (this.getRecordItem() != null)
-            this.loadRecord(this.getRecordItem().getId());
+        if (this.original != null)
+            this.loadRecord(this.original.getId());
     }
 
-    public T getRecordItem() {
+    protected T getRecordItem() {
         return recordItem.get();
     }
 
-    public void setRecordItem(T recordItem) {
+    protected void setRecordItem(T recordItem) {
         this.recordItem.set(recordItem);
     }
 
-    public ObjectProperty<T> recordItemProperty() {
+    protected ObjectProperty<T> recordItemProperty() {
         return recordItem;
     }
 
-    public void setNewAction(Callback newAction) {
-        this.newAction = newAction;
+    protected void setNewAction(Callback newAction) {
+        this.newAction = () ->
+        {
+            this.loadRecord(0);
+            if (newAction != null)
+                newAction.call();
+        };
     }
 
-    public void setSaveAction(Callback saveAction) {
-        this.saveAction = saveAction;
+    protected void setSaveAction(Action<Integer> saveAction) {
+        this.saveAction = () ->
+        {
+            int res = 0;
+            if (saveAction != null)
+                res = saveAction.run();
+            if (res != 0) {
+                this.getRecordItem().setChanged(false);
+                this.loadRecord(res);
+            }
+        };
     }
 
-    public void setDeleteAction(Callback deleteAction) {
-        this.deleteAction = deleteAction;
+    protected void setDeleteAction(Action<Boolean> deleteAction) {
+        this.deleteAction = () ->
+        {
+            boolean succeeded = false;
+            if (deleteAction != null)
+                succeeded = deleteAction.run();
+            if (succeeded)
+                MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.");
+        };
     }
 
     protected void loadRecord(int id) {
+
+        if (id == this.loading)
+            return;
+
+        Callback load = () ->
+        {
+            this.loading = id;
+            this.refBoxKey.setRef(id);
+            this.setRecord(id);
+            this.loading = -1;
+        };
+
         if (this.getRecordItem() != null && this.getRecordItem().isChanged()) {
-            DecisionDialog.showDialog(this, "Änderugen verwerfen?", "Möchten Sie die aktuellen Änderungen verwerfen?", () -> this.setRecord(id), null);
-        } else this.setRecord(id);
+            DecisionDialog.showDialog(this, "Änderugen verwerfen?", "Möchten Sie die aktuellen Änderungen verwerfen?", load, null);
+        } else
+            load.call();
     }
 
     protected abstract void setRecord(int id);
 
     protected abstract String getRefBoxKeyView();
+
+    private void setButtonEnter(Button btn) {
+        btn.setOnKeyPressed(ev ->
+        {
+            if (ev.getCode() == KeyCode.ENTER) {
+                btn.fire();
+                ev.consume();
+            }
+        });
+    }
 }
