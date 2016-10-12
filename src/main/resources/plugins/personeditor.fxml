@@ -54,7 +54,8 @@
 
         <Label id="txtForename"
                text="Vorname"
-               prefWidth="125"
+               minWidth="125"
+               maxWidth="125"
                GridPane.rowIndex="1"
                GridPane.columnIndex="0"/>
         <TextField id="txfForename"
@@ -64,7 +65,8 @@
 
         <Label id="txtName"
                text="Name"
-               prefWidth="125"
+               minWidth="125"
+               maxWidth="125"
                GridPane.rowIndex="2"
                GridPane.columnIndex="0"/>
         <TextField id="txfName"
@@ -74,7 +76,8 @@
 
         <Label id="txtShortKey"
                text="Kürzel"
-               prefWidth="125"
+               minWidth="125"
+               maxWidth="125"
                GridPane.rowIndex="3"
                GridPane.columnIndex="0"/>
         <TextField id="txfShortKey"
@@ -84,7 +87,8 @@
 
         <Label id="txtPwd"
                text="Passwort"
-               prefWidth="125"
+               minWidth="125"
+               maxWidth="125"
                required="true"
                GridPane.rowIndex="4"
                GridPane.columnIndex="0"/>

@@ -21,8 +21,8 @@
 
     <GridPane hgap="5">
         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
-            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+            <ColumnConstraints hgrow="SOMETIMES"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
 
         <HBox GridPane.columnIndex="0"
@@ -30,8 +30,10 @@
               spacing="5">
             <Label id="txtKey"
                    text="Auswahl"
-                   prefWidth="125"/>
+                   minWidth="125"
+                   maxWidth="125"/>
             <RefBox id="refBoxKey"
+                    prefWidth="300"
                     showNewButton="true"/>
         </HBox>
         <HBox GridPane.columnIndex="1"
@@ -39,10 +41,14 @@
               spacing="5">
             <Label id="lblId"
                    text="ID"
+                   alignment="CENTER_RIGHT"
+                   minWidth="50"
+                   maxWidth="50"
                    required="true"/>
             <TextField id="txfId"
                        editable="false"
-                       maxWidth="75"
+                       minWidth="125"
+                       maxWidth="125"
                        alignment="CENTER_RIGHT"/>
         </HBox>
     </GridPane>

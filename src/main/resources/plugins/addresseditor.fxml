@@ -28,7 +28,8 @@
 
     <Label id="lblStreet"
            text="Straße"
-           prefWidth="125"
+           minWidth="125"
+           maxWidth="125"
            GridPane.rowIndex="0"
            GridPane.columnIndex="0"/>
     <TextField id="txfStreet"
@@ -37,26 +38,29 @@
                GridPane.columnIndex="1"/>
     <Label id="lblHsNo"
            text="Hausnummer"
-           prefWidth="125"
+           minWidth="125"
+           maxWidth="125"
            GridPane.rowIndex="1"
            GridPane.columnIndex="0"/>
     <TextField id="txfHsNo"
-               maxWidth="400"
+               maxWidth="75"
                GridPane.rowIndex="1"
                GridPane.columnIndex="1"/>
 
     <Label id="lblZip"
            text="PLZ"
-           prefWidth="125"
+           minWidth="125"
+           maxWidth="125"
            GridPane.rowIndex="2"
            GridPane.columnIndex="0"/>
     <TextField id="txfZip"
-               maxWidth="400"
+               maxWidth="75"
                GridPane.rowIndex="2"
                GridPane.columnIndex="1"/>
     <Label id="lblCity"
            text="Ort"
-           prefWidth="125"
+           minWidth="125"
+           maxWidth="125"
            GridPane.rowIndex="3"
            GridPane.columnIndex="0"/>
     <TextField id="txfCity"
@@ -66,7 +70,8 @@
 
     <Label id="lblCountry"
            text="Land"
-           prefWidth="125"
+           minWidth="125"
+           maxWidth="125"
            GridPane.rowIndex="4"
            GridPane.columnIndex="0"/>
     <RefBox id="refBoxCountry"
