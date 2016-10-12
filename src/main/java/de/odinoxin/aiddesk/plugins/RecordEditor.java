@@ -14,6 +14,8 @@ import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.controls.translateable.Translator;
 
+import java.sql.SQLException;
+
 public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     private TextField txfId;
@@ -118,8 +120,13 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         this.saveAction = () ->
         {
             int res = 0;
-            if (saveAction != null)
-                res = saveAction.run();
+            if (saveAction != null) {
+                try {
+                    res = saveAction.run();
+                } catch (SQLException ex) {
+                    MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
+                }
+            }
             if (res != 0) {
                 this.getRecordItem().setChanged(false);
                 this.loadRecord(res);
@@ -131,8 +138,13 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         this.deleteAction = () ->
         {
             boolean succeeded = false;
-            if (deleteAction != null)
-                succeeded = deleteAction.run();
+            if (deleteAction != null) {
+                try {
+                    succeeded = deleteAction.run();
+                } catch (SQLException ex) {
+                    MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
+                }
+            }
             if (succeeded)
                 MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.");
         };

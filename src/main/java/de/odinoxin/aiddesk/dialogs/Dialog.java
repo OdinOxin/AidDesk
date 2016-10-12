@@ -1,7 +1,5 @@
 package de.odinoxin.aiddesk.dialogs;
 
-import de.odinoxin.aiddesk.controls.translateable.Label;
-import de.odinoxin.aiddesk.controls.translateable.Translator;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,8 +7,9 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.io.IOException;
+import de.odinoxin.aiddesk.controls.translateable.Label;
+import de.odinoxin.aiddesk.controls.translateable.Translator;
 
 public abstract class Dialog {
 
@@ -19,7 +18,7 @@ public abstract class Dialog {
         stage.setTitle(Translator.getTranslation(title));
         stage.getIcons().add(new Image(Dialog.class.getResource("/AidDesk.png").toString()));
 
-        Parent root = null;
+        Parent root;
         try {
             root = FXMLLoader.load(Dialog.class.getResource("/dialogs/" + res + ".fxml"));
             Label lblMsg = (Label) root.lookup("#lblMsg");

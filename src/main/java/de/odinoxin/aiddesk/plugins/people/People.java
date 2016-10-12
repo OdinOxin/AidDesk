@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class People extends RecordEditor<Person> {
 
@@ -33,39 +34,28 @@ public class People extends RecordEditor<Person> {
         this.setSaveAction(() ->
         {
             if (this.getRecordItem().getId() == 0) {
-                try {
-                    PreparedStatement insertStmt = Database.DB.prepareStatement("INSERT INTO People VALUES (?, ?, ?, ?, ?, ?)");
-                    insertStmt.setString(1, this.getRecordItem().getCode());
-                    insertStmt.setString(2, this.getRecordItem().getName());
-                    insertStmt.setString(3, this.getRecordItem().getForename());
-                    insertStmt.setString(4, this.getRecordItem().getPwd());
-                    insertStmt.setString(5, this.getRecordItem().getLanguageCode());
-                    insertStmt.setInt(6, this.getRecordItem().getAddressId());
-                    if (insertStmt.executeUpdate() == 1) {
-                        PreparedStatement selectStmt = Database.DB.prepareStatement("SELECT ID FROM People WHERE Code = ?");
-                        selectStmt.setString(1, this.getRecordItem().getCode());
-                        ResultSet dbRes = selectStmt.executeQuery();
-                        if (dbRes.next())
-                            return dbRes.getInt("ID");
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+                PreparedStatement insertStmt = Database.DB.prepareStatement("INSERT INTO People VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                insertStmt.setString(1, this.getRecordItem().getCode());
+                insertStmt.setString(2, this.getRecordItem().getName());
+                insertStmt.setString(3, this.getRecordItem().getForename());
+                insertStmt.setString(4, this.getRecordItem().getPwd());
+                insertStmt.setString(5, this.getRecordItem().getLanguageCode());
+                insertStmt.setInt(6, this.getRecordItem().getAddressId());
+                if (insertStmt.executeUpdate() == 1) {
+                    ResultSet key = insertStmt.getGeneratedKeys();
+                    if (key.next())
+                        return key.getInt(1);
                 }
             }
             return 0;
         });
         this.setDeleteAction(() ->
         {
-            try {
-                PreparedStatement deleteStmt = Database.DB.prepareStatement("DELETE FROM People WHERE ID = ?");
-                deleteStmt.setInt(1, this.getRecordItem().getId());
-                if (deleteStmt.executeUpdate() == 1)
-                {
-                    this.loadRecord(0);
-                    return true;
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+            PreparedStatement deleteStmt = Database.DB.prepareStatement("DELETE FROM People WHERE ID = ?");
+            deleteStmt.setInt(1, this.getRecordItem().getId());
+            if (deleteStmt.executeUpdate() == 1) {
+                this.loadRecord(0);
+                return true;
             }
             return false;
         });
