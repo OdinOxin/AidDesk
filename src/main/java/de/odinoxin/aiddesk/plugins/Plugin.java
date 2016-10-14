@@ -3,13 +3,15 @@ package de.odinoxin.aiddesk.plugins;
 import de.odinoxin.aidcloud.mapper.TranslatorMapper;
 import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 public abstract class Plugin extends Stage {
-    protected VBox root;
+    protected Parent root;
 
     public Plugin(String res, String title) {
         this.setTitle(TranslatorMapper.getTranslation(title));
@@ -22,6 +24,15 @@ public abstract class Plugin extends Stage {
         }
 
         this.setScene(new Scene(this.root));
-        this.show();
+    }
+
+    public static void setButtonEnter(Button btn) {
+        btn.setOnKeyPressed(ev ->
+        {
+            if (ev.getCode() == KeyCode.ENTER) {
+                btn.fire();
+                ev.consume();
+            }
+        });
     }
 }

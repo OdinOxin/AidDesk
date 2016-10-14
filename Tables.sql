@@ -4,7 +4,17 @@ CREATE TABLE Translations
 	ID INT IDENTITY(1,1) PRIMARY KEY,
 	DEU VARCHAR(450),
 	USA VARCHAR(450),
-	CONSTRAINT cUnique UNIQUE(DEU, USA)
+	CONSTRAINT cUnique UNIQUE(DEU, USA),
+)
+
+DROP TABLE RefBoxViews
+CREATE TABLE RefBoxViews
+(
+	ID INT IDENTITY(1,1) PRIMARY KEY,
+	Name VARCHAR(50),
+	ViewName VARCHAR(50),
+	CONSTRAINT cUniqueName UNIQUE(ViewName),
+	CONSTRAINT cUniqueViewName UNIQUE(ViewName),
 )
 
 DROP TABLE Countries
@@ -37,15 +47,15 @@ CREATE TABLE Addresses
 	CONSTRAINT fkCountry FOREIGN KEY (Country) REFERENCES Countries(ID),
 )
 
-DROP VIEW V_Adresses
-CREATE VIEW V_Adresses AS SELECT
+DROP VIEW V_Addresses
+CREATE VIEW V_Addresses AS SELECT
 Adr.ID AS ID,
 ISNULL(CONVERT(varchar(50), Adr.Street), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.HsNo), '') AS Text,
 ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.City), '') + ISNULL('
 ' + CONVERT(varchar(50), C.Name), '') AS SubText
 FROM Addresses Adr
 INNER JOIN Countries C ON Adr.Country = C.ID
-SELECT * FROM V_Adresses
+SELECT * FROM V_Addresses
 
 DROP TABLE People
 CREATE TABLE People
@@ -54,7 +64,7 @@ CREATE TABLE People
 	Code VARCHAR(16),
 	Name VARCHAR(250),
 	Forename VARCHAR(250),
-	Pwd VARCHAR(250),
+	Pwd VARCHAR(250) NOT NULL,
 	Language VARCHAR(3),
 	Address INT,
 	CONSTRAINT fkAddress FOREIGN KEY (Address) REFERENCES Addresses(ID),

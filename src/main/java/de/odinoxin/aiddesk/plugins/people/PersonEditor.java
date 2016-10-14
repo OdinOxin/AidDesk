@@ -1,34 +1,44 @@
 package de.odinoxin.aiddesk.plugins.people;
 
-import de.odinoxin.aidcloud.mapper.PeopleMapper;
+import de.odinoxin.aiddesk.Login;
+import de.odinoxin.aiddesk.dialogs.MsgDialog;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.scene.control.TextField;
-import de.odinoxin.aiddesk.controls.refbox.RefBox;
+import de.odinoxin.aidcloud.mapper.PeopleMapper;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
+import de.odinoxin.aiddesk.controls.refbox.RefBox;
+import de.odinoxin.aiddesk.controls.translateable.Button;
 
 public class PersonEditor extends RecordEditor<Person> {
 
     private TextField txfForename;
     private TextField txfName;
     private TextField txfCode;
+    private Button btnPwd;
     private RefBox refBoxAddress;
 
+    private String currentPwdw;
+
     public PersonEditor() {
+        this(0);
+    }
+
+    public PersonEditor(int id) {
         super("/plugins/personeditor.fxml", "Personen");
 
         this.txfName = (TextField) this.root.lookup("#txfName");
         this.txfForename = (TextField) this.root.lookup("#txfForename");
         this.txfCode = (TextField) this.root.lookup("#txfCode");
+        this.btnPwd = (Button) this.root.lookup("#btnPwd");
+        this.btnPwd.setOnAction(ev -> new PwdEditor(this));
         this.refBoxAddress = (RefBox) this.root.lookup("#refBoxAddress");
         this.refBoxAddress.setOnNewAction(ev -> new AddressEditor());
         this.refBoxAddress.setOnEditAction(ev -> new AddressEditor(this.refBoxAddress.getRef()).recordId().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setRef((int) newValue)));
 
-        this.loadRecord(0);
-    }
-
-    public PersonEditor(int id) {
-        this();
         this.loadRecord(id);
+        if (id == 0)
+            this.onNew();
     }
 
     @Override
@@ -38,6 +48,9 @@ public class PersonEditor extends RecordEditor<Person> {
 
     @Override
     protected int onSave() {
+        if (this.currentPwdw != null && this.getRecordItem().getPwd() != null)
+            if (!PeopleMapper.changePwd(this.getRecordItem().getId(), this.currentPwdw, this.getRecordItem().getPwd()))
+                MsgDialog.showMsg(this, "Fehlgeschlagen!", "Passwort konnte nicht geändert werden.");
         return PeopleMapper.save(this.getRecordItem());
     }
 
@@ -54,6 +67,7 @@ public class PersonEditor extends RecordEditor<Person> {
         } else {
             Person p = PeopleMapper.get(id);
             if (p != null) {
+                this.setDeletable(p.getId() != Login.getPerson().getId());
                 this.setRecordItem(p);
                 return true;
             }
@@ -66,12 +80,18 @@ public class PersonEditor extends RecordEditor<Person> {
         this.txfName.textProperty().bindBidirectional(this.getRecordItem().nameProperty());
         this.txfForename.textProperty().bindBidirectional(this.getRecordItem().forenameProperty());
         this.txfCode.textProperty().bindBidirectional(this.getRecordItem().codeProperty());
+        this.btnPwd.disableProperty().bind(this.getRecordItem().idProperty().isEqualTo(0));
         this.refBoxAddress.refProperty().bindBidirectional(this.getRecordItem().addressIdProperty());
         this.getRecordItem().setChanged(false);
     }
 
     @Override
-    protected String getRefBoxKeyView() {
-        return "V_People";
+    protected String getRefBoxName() {
+        return "People";
+    }
+
+    public void changePwd(String oldPwd, String newPwd) {
+        this.currentPwdw = oldPwd;
+        this.getRecordItem().setPwd(newPwd);
     }
 }

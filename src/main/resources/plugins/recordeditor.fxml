@@ -78,10 +78,13 @@
     <HBox alignment="CENTER_RIGHT"
           spacing="5">
         <Button id="btnSave"
+                prefWidth="125"
                 text="Speichern"/>
         <Button id="btnDiscard"
+                prefWidth="125"
                 text="Verwerfen"/>
         <Button id="btnDelete"
+                prefWidth="125"
                 text="Löschen"/>
     </HBox>
 

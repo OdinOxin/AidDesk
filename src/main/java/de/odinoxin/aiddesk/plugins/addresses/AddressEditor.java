@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.plugins.addresses;
 
 import de.odinoxin.aidcloud.mapper.AddressMapper;
+import javafx.application.Platform;
 import javafx.scene.control.TextField;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
@@ -14,6 +15,10 @@ public class AddressEditor extends RecordEditor<Address> {
     private RefBox refBoxCountry;
 
     public AddressEditor() {
+        this(0);
+    }
+
+    public AddressEditor(int id) {
         super("/plugins/addresseditor.fxml", "Adressen");
 
         this.txfStreet = (TextField) this.root.lookup("#txfStreet");
@@ -22,17 +27,14 @@ public class AddressEditor extends RecordEditor<Address> {
         this.txftxfCity = (TextField) this.root.lookup("#txfCity");
         this.refBoxCountry = (RefBox) this.root.lookup("#refBoxCountry");
 
-        this.loadRecord(0);
-    }
-
-    public AddressEditor(int id) {
-        this();
         this.loadRecord(id);
+        if (id == 0)
+            this.onNew();
     }
 
     @Override
     protected void onNew() {
-        this.txfStreet.requestFocus();
+        Platform.runLater(() -> this.txfStreet.requestFocus());
     }
 
     @Override
@@ -71,7 +73,7 @@ public class AddressEditor extends RecordEditor<Address> {
     }
 
     @Override
-    protected String getRefBoxKeyView() {
-        return "V_Adresses";
+    protected String getRefBoxName() {
+        return "Addresses";
     }
 }

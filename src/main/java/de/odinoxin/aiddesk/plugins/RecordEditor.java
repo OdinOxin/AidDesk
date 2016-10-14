@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.dialogs.Callback;
 import de.odinoxin.aiddesk.dialogs.DecisionDialog;
@@ -22,6 +21,8 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     private Button btnDelete;
 
     private ObjectProperty<T> recordItem = new SimpleObjectProperty<>();
+    private BooleanProperty storeable = new SimpleBooleanProperty(true);
+    private BooleanProperty deletable = new SimpleBooleanProperty(true);
     private ReadOnlyIntegerWrapper idWrapper = new ReadOnlyIntegerWrapper();
     private T original;
     private int loading = -1;
@@ -33,7 +34,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             Node recordView = FXMLLoader.load(RecordEditor.class.getResource(res));
 
             this.refBoxKey = (RefBox) this.root.lookup("#refBoxKey");
-            this.refBoxKey.setView(this.getRefBoxKeyView());
+            this.refBoxKey.setName(this.getRefBoxName());
             this.refBoxKey.setOnNewAction(ev ->
             {
                 this.loadRecord(0);
@@ -67,9 +68,15 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 } else {
                     this.original = (T) newValue.clone();
                     this.txfId.setText(newValue.getId() == 0 ? TranslatorMapper.getTranslation("Neu") : String.valueOf(newValue.getId()));
-                    this.btnSave.disableProperty().bind(newValue.changedProperty().not());
+                    if (this.btnSave.disableProperty().isBound())
+                        this.btnSave.disableProperty().unbind();
+                    this.btnSave.disableProperty().bind(this.storeable.not().or(newValue.changedProperty().not()));
+                    if (this.btnDiscard.disableProperty().isBound())
+                        this.btnDiscard.disableProperty().unbind();
                     this.btnDiscard.disableProperty().bind(newValue.changedProperty().not());
-                    this.btnDelete.disableProperty().bind(newValue.idProperty().isEqualTo(0));
+                    if (this.btnDelete.disableProperty().isBound())
+                        this.btnDelete.disableProperty().unbind();
+                    this.btnDelete.disableProperty().bind(this.deletable.not().or(newValue.idProperty().isEqualTo(0)));
                 }
             });
 
@@ -88,6 +95,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                     }, null);
             });
             setButtonEnter(this.btnDelete);
+            this.show();
             this.sizeToScene();
             this.centerOnScreen();
         } catch (Exception ex) {
@@ -106,12 +114,12 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     protected void setRecordItem(T recordItem) {
         this.recordItem.set(recordItem);
-        if (idWrapper.isBound())
-            idWrapper.unbind();
-        idWrapper.bind(recordItem.idProperty());
+        if (this.idWrapper.isBound())
+            this.idWrapper.unbind();
+        this.idWrapper.bind(recordItem.idProperty());
     }
 
-    public ObjectProperty<T> recordItem() {
+    private ObjectProperty<T> recordItem() {
         return recordItem;
     }
 
@@ -146,21 +154,19 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     protected abstract int onSave();
 
+    protected void setStoreable(boolean storeable) {
+        this.storeable.set(storeable);
+    }
+
     protected abstract boolean onDelete();
+
+    protected void setDeletable(boolean deletable) {
+        this.deletable.set(deletable);
+    }
 
     protected abstract boolean setRecord(int id);
 
     protected abstract void bind();
 
-    protected abstract String getRefBoxKeyView();
-
-    private void setButtonEnter(Button btn) {
-        btn.setOnKeyPressed(ev ->
-        {
-            if (ev.getCode() == KeyCode.ENTER) {
-                btn.fire();
-                ev.consume();
-            }
-        });
-    }
+    protected abstract String getRefBoxName();
 }

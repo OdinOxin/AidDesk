@@ -52,7 +52,7 @@
                 GridPane.columnIndex="0"
                 GridPane.columnSpan="2"/>
 
-        <Label id="txtForename"
+        <Label id="lblForename"
                text="Vorname"
                minWidth="125"
                maxWidth="125"
@@ -63,7 +63,7 @@
                    GridPane.rowIndex="1"
                    GridPane.columnIndex="1"/>
 
-        <Label id="txtName"
+        <Label id="lblName"
                text="Name"
                minWidth="125"
                maxWidth="125"
@@ -74,7 +74,7 @@
                    GridPane.rowIndex="2"
                    GridPane.columnIndex="1"/>
 
-        <Label id="txtShortKey"
+        <Label id="lblCode"
                text="Kürzel"
                minWidth="125"
                maxWidth="125"
@@ -94,6 +94,7 @@
                GridPane.columnIndex="0"/>
         <Button id="btnPwd"
                 text="Ändern"
+                prefWidth="125"
                 GridPane.rowIndex="4"
                 GridPane.columnIndex="1"/>
     </GridPane>
@@ -116,7 +117,7 @@
                 GridPane.columnIndex="0"/>
 
         <RefBox id="refBoxAddress"
-                view="V_Adresses"
+                name="Addresses"
                 showNewButton="true"
                 showEditButton="true"
                 showDetails="true"

@@ -41,7 +41,7 @@ public class RefBox extends VBox {
     private RefBoxList refBoxList;
 
     private IntegerProperty ref = new SimpleIntegerProperty(this, "ref", 0);
-    private StringProperty view = new SimpleStringProperty(this, "view");
+    private StringProperty name = new SimpleStringProperty(this, "name");
     private BooleanProperty showNewButton = new SimpleBooleanProperty(this, "showNewButton", false);
     private BooleanProperty showEditButton = new SimpleBooleanProperty(this, "showEditButton", false);
     private BooleanProperty showDetails = new SimpleBooleanProperty(this, "showDetails", false);
@@ -69,17 +69,14 @@ public class RefBox extends VBox {
         });
         this.txfText.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
         {
-            if (this.ignoreTextChange || view.get() == null)
+            if (this.ignoreTextChange || name.get() == null)
                 return;
             this.keepText = true;
             this.setRef(0);
             this.keepText = false;
             this.search();
         });
-        this.ref.addListener((observable, oldValue, newValue) ->
-        {
-            this.update();
-        });
+        this.ref.addListener((observable, oldValue, newValue) -> this.update());
         this.state.addListener((observable, oldValue, newValue) ->
         {
             switch (newValue) {
@@ -178,8 +175,8 @@ public class RefBox extends VBox {
         return this.ref.get();
     }
 
-    public String getView() {
-        return this.view.get();
+    public String getName() {
+        return this.name.get();
     }
 
     public boolean isShowNewButton() {
@@ -208,8 +205,8 @@ public class RefBox extends VBox {
             this.refBoxList.hide();
     }
 
-    public void setView(String view) {
-        this.view.set(view);
+    public void setName(String name) {
+        this.name.set(name);
     }
 
     public void setShowNewButton(boolean showNewButton) {
@@ -236,8 +233,8 @@ public class RefBox extends VBox {
         return this.ref;
     }
 
-    public StringProperty viewProperty() {
-        return this.view;
+    public StringProperty nameProperty() {
+        return this.name;
     }
 
     public BooleanProperty showNewButton() {
@@ -269,7 +266,7 @@ public class RefBox extends VBox {
     }
 
     public void update() {
-        RefBoxListItem item = RefBoxMapper.getItem(this.getView(), this.getRef());
+        RefBoxListItem item = RefBoxMapper.getItem(this.getName(), this.getRef());
         this.ignoreTextChange = true;
         if (item != null) {
             this.setText(item.getText());
@@ -293,7 +290,7 @@ public class RefBox extends VBox {
         this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
 
         String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
-        List<RefBoxListItem> items = RefBoxMapper.search(this.getView(), highlight);
+        List<RefBoxListItem> items = RefBoxMapper.search(this.getName(), highlight);
         this.refBoxList.getSuggestionsList().getItems().addAll(items);
         if (this.refBoxList.getSuggestionsList().getItems().size() > 0) {
             if (state.get() == State.NO_RESULTS)

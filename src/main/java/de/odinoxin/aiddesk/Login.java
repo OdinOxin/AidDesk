@@ -1,26 +1,35 @@
 package de.odinoxin.aiddesk;
 
+import de.odinoxin.aidcloud.service.LoginService;
+import javafx.fxml.FXMLLoader;
+import javafx.application.Application;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.layout.GridPane;
 import de.odinoxin.aidcloud.mapper.LoginMapper;
 import de.odinoxin.aidcloud.mapper.PeopleMapper;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.people.Person;
 import de.odinoxin.aiddesk.plugins.people.PersonEditor;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
+
+import javax.xml.ws.WebServiceException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Login extends Application {
 
+    private static String serverUrl;
     private static Person person;
 
     private Stage stage;
+    private TextField txfServer;
+    private Button btnConnect;
     private RefBox refboxUser;
     private PasswordField pwfPwd;
     private Button btnLogin;
@@ -35,21 +44,42 @@ public class Login extends Application {
         this.stage.setTitle("Login");
         this.stage.getIcons().add(new Image(Login.class.getResource("/AidDesk.png").toString()));
 
-        GridPane rootGrid = FXMLLoader.load(this.getClass().getResource("/login.fxml"));
-        this.refboxUser = (RefBox) rootGrid.lookup("#refboxUser");
-        this.pwfPwd = (PasswordField) rootGrid.lookup("#pwfPwd");
-        this.btnLogin = (Button) rootGrid.lookup("#btnLogin");
+        GridPane root = FXMLLoader.load(this.getClass().getResource("/login.fxml"));
+        this.txfServer = (TextField) root.lookup("#txfServer");
+        this.txfServer.textProperty().addListener((observable, oldValue, newValue) -> {
+            this.refboxUser.setDisable(true);
+            this.pwfPwd.setDisable(true);
+            this.btnLogin.setDisable(true);
+        });
+        this.btnConnect = (Button) root.lookup("#btnConnect");
+        this.btnConnect.setOnAction(ev -> {
+            try {
+                String url = this.txfServer.getText();
+                LoginService loginSvc = new LoginService(new URL(url + "/Login?wsdl"));
+                Login.serverUrl = url;
+                this.refboxUser.setDisable(false);
+                this.refboxUser.setName("Login");
+                this.pwfPwd.setDisable(false);
+                this.btnLogin.setDisable(false);
+            } catch (WebServiceException | MalformedURLException ex) {
+                MsgDialog.showMsg(this.stage, "Error!", ex.getLocalizedMessage());
+            }
+        });
+        this.refboxUser = (RefBox) root.lookup("#refboxUser");
+        this.pwfPwd = (PasswordField) root.lookup("#pwfPwd");
+        this.btnLogin = (Button) root.lookup("#btnLogin");
         this.refboxUser.setOnAction(ev -> this.tryLogin());
         this.pwfPwd.setOnAction(ev -> this.tryLogin());
         this.btnLogin.setOnAction(ev -> this.tryLogin());
-        this.btnLogin.setOnKeyPressed(ev ->
-        {
+        this.btnLogin.setOnKeyPressed(ev -> {
             if (ev.getCode() == KeyCode.ENTER)
                 this.tryLogin();
         });
 
-        this.stage.setScene(new Scene(rootGrid));
+        this.stage.setScene(new Scene(root));
         this.stage.show();
+
+        this.txfServer.setText("http://localhost:15123/AidCloud");
     }
 
     private void tryLogin() {
@@ -63,6 +93,10 @@ public class Login extends Application {
             }
         }
         MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
+    }
+
+    public static String getServerUrl() {
+        return Login.serverUrl;
     }
 
     public static Person getPerson() {

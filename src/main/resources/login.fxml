@@ -10,6 +10,7 @@
 
 <?import javafx.scene.control.PasswordField?>
 <?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import javafx.scene.control.TextField?>
 <GridPane xmlns="http://javafx.com/javafx/8"
           id="dbGrid"
           vgap="5"
@@ -22,6 +23,7 @@
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER"/>
         <ColumnConstraints hgrow="ALWAYS"/>
+        <ColumnConstraints hgrow="NEVER"/>
     </columnConstraints>
 
     <rowConstraints>
@@ -31,30 +33,44 @@
         <RowConstraints vgrow="NEVER"/>
     </rowConstraints>
 
-    <Text id="lblRefBox"
-          text="&#128100;"
+    <Text id="lblServer"
+          text="&#128279;"
           GridPane.rowIndex="0"
           GridPane.columnIndex="0"/>
-    <RefBox id="refboxUser"
-            view="V_Login"
-            ref="3"
+    <TextField id="txfServer"
+               GridPane.rowIndex="0"
+               GridPane.columnIndex="1"/>
+    <Button id="btnConnect"
+            text="&#128279;"
             GridPane.rowIndex="0"
-            GridPane.columnIndex="1"/>
+            GridPane.columnIndex="2"/>
+
+    <Text id="lblRefBox"
+          text="&#128100;"
+          GridPane.rowIndex="1"
+          GridPane.columnIndex="0"/>
+    <RefBox id="refboxUser"
+            disable="true"
+            GridPane.rowIndex="1"
+            GridPane.columnIndex="1"
+            GridPane.columnSpan="2"/>
 
     <Text id="lblPwd"
           text="&#128273;"
-          GridPane.rowIndex="1"
+          GridPane.rowIndex="2"
           GridPane.columnIndex="0"/>
     <PasswordField id="pwfPwd"
-                   text="12345"
-                   GridPane.rowIndex="1"
-                   GridPane.columnIndex="1"/>
+                   disable="true"
+                   GridPane.rowIndex="2"
+                   GridPane.columnIndex="1"
+                   GridPane.columnSpan="2"/>
 
     <Button id="btnLogin"
             text="&#128275;"
-            GridPane.rowIndex="2"
+            disable="true"
+            GridPane.rowIndex="3"
             GridPane.columnIndex="0"
-            GridPane.columnSpan="2"
+            GridPane.columnSpan="3"
             GridPane.halignment="CENTER"/>
 
 </GridPane>

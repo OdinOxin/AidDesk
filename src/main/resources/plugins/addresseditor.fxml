@@ -75,7 +75,7 @@
            GridPane.rowIndex="4"
            GridPane.columnIndex="0"/>
     <RefBox id="refBoxCountry"
-            view="V_Country"
+            name="Countries"
             maxWidth="400"
             showNewButton="true"
             showEditButton="true"
