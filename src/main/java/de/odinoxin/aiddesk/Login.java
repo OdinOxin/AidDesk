@@ -1,7 +1,7 @@
 package de.odinoxin.aiddesk;
 
-import de.odinoxin.aidcloud.helper.LoginHelper;
-import de.odinoxin.aidcloud.helper.PeopleHelper;
+import de.odinoxin.aidcloud.mapper.LoginMapper;
+import de.odinoxin.aidcloud.mapper.PeopleMapper;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.people.Person;
@@ -53,8 +53,8 @@ public class Login extends Application {
     }
 
     private void tryLogin() {
-        if (LoginHelper.checkLogin(this.refboxUser.getRef(), this.pwfPwd.getText())) {
-            Person p = PeopleHelper.get(this.refboxUser.getRef());
+        if (LoginMapper.checkLogin(this.refboxUser.getRef(), this.pwfPwd.getText())) {
+            Person p = PeopleMapper.get(this.refboxUser.getRef());
             if (p != null) {
                 Login.person = p;
                 this.stage.close();

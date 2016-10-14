@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk.dialogs;
 
+import de.odinoxin.aidcloud.mapper.TranslatorMapper;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -7,15 +8,16 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
 import java.io.IOException;
+
 import de.odinoxin.aiddesk.controls.translateable.Label;
-import de.odinoxin.aiddesk.controls.translateable.Translator;
 
 public abstract class Dialog {
 
     public static Stage getStage(Window owner, String res, String title, String msg) {
         Stage stage = new Stage();
-        stage.setTitle(Translator.getTranslation(title));
+        stage.setTitle(TranslatorMapper.getTranslation(title));
         stage.getIcons().add(new Image(Dialog.class.getResource("/AidDesk.png").toString()));
 
         Parent root;

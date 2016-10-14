@@ -1,6 +1,6 @@
 package de.odinoxin.aiddesk.plugins.people;
 
-import de.odinoxin.aidcloud.helper.PeopleHelper;
+import de.odinoxin.aidcloud.mapper.PeopleMapper;
 import javafx.scene.control.TextField;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
@@ -38,12 +38,12 @@ public class PersonEditor extends RecordEditor<Person> {
 
     @Override
     protected int onSave() {
-        return PeopleHelper.save(this.getRecordItem());
+        return PeopleMapper.save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return PeopleHelper.delete(this.getRecordItem().getId());
+        return PeopleMapper.delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PersonEditor extends RecordEditor<Person> {
             this.setRecordItem(new Person());
             return true;
         } else {
-            Person p = PeopleHelper.get(id);
+            Person p = PeopleMapper.get(id);
             if (p != null) {
                 this.setRecordItem(p);
                 return true;

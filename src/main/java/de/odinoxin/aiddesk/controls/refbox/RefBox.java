@@ -1,6 +1,6 @@
 package de.odinoxin.aiddesk.controls.refbox;
 
-import de.odinoxin.aiddesk.Database;
+import de.odinoxin.aidcloud.mapper.RefBoxMapper;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,10 +21,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
+import java.util.List;
 
 public class RefBox extends VBox {
 
@@ -271,104 +269,74 @@ public class RefBox extends VBox {
     }
 
     public void update() {
-        try {
-            PreparedStatement stmt = Database.DB.prepareStatement("SELECT * FROM " + this.view.get() + " WHERE ID = ?");
-            stmt.setInt(1, this.getRef());
-            ResultSet dbRes = stmt.executeQuery();
-            this.ignoreTextChange = true;
-            if (dbRes.next()) {
-                this.setText(dbRes.getString("Text"));
-                this.state.set(State.LOGGED_IN);
-                this.txfDetails.setText(dbRes.getString("SubText"));
-            } else {
-                this.state.set(State.SEARCHING);
-                if (!this.keepText)
-                    this.txfText.setText("");
-                this.txfDetails.setText("");
-            }
-            this.ignoreTextChange = false;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        RefBoxListItem item = RefBoxMapper.getItem(this.getView(), this.getRef());
+        this.ignoreTextChange = true;
+        if (item != null) {
+            this.setText(item.getText());
+            this.txfDetails.setText(item.getSubText());
+            this.state.set(State.LOGGED_IN);
+        } else {
+            this.state.set(State.SEARCHING);
+            if (!this.keepText)
+                this.txfText.setText("");
+            this.txfDetails.setText("");
         }
+        this.ignoreTextChange = false;
     }
 
     private void search() {
         this.txfText.requestFocus();
-        try {
-            if (this.refBoxList != null)
-                this.refBoxList.hide();
-            this.refBoxList = new RefBoxList(this.localToScreen(0, this.txfText.getHeight()));
-            this.refBoxList.setPrefWidth(this.getWidth());
-            this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
+        if (this.refBoxList != null)
+            this.refBoxList.hide();
+        this.refBoxList = new RefBoxList(this.localToScreen(0, this.txfText.getHeight()));
+        this.refBoxList.setPrefWidth(this.getWidth());
+        this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
 
-            String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
-            String dbViewSelect = "SELECT * FROM " + this.view.get();
-            if (highlight != null && highlight.length > 0) {
-                dbViewSelect += " WHERE";
-                for (int i = 0; i < highlight.length; i++) {
-                    dbViewSelect += " ID LIKE ? OR Text LIKE ? OR SubText LIKE ?";
-
-                    if (i < highlight.length - 1)
-                        dbViewSelect += " OR";
-                }
-            }
-            PreparedStatement stmt = Database.DB.prepareStatement(dbViewSelect);
-            if (highlight != null)
-                for (int i = 0; i < highlight.length; i++) {
-                    stmt.setString(i * 3 + 1, "%" + highlight[i] + "%");
-                    stmt.setString(i * 3 + 2, "%" + highlight[i] + "%");
-                    stmt.setString(i * 3 + 3, "%" + highlight[i] + "%");
-                }
-            ResultSet dbRes = stmt.executeQuery();
-            while (dbRes.next()) {
-                RefBoxListItem item = new RefBoxListItem(dbRes.getInt("ID"), dbRes.getString("Text"), dbRes.getString("SubText"), highlight);
-                this.refBoxList.getSuggestionsList().getItems().add(item);
-            }
-            if (this.refBoxList.getSuggestionsList().getItems().size() > 0) {
-                if (state.get() == State.NO_RESULTS)
-                    this.state.set(State.SEARCHING);
-                this.refBoxList.getSuggestionsList().setOnKeyPressed(ev ->
-                {
-                    switch (ev.getCode()) {
-                        case TAB:
-                            this.btnSearch.requestFocus();
-                        case ENTER:
-                            RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
-                            this.setRef(item == null ? 0 : item.getId());
-                            break;
-                        case ESCAPE:
-                            this.refBoxList.hide();
-                            break;
-                    }
-                });
-                this.refBoxList.getSuggestionsList().setOnMouseClicked(ev ->
-                {
-                    if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2) {
+        String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
+        List<RefBoxListItem> items = RefBoxMapper.search(this.getView(), highlight);
+        this.refBoxList.getSuggestionsList().getItems().addAll(items);
+        if (this.refBoxList.getSuggestionsList().getItems().size() > 0) {
+            if (state.get() == State.NO_RESULTS)
+                this.state.set(State.SEARCHING);
+            this.refBoxList.getSuggestionsList().setOnKeyPressed(ev ->
+            {
+                switch (ev.getCode()) {
+                    case TAB:
+                        this.btnSearch.requestFocus();
+                    case ENTER:
                         RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
                         this.setRef(item == null ? 0 : item.getId());
-                    }
-                });
-                for (RefBoxListItem item : this.refBoxList.getSuggestionsList().getItems()) {
-                    item.matchProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-                    {
-                        Collections.sort(RefBox.this.refBoxList.getSuggestionsList().getItems(), (RefBoxListItem item1, RefBoxListItem item2) ->
-                        {
-                            if (item1.getMatch() < item2.getMatch())
-                                return 1;
-                            else if (item1.getMatch() == item2.getMatch())
-                                return 0;
-                            return -1;
-                        });
-                        RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
-                    });
+                        break;
+                    case ESCAPE:
+                        this.refBoxList.hide();
+                        break;
                 }
-
-                this.refBoxList.show(this.getScene().getWindow());
-            } else {
-                this.state.set(State.NO_RESULTS);
+            });
+            this.refBoxList.getSuggestionsList().setOnMouseClicked(ev ->
+            {
+                if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2) {
+                    RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
+                    this.setRef(item == null ? 0 : item.getId());
+                }
+            });
+            for (RefBoxListItem item : this.refBoxList.getSuggestionsList().getItems()) {
+                item.matchProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
+                {
+                    Collections.sort(RefBox.this.refBoxList.getSuggestionsList().getItems(), (RefBoxListItem item1, RefBoxListItem item2) ->
+                    {
+                        if (item1.getMatch() < item2.getMatch())
+                            return 1;
+                        else if (item1.getMatch() == item2.getMatch())
+                            return 0;
+                        return -1;
+                    });
+                    RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
+                });
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+
+            this.refBoxList.show(this.getScene().getWindow());
+        } else {
+            this.state.set(State.NO_RESULTS);
         }
     }
 

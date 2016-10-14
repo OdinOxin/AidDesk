@@ -1,6 +1,6 @@
 package de.odinoxin.aiddesk.plugins.addresses;
 
-import de.odinoxin.aidcloud.helper.AddressHelper;
+import de.odinoxin.aidcloud.mapper.AddressMapper;
 import javafx.scene.control.TextField;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
@@ -37,12 +37,12 @@ public class AddressEditor extends RecordEditor<Address> {
 
     @Override
     protected int onSave() {
-        return AddressHelper.save(this.getRecordItem());
+        return AddressMapper.save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return AddressHelper.delete(this.getRecordItem().getId());
+        return AddressMapper.delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AddressEditor extends RecordEditor<Address> {
             this.setRecordItem(new Address());
             return true;
         } else {
-            Address adr = AddressHelper.get(id);
+            Address adr = AddressMapper.get(id);
             if (adr != null) {
                 this.setRecordItem(adr);
                 return true;

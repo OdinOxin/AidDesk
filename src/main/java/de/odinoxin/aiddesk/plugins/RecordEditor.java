@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk.plugins;
 
+import de.odinoxin.aidcloud.mapper.TranslatorMapper;
 import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -11,7 +12,6 @@ import de.odinoxin.aiddesk.dialogs.Callback;
 import de.odinoxin.aiddesk.dialogs.DecisionDialog;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.controls.translateable.Button;
-import de.odinoxin.aiddesk.controls.translateable.Translator;
 
 public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
@@ -66,7 +66,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                     this.btnDelete.setDisable(true);
                 } else {
                     this.original = (T) newValue.clone();
-                    this.txfId.setText(newValue.getId() == 0 ? Translator.getTranslation("Neu") : String.valueOf(newValue.getId()));
+                    this.txfId.setText(newValue.getId() == 0 ? TranslatorMapper.getTranslation("Neu") : String.valueOf(newValue.getId()));
                     this.btnSave.disableProperty().bind(newValue.changedProperty().not());
                     this.btnDiscard.disableProperty().bind(newValue.changedProperty().not());
                     this.btnDelete.disableProperty().bind(newValue.idProperty().isEqualTo(0));
