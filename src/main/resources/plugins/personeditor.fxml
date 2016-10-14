@@ -80,7 +80,7 @@
                maxWidth="125"
                GridPane.rowIndex="3"
                GridPane.columnIndex="0"/>
-        <TextField id="txfShortKey"
+        <TextField id="txfCode"
                    maxWidth="400"
                    GridPane.rowIndex="3"
                    GridPane.columnIndex="1"/>

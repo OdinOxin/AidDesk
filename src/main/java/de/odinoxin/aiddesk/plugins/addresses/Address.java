@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk.plugins.addresses;
 
+import de.odinoxin.aidcloud.service.AddressEntity;
 import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -107,5 +108,16 @@ public class Address extends RecordItem {
 
     public IntegerProperty countryProperty() {
         return country;
+    }
+
+    public AddressEntity toService() {
+        AddressEntity adr = new AddressEntity();
+        adr.setId(this.getId());
+        adr.setStreet(this.getStreet());
+        adr.setHsNo(this.getHsNo());
+        adr.setZip(this.getZip());
+        adr.setCity(this.getCity());
+        adr.setCountry(this.getCountry());
+        return adr;
     }
 }

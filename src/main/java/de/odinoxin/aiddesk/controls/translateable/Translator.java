@@ -14,7 +14,7 @@ public abstract class Translator {
                 return null;
             if (Login.getPerson() == null)
                 return text;
-            String languageCode = Login.getPerson().getLanguageCode();
+            String languageCode = Login.getPerson().getLanguage();
             if (languageCode == null || languageCode.isEmpty())
                 languageCode = "USA";
             PreparedStatement statement = Database.DB.prepareStatement("SELECT " + languageCode + " FROM Translations WHERE DEU LIKE ? OR USA LIKE ?");

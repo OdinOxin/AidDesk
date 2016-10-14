@@ -1,11 +1,11 @@
 package de.odinoxin.aiddesk;
 
-import de.odinoxin.aidcloud.LoginService;
-import de.odinoxin.aidcloud.PeopleService;
+import de.odinoxin.aidcloud.helper.LoginHelper;
+import de.odinoxin.aidcloud.helper.PeopleHelper;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
-import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 import de.odinoxin.aiddesk.plugins.people.Person;
+import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,14 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import javax.xml.ws.WebServiceRef;
-
 public class Login extends Application {
-
-    @WebServiceRef(wsdlLocation = "http://localhost:15123/AidCloud/LoginService?wsdl")
-    private static LoginService loginService;
-    @WebServiceRef(wsdlLocation = "http://localhost:15123/AidCloud/PeopleService?wsdl")
-    private static PeopleService peopleService;
 
     private static Person person;
 
@@ -34,11 +27,6 @@ public class Login extends Application {
 
     public static void main(String[] args) {
         Login.launch(args);
-    }
-
-    static {
-        Login.loginService = new LoginService();
-        Login.peopleService = new PeopleService();
     }
 
     @Override
@@ -65,14 +53,16 @@ public class Login extends Application {
     }
 
     private void tryLogin() {
-        if (Login.loginService.getLoginPort().checkLogin(this.refboxUser.getRef(), this.pwfPwd.getText())) {
-            de.odinoxin.aidcloud.Person p = Login.peopleService.getPeoplePort().getPerson(this.refboxUser.getRef());
-            if (p != null)
-                Login.person = new Person(p.getId(), p.getName(), p.getForename(), p.getCode(), p.getLanguage(), p.getAddressId());
-            this.stage.close();
-            new PersonEditor(Login.person != null ? Login.person.getId() : 0);
-        } else
-            MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
+        if (LoginHelper.checkLogin(this.refboxUser.getRef(), this.pwfPwd.getText())) {
+            Person p = PeopleHelper.get(this.refboxUser.getRef());
+            if (p != null) {
+                Login.person = p;
+                this.stage.close();
+                new PersonEditor(Login.person.getId());
+                return;
+            }
+        }
+        MsgDialog.showMsg(this.stage, "Login", "User or password incorrect!");
     }
 
     public static Person getPerson() {

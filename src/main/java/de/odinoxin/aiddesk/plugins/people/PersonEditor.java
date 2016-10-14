@@ -1,28 +1,17 @@
 package de.odinoxin.aiddesk.plugins.people;
 
-import java.sql.SQLException;
-
-import de.odinoxin.aidcloud.PeopleService;
+import de.odinoxin.aidcloud.helper.PeopleHelper;
 import javafx.scene.control.TextField;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
 
-import javax.xml.ws.WebServiceRef;
-
 public class PersonEditor extends RecordEditor<Person> {
-
-    @WebServiceRef(wsdlLocation = "http://localhost:15123/AidCloud/PeopleService?wsdl")
-    private static PeopleService peopleService;
 
     private TextField txfForename;
     private TextField txfName;
     private TextField txfCode;
     private RefBox refBoxAddress;
-
-    static {
-        PersonEditor.peopleService = new PeopleService();
-    }
 
     public PersonEditor() {
         super("/plugins/personeditor.fxml", "Personen");
@@ -33,6 +22,8 @@ public class PersonEditor extends RecordEditor<Person> {
         this.refBoxAddress = (RefBox) this.root.lookup("#refBoxAddress");
         this.refBoxAddress.setOnNewAction(ev -> new AddressEditor());
         this.refBoxAddress.setOnEditAction(ev -> new AddressEditor(this.refBoxAddress.getRef()).recordId().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setRef((int) newValue)));
+
+        this.loadRecord(0);
     }
 
     public PersonEditor(int id) {
@@ -46,24 +37,24 @@ public class PersonEditor extends RecordEditor<Person> {
     }
 
     @Override
-    protected int onSave() throws SQLException {
-        return PersonEditor.peopleService.getPeoplePort().save(this.getRecordItem().toService());
+    protected int onSave() {
+        return PeopleHelper.save(this.getRecordItem());
     }
 
     @Override
-    protected boolean onDelete() throws SQLException {
-        return PersonEditor.peopleService.getPeoplePort().delete(this.getRecordItem().getId());
+    protected boolean onDelete() {
+        return PeopleHelper.delete(this.getRecordItem().getId());
     }
 
     @Override
-    protected boolean setRecord(int id) throws SQLException {
+    protected boolean setRecord(int id) {
         if (id == 0) {
             this.setRecordItem(new Person());
             return true;
         } else {
-            de.odinoxin.aidcloud.Person p = PersonEditor.peopleService.getPeoplePort().getPerson(id);
+            Person p = PeopleHelper.get(id);
             if (p != null) {
-                this.setRecordItem(new Person(p.getId(), p.getName(), p.getForename(), p.getCode(), p.getLanguage(), p.getAddressId()));
+                this.setRecordItem(p);
                 return true;
             }
         }

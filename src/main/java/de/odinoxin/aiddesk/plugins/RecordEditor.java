@@ -1,19 +1,17 @@
 package de.odinoxin.aiddesk.plugins;
 
-import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.dialogs.Callback;
 import de.odinoxin.aiddesk.dialogs.DecisionDialog;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.controls.translateable.Translator;
-
-import java.sql.SQLException;
 
 public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
@@ -48,12 +46,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.btnSave = (Button) this.root.lookup("#btnSave");
             this.btnSave.setOnAction(ev ->
             {
-                int newId = 0;
-                try {
-                    newId = this.onSave();
-                } catch (SQLException ex) {
-                    MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
-                }
+                int newId = this.onSave();
                 if (newId != 0) {
                     this.getRecordItem().setChanged(false);
                     this.loadRecord(newId);
@@ -86,14 +79,12 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 if (this.getRecordItem() != null && this.getRecordItem().getId() != 0)
                     DecisionDialog.showDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?", () ->
                     {
-                        boolean succeeded = false;
-                        try {
-                            succeeded = this.onDelete();
-                        } catch (SQLException ex) {
-                            MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
-                        }
-                        if (succeeded)
+                        boolean succeeded = this.onDelete();
+                        if (succeeded) {
+                            this.loadRecord(0);
+                            this.onNew();
                             MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.");
+                        }
                     }, null);
             });
             setButtonEnter(this.btnDelete);
@@ -140,12 +131,8 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 this.refBoxKey.update();
             else
                 this.refBoxKey.setRef(id);
-            try {
-                if (this.setRecord(id))
-                    this.bind();
-            } catch (SQLException ex) {
-                MsgDialog.showMsg(this, "Exception", ex.getLocalizedMessage());
-            }
+            if (this.setRecord(id))
+                this.bind();
             this.loading = -1;
         };
 
@@ -157,11 +144,11 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     protected abstract void onNew();
 
-    protected abstract int onSave() throws SQLException;
+    protected abstract int onSave();
 
-    protected abstract boolean onDelete() throws SQLException;
+    protected abstract boolean onDelete();
 
-    protected abstract boolean setRecord(int id) throws SQLException;
+    protected abstract boolean setRecord(int id);
 
     protected abstract void bind();
 

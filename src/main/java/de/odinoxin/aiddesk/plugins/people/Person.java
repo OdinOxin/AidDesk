@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk.plugins.people;
 
+import de.odinoxin.aidcloud.service.PersonEntity;
 import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -12,7 +13,7 @@ public class Person extends RecordItem {
     private StringProperty forename = new SimpleStringProperty();
     private StringProperty code = new SimpleStringProperty();
     private StringProperty pwd = new SimpleStringProperty();
-    private StringProperty languageCode = new SimpleStringProperty();
+    private StringProperty language = new SimpleStringProperty();
     private IntegerProperty addressId = new SimpleIntegerProperty();
 
     public Person() {
@@ -21,7 +22,7 @@ public class Person extends RecordItem {
         this.forename.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.code.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.pwd.addListener((observable, oldValue, newValue) -> setChanged(true));
-        this.languageCode.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.language.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.addressId.addListener((observable, oldValue, newValue) ->
         {
             if ((int) newValue != 0)
@@ -36,19 +37,19 @@ public class Person extends RecordItem {
         this.setChanged(false);
     }
 
-    public Person(int id, String name, String forename, String code, String languageCode, int addressId) {
+    public Person(int id, String name, String forename, String code, String language, int addressId) {
         this(id);
         this.setName(name);
         this.setForename(forename);
         this.setCode(code);
-        this.setLanguageCode(languageCode);
+        this.setLanguage(language);
         this.setAddressId(addressId);
         this.setChanged(false);
     }
 
     @Override
     protected Object clone() {
-        return new Person(this.getId(), this.getName(), this.getForename(), this.getCode(), this.getLanguageCode(), this.getAddressId());
+        return new Person(this.getId(), this.getName(), this.getForename(), this.getCode(), this.getLanguage(), this.getAddressId());
     }
 
     public String getName() {
@@ -67,8 +68,8 @@ public class Person extends RecordItem {
         return pwd.get();
     }
 
-    public String getLanguageCode() {
-        return languageCode.get();
+    public String getLanguage() {
+        return language.get();
     }
 
     public int getAddressId() {
@@ -91,8 +92,8 @@ public class Person extends RecordItem {
         this.pwd.set(pwd);
     }
 
-    public void setLanguageCode(String languageCode) {
-        this.languageCode.set(languageCode);
+    public void setLanguage(String language) {
+        this.language.set(language);
     }
 
     public void setAddressId(int addressId) {
@@ -115,22 +116,21 @@ public class Person extends RecordItem {
         return pwd;
     }
 
-    public StringProperty languageCodeProperty() {
-        return languageCode;
+    public StringProperty languageProperty() {
+        return language;
     }
 
     public IntegerProperty addressIdProperty() {
         return addressId;
     }
 
-    public de.odinoxin.aidcloud.Person toService()
-    {
-        de.odinoxin.aidcloud.Person p = new de.odinoxin.aidcloud.Person();
+    public PersonEntity toService() {
+        PersonEntity p = new PersonEntity();
         p.setId(this.getId());
         p.setName(this.getName());
         p.setForename(this.getForename());
         p.setCode(this.getCode());
-        p.setLanguage(this.getLanguageCode());
+        p.setLanguage(this.getLanguage());
         p.setAddressId(this.getAddressId());
         return p;
     }
