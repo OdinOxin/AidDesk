@@ -27,13 +27,13 @@ CREATE TABLE Countries
 	AreaCode VARCHAR(5),
 )
 
-DROP VIEW V_Country
-CREATE VIEW V_Country AS SELECT
+DROP VIEW V_Countries
+CREATE VIEW V_Countries AS SELECT
 C.ID AS ID,
 ISNULL(CONVERT(varchar(50), C.Name), '') AS Text,
 ISNULL(CONVERT(varchar(50), C.Alpha2), '') + ISNULL(' / ' + CONVERT(varchar(50), C.Alpha3), '') + ISNULL(' / ' + CONVERT(varchar(50), C.AreaCode), '') AS SubText
 FROM Countries C
-SELECT * FROM V_Country
+SELECT * FROM V_Countries
 
 DROP TABLE Addresses
 CREATE TABLE Addresses
