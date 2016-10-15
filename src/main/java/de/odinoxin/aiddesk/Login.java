@@ -1,6 +1,9 @@
 package de.odinoxin.aiddesk;
 
 import de.odinoxin.aidcloud.service.LoginService;
+import de.odinoxin.aiddesk.dialogs.Dialog;
+import de.odinoxin.aiddesk.plugins.Plugin;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.application.Application;
 import javafx.scene.control.TextField;
@@ -51,6 +54,7 @@ public class Login extends Application {
             this.pwfPwd.setDisable(true);
             this.btnLogin.setDisable(true);
         });
+        this.txfServer.setOnAction(ev -> this.btnConnect.fire());
         this.btnConnect = (Button) root.lookup("#btnConnect");
         this.btnConnect.setOnAction(ev -> {
             try {
@@ -61,10 +65,12 @@ public class Login extends Application {
                 this.refboxUser.setName("Login");
                 this.pwfPwd.setDisable(false);
                 this.btnLogin.setDisable(false);
+                this.refboxUser.requestFocus();
             } catch (WebServiceException | MalformedURLException ex) {
                 MsgDialog.showMsg(this.stage, "Error!", ex.getLocalizedMessage());
             }
         });
+        Plugin.setButtonEnter(this.btnConnect);
         this.refboxUser = (RefBox) root.lookup("#refboxUser");
         this.pwfPwd = (PasswordField) root.lookup("#pwfPwd");
         this.btnLogin = (Button) root.lookup("#btnLogin");
@@ -75,6 +81,7 @@ public class Login extends Application {
             if (ev.getCode() == KeyCode.ENTER)
                 this.tryLogin();
         });
+        Plugin.setButtonEnter(this.btnLogin);
 
         this.stage.setScene(new Scene(root));
         this.stage.show();

@@ -171,32 +171,12 @@ public class RefBox extends VBox {
         return this.txfText.getText();
     }
 
-    public int getRef() {
-        return this.ref.get();
-    }
-
-    public String getName() {
-        return this.name.get();
-    }
-
-    public boolean isShowNewButton() {
-        return showNewButton.get();
-    }
-
-    public boolean isShowEditButton() {
-        return showEditButton.get();
-    }
-
-    public boolean isShowDetails() {
-        return showDetails.get();
-    }
-
-    public int getDetailsRows() {
-        return detailsRows.get();
-    }
-
     public void setText(String text) {
         this.txfText.setText(text);
+    }
+
+    public int getRef() {
+        return this.ref.get();
     }
 
     public void setRef(int ref) {
@@ -205,20 +185,40 @@ public class RefBox extends VBox {
             this.refBoxList.hide();
     }
 
+    public String getName() {
+        return this.name.get();
+    }
+
     public void setName(String name) {
         this.name.set(name);
+    }
+
+    public boolean isShowNewButton() {
+        return showNewButton.get();
     }
 
     public void setShowNewButton(boolean showNewButton) {
         this.showNewButton.set(showNewButton);
     }
 
+    public boolean isShowEditButton() {
+        return showEditButton.get();
+    }
+
     public void setShowEditButton(boolean showEditButton) {
         this.showEditButton.set(showEditButton);
     }
 
+    public boolean isShowDetails() {
+        return showDetails.get();
+    }
+
     public void setShowDetails(boolean showDetails) {
         this.showDetails.set(showDetails);
+    }
+
+    public int getDetailsRows() {
+        return detailsRows.get();
     }
 
     public void setDetailsRows(int detailsRows) {
@@ -361,5 +361,11 @@ public class RefBox extends VBox {
         NO_RESULTS,
         SEARCHING,
         LOGGED_IN,
+    }
+
+    @Override
+    public void requestFocus() {
+        super.requestFocus();
+        this.txfText.requestFocus();
     }
 }

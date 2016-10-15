@@ -5,7 +5,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public abstract class RecordItem implements Cloneable {
+public abstract class RecordItem<T> implements Cloneable {
 
     private IntegerProperty id = new SimpleIntegerProperty(this, "id", 0);
     private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
@@ -48,4 +48,6 @@ public abstract class RecordItem implements Cloneable {
     public BooleanProperty changedProperty() {
         return changed;
     }
+
+    public abstract T toService();
 }

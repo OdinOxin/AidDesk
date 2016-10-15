@@ -5,7 +5,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.control.TextField?>
-<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
 <?import de.odinoxin.aiddesk.controls.translateable.Label?>
 
 <GridPane xmlns="http://javafx.com/javafx/8"
@@ -25,60 +24,44 @@
         <RowConstraints vgrow="NEVER"/>
     </rowConstraints>
 
-    <Label id="lblStreet"
-           text="Straße"
+    <Label id="lblAlpha2"
+           text="Alpha2"
            minWidth="125"
            maxWidth="125"
            GridPane.rowIndex="0"
            GridPane.columnIndex="0"/>
-    <TextField id="txfStreet"
-               maxWidth="400"
+    <TextField id="txfAlpha2"
+               maxWidth="75"
                GridPane.rowIndex="0"
                GridPane.columnIndex="1"/>
-    <Label id="lblHsNo"
-           text="Hausnummer"
+    <Label id="lblAlpha3"
+           text="Alpha3"
            minWidth="125"
            maxWidth="125"
            GridPane.rowIndex="1"
            GridPane.columnIndex="0"/>
-    <TextField id="txfHsNo"
+    <TextField id="txfAlpha3"
                maxWidth="75"
                GridPane.rowIndex="1"
                GridPane.columnIndex="1"/>
-
-    <Label id="lblZip"
-           text="PLZ"
+    <Label id="lblName"
+           text="Name"
            minWidth="125"
            maxWidth="125"
            GridPane.rowIndex="2"
            GridPane.columnIndex="0"/>
-    <TextField id="txfZip"
-               maxWidth="75"
+    <TextField id="txfName"
+               maxWidth="400"
                GridPane.rowIndex="2"
                GridPane.columnIndex="1"/>
-    <Label id="lblCity"
-           text="Ort"
+    <Label id="lblAreaCode"
+           text="Vorwahl"
            minWidth="125"
            maxWidth="125"
            GridPane.rowIndex="3"
            GridPane.columnIndex="0"/>
-    <TextField id="txfCity"
-               maxWidth="400"
+    <TextField id="txfAreaCode"
+               maxWidth="75"
                GridPane.rowIndex="3"
                GridPane.columnIndex="1"/>
-
-    <Label id="lblCountry"
-           text="Land"
-           minWidth="125"
-           maxWidth="125"
-           GridPane.rowIndex="4"
-           GridPane.columnIndex="0"/>
-    <RefBox id="refBoxCountry"
-            name="Countries"
-            maxWidth="400"
-            showNewButton="true"
-            showEditButton="true"
-            GridPane.rowIndex="4"
-            GridPane.columnIndex="1"/>
-
 </GridPane>

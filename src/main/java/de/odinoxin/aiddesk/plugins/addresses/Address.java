@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Address extends RecordItem {
+public class Address extends RecordItem<AddressEntity> {
 
     private StringProperty street = new SimpleStringProperty();
     private StringProperty hsNo = new SimpleStringProperty();
@@ -110,6 +110,7 @@ public class Address extends RecordItem {
         return country;
     }
 
+    @Override
     public AddressEntity toService() {
         AddressEntity adr = new AddressEntity();
         adr.setId(this.getId());

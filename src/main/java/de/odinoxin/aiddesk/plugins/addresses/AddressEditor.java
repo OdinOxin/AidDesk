@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.plugins.addresses;
 
-import de.odinoxin.aidcloud.mapper.AddressMapper;
+import de.odinoxin.aidcloud.mapper.AddressesMapper;
+import de.odinoxin.aiddesk.plugins.countries.CountryEditor;
 import javafx.application.Platform;
 import javafx.scene.control.TextField;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
@@ -26,6 +27,8 @@ public class AddressEditor extends RecordEditor<Address> {
         this.txftxfZip = (TextField) this.root.lookup("#txfZip");
         this.txftxfCity = (TextField) this.root.lookup("#txfCity");
         this.refBoxCountry = (RefBox) this.root.lookup("#refBoxCountry");
+        this.refBoxCountry.setOnNewAction(ev -> new CountryEditor());
+        this.refBoxCountry.setOnEditAction(ev -> new CountryEditor(this.refBoxCountry.getRef()).recordId().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setRef((int) newValue)));
 
         this.loadRecord(id);
         if (id == 0)
@@ -39,12 +42,12 @@ public class AddressEditor extends RecordEditor<Address> {
 
     @Override
     protected int onSave() {
-        return AddressMapper.save(this.getRecordItem());
+        return AddressesMapper.save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return AddressMapper.delete(this.getRecordItem().getId());
+        return AddressesMapper.delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -53,7 +56,7 @@ public class AddressEditor extends RecordEditor<Address> {
             this.setRecordItem(new Address());
             return true;
         } else {
-            Address adr = AddressMapper.get(id);
+            Address adr = AddressesMapper.get(id);
             if (adr != null) {
                 this.setRecordItem(adr);
                 return true;
