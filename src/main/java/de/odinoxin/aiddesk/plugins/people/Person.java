@@ -23,11 +23,7 @@ public class Person extends RecordItem {
         this.code.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.pwd.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.language.addListener((observable, oldValue, newValue) -> setChanged(true));
-        this.addressId.addListener((observable, oldValue, newValue) ->
-        {
-            if ((int) newValue != 0)
-                setChanged(true);
-        });
+        this.addressId.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.setChanged(false);
     }
 

@@ -27,6 +27,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     private BooleanProperty storeable = new SimpleBooleanProperty(true);
     private BooleanProperty deletable = new SimpleBooleanProperty(true);
     private ReadOnlyIntegerWrapper idWrapper = new ReadOnlyIntegerWrapper();
+    private ReadOnlyBooleanWrapper changedWrapper = new ReadOnlyBooleanWrapper();
     private T original;
     private int loading = -1;
 
@@ -122,6 +123,9 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         if (this.idWrapper.isBound())
             this.idWrapper.unbind();
         this.idWrapper.bind(recordItem.idProperty());
+        if (this.changedWrapper.isBound())
+            this.changedWrapper.unbind();
+        this.changedWrapper.bind(recordItem.changedProperty());
     }
 
     private ObjectProperty<T> recordItem() {
@@ -129,7 +133,11 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     }
 
     public ReadOnlyIntegerProperty recordId() {
-        return idWrapper.getReadOnlyProperty();
+        return this.idWrapper.getReadOnlyProperty();
+    }
+
+    public ReadOnlyBooleanProperty isChanged() {
+        return this.changedWrapper.getReadOnlyProperty();
     }
 
     protected void loadRecord(int id) {

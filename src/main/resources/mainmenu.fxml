@@ -3,41 +3,47 @@
 <?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
 <?import de.odinoxin.aiddesk.controls.translateable.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.*?>
-<GridPane xmlns="http://javafx.com/javafx/8"
-          id="dbGrid"
-          vgap="5"
-          hgap="5">
+<VBox xmlns="http://javafx.com/javafx/8"
+      id="dbGrid"
+      spacing="5">
 
     <padding>
         <Insets top="5" left="5" right="5" bottom="5"/>
     </padding>
 
-    <columnConstraints>
-        <ColumnConstraints hgrow="ALWAYS"/>
-        <ColumnConstraints hgrow="ALWAYS"/>
-    </columnConstraints>
-
-    <rowConstraints>
-        <RowConstraints vgrow="NEVER"/>
-        <RowConstraints vgrow="NEVER"/>
-    </rowConstraints>
-
     <RefBox id="refBoxPlugins"
             name="Plugins"
-            GridPane.rowIndex="0"
-            GridPane.columnIndex="0"
-            GridPane.columnSpan="2"/>
+            VBox.vgrow="ALWAYS"/>
 
-    <Button id="btnLogout"
-            text="Logout"
-            prefWidth="125"
-            GridPane.rowIndex="1"
-            GridPane.columnIndex="0"/>
-    <Button id="btnExit"
-            text="Exit"
-            prefWidth="125"
-            GridPane.rowIndex="1"
-            GridPane.columnIndex="1"/>
+    <Separator orientation="HORIZONTAL"/>
 
-</GridPane>
+    <GridPane hgap="5"
+              vgap="5">
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <Button id="btnLogout"
+                text="Logout"
+                prefWidth="125"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="0"
+                GridPane.halignment="RIGHT"/>
+        <Button id="btnExit"
+                text="Exit"
+                prefWidth="125"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="1"
+                GridPane.halignment="LEFT"/>
+    </GridPane>
+
+
+</VBox>

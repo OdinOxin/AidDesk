@@ -73,7 +73,7 @@ ISNULL(CONVERT(varchar(50), Code), '') + '
 ' + ISNULL(CONVERT(varchar(50), Adr.Street), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.HsNo), '') + '
 ' + ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.City), '') AS SubText
 FROM People P
-INNER JOIN Addresses Adr ON P.Address = Adr.ID
+LEFT OUTER JOIN Addresses Adr ON P.Address = Adr.ID
 SELECT * FROM V_People
 
 DROP VIEW V_Countries
@@ -91,5 +91,5 @@ ISNULL(CONVERT(varchar(50), Adr.Street), '') + ISNULL(' ' + CONVERT(varchar(50),
 ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.City), '') + ISNULL('
 ' + CONVERT(varchar(50), C.Name), '') AS SubText
 FROM Addresses Adr
-INNER JOIN Countries C ON Adr.Country = C.ID
+LEFT OUTER JOIN Countries C ON Adr.Country = C.ID
 SELECT * FROM V_Addresses

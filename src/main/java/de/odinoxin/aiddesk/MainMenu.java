@@ -39,6 +39,7 @@ public class MainMenu extends Plugin {
                         new CountryEditor();
                         break;
                 }
+                this.refBoxPlugins.setRef(0);
             }
         });
         this.btnLogot = (Button) this.root.lookup("#btnLogout");

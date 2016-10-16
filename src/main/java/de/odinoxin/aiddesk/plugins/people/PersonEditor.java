@@ -1,14 +1,13 @@
 package de.odinoxin.aiddesk.plugins.people;
 
-import de.odinoxin.aiddesk.Login;
-import de.odinoxin.aiddesk.dialogs.MsgDialog;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.scene.control.TextField;
 import de.odinoxin.aidcloud.mapper.PeopleMapper;
-import de.odinoxin.aiddesk.plugins.RecordEditor;
-import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
+import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.controls.translateable.Button;
+import de.odinoxin.aiddesk.dialogs.MsgDialog;
+import de.odinoxin.aiddesk.plugins.RecordEditor;
+import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
+import javafx.scene.control.TextField;
 
 public class PersonEditor extends RecordEditor<Person> {
 
@@ -33,8 +32,16 @@ public class PersonEditor extends RecordEditor<Person> {
         this.btnPwd = (Button) this.root.lookup("#btnPwd");
         this.btnPwd.setOnAction(ev -> new PwdEditor(this));
         this.refBoxAddress = (RefBox) this.root.lookup("#refBoxAddress");
-        this.refBoxAddress.setOnNewAction(ev -> new AddressEditor());
-        this.refBoxAddress.setOnEditAction(ev -> new AddressEditor(this.refBoxAddress.getRef()).recordId().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setRef((int) newValue)));
+        this.refBoxAddress.setOnNewAction(ev -> {
+            AddressEditor addressEditor = new AddressEditor();
+            addressEditor.recordId().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setRef((int) newValue));
+            addressEditor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxAddress.update());
+        });
+        this.refBoxAddress.setOnEditAction(ev -> {
+            AddressEditor addressEditor = new AddressEditor(this.refBoxAddress.getRef());
+            addressEditor.recordId().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setRef((int) newValue));
+            addressEditor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxAddress.update());
+        });
 
         this.loadRecord(id);
         if (id == 0)

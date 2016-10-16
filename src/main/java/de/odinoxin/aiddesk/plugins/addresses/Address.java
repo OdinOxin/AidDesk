@@ -21,11 +21,7 @@ public class Address extends RecordItem<AddressEntity> {
         this.hsNo.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.zip.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.city.addListener((observable, oldValue, newValue) -> setChanged(true));
-        this.country.addListener((observable, oldValue, newValue) ->
-        {
-            if ((int) newValue != 0)
-                setChanged(true);
-        });
+        this.country.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.setChanged(false);
     }
 
