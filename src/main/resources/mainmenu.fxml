@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import de.odinoxin.aiddesk.controls.translateable.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns="http://javafx.com/javafx/8"
+          id="dbGrid"
+          vgap="5"
+          hgap="5">
+
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
+
+    <RefBox id="refBoxPlugins"
+            name="Plugins"
+            GridPane.rowIndex="0"
+            GridPane.columnIndex="0"
+            GridPane.columnSpan="2"/>
+
+    <Button id="btnLogout"
+            text="Logout"
+            prefWidth="125"
+            GridPane.rowIndex="1"
+            GridPane.columnIndex="0"/>
+    <Button id="btnExit"
+            text="Exit"
+            prefWidth="125"
+            GridPane.rowIndex="1"
+            GridPane.columnIndex="1"/>
+
+</GridPane>

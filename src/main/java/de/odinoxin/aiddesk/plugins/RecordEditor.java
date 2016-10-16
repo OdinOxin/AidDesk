@@ -1,16 +1,19 @@
 package de.odinoxin.aiddesk.plugins;
 
 import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import de.odinoxin.aiddesk.controls.refbox.RefBox;
+import de.odinoxin.aiddesk.controls.translateable.Button;
+import de.odinoxin.aiddesk.dialogs.Callback;
+import de.odinoxin.aiddesk.dialogs.DecisionDialog;
+import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import de.odinoxin.aiddesk.dialogs.MsgDialog;
-import de.odinoxin.aiddesk.dialogs.Callback;
-import de.odinoxin.aiddesk.dialogs.DecisionDialog;
-import de.odinoxin.aiddesk.controls.refbox.RefBox;
-import de.odinoxin.aiddesk.controls.translateable.Button;
+
+import java.util.Optional;
 
 public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
@@ -83,16 +86,18 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.btnDelete = (Button) this.root.lookup("#btnDelete");
             this.btnDelete.setOnAction(ev ->
             {
-                if (this.getRecordItem() != null && this.getRecordItem().getId() != 0)
-                    DecisionDialog.showDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?", () ->
-                    {
+                if (this.getRecordItem() != null && this.getRecordItem().getId() != 0) {
+                    DecisionDialog dialog = new DecisionDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?");
+                    Optional<ButtonType> dialogRes = dialog.showAndWait();
+                    if (ButtonType.OK.equals(dialogRes)) {
                         boolean succeeded = this.onDelete();
                         if (succeeded) {
                             this.loadRecord(0);
                             this.onNew();
                             MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.");
                         }
-                    }, null);
+                    }
+                }
             });
             setButtonEnter(this.btnDelete);
             this.show();
@@ -145,7 +150,10 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         };
 
         if (this.getRecordItem() != null && this.getRecordItem().isChanged()) {
-            DecisionDialog.showDialog(this, "Änderugen verwerfen?", "Möchten Sie die aktuellen Änderungen verwerfen?", load, null);
+            DecisionDialog dialog = new DecisionDialog(this, "Änderugen verwerfen?", "Möchten Sie die aktuellen Änderungen verwerfen?");
+            Optional<ButtonType> dialogRes = dialog.showAndWait();
+            if (ButtonType.OK.equals(dialogRes))
+                load.call();
         } else
             load.call();
     }

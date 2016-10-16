@@ -1,43 +1,28 @@
 package de.odinoxin.aiddesk.dialogs;
 
-import javafx.scene.Parent;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
+import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Modality;
 import javafx.stage.Window;
-import de.odinoxin.aiddesk.controls.translateable.Label;
-import de.odinoxin.aiddesk.controls.translateable.Button;
 
-public class DecisionDialog {
+public class DecisionDialog extends Alert {
 
-    public static void showDialog(Window owner, String title, String msg, Callback positve, Callback negative) {
-        Stage stage = Dialog.getStage(owner, "decisiondialog", title, msg);
-        Parent root = stage.getScene().getRoot();
-        Label lblMsg = (Label) root.lookup("#lblMsg");
-        lblMsg.setText(msg);
-        DecisionDialog.initButton(stage, (Button) root.lookup("#btnPositive"), positve);
-        Button btnNegative = (Button) root.lookup("#btnNegative");
-        DecisionDialog.initButton(stage, btnNegative, negative);
-        btnNegative.requestFocus();
-        stage.show();
-    }
+    public DecisionDialog(Window owner, String title, String msg) {
+        super(AlertType.CONFIRMATION, TranslatorMapper.getTranslation(msg));
 
-    private static void initButton(Stage stage, Button btn, Callback callback) {
-        if (btn == null)
-            return;
+        this.setHeaderText(TranslatorMapper.getTranslation(title));
 
-        btn.setOnAction(ev ->
-        {
-            if (stage != null)
-                stage.close();
-            if (callback != null)
-                callback.call();
-        });
-        btn.setOnKeyPressed(ev ->
-        {
-            if (ev.getCode() == KeyCode.ENTER) {
-                btn.fire();
-                ev.consume();
-            }
-        });
+        Button btnOK = (Button) this.getDialogPane().lookupButton(ButtonType.OK);
+        btnOK.setDefaultButton(false);
+
+        Button btnCancel = (Button) this.getDialogPane().lookupButton(ButtonType.CANCEL);
+        btnCancel.setDefaultButton(true);
+        Platform.runLater(() -> btnCancel.requestFocus());
+
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.initOwner(owner);
     }
 }

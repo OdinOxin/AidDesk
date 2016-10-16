@@ -89,7 +89,6 @@
                text="Passwort"
                minWidth="125"
                maxWidth="125"
-               required="true"
                GridPane.rowIndex="4"
                GridPane.columnIndex="0"/>
         <Button id="btnPwd"

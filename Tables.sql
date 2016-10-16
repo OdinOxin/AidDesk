@@ -1,4 +1,11 @@
-﻿DROP TABLE Translations
+﻿DROP TABLE Plugins
+CREATE TABLE Plugins
+(
+	ID INT IDENTITY(1, 1) PRIMARY KEY,
+	Name VARCHAR(50) NOT NULL UNIQUE,
+)
+
+DROP TABLE Translations
 CREATE TABLE Translations
 (
 	ID INT IDENTITY(1,1) PRIMARY KEY,
@@ -11,10 +18,8 @@ DROP TABLE RefBoxViews
 CREATE TABLE RefBoxViews
 (
 	ID INT IDENTITY(1,1) PRIMARY KEY,
-	Name VARCHAR(50),
-	ViewName VARCHAR(50),
-	CONSTRAINT cUniqueName UNIQUE(ViewName),
-	CONSTRAINT cUniqueViewName UNIQUE(ViewName),
+	Name VARCHAR(50) UNIQUE,
+	ViewName VARCHAR(50) UNIQUE,
 )
 
 DROP TABLE Countries
@@ -27,14 +32,6 @@ CREATE TABLE Countries
 	AreaCode VARCHAR(5),
 )
 
-DROP VIEW V_Countries
-CREATE VIEW V_Countries AS SELECT
-C.ID AS ID,
-ISNULL(CONVERT(varchar(50), C.Name), '') AS Text,
-ISNULL(CONVERT(varchar(50), C.Alpha2), '') + ISNULL(' / ' + CONVERT(varchar(50), C.Alpha3), '') + ISNULL(' / ' + CONVERT(varchar(50), C.AreaCode), '') AS SubText
-FROM Countries C
-SELECT * FROM V_Countries
-
 DROP TABLE Addresses
 CREATE TABLE Addresses
 (
@@ -46,16 +43,6 @@ CREATE TABLE Addresses
 	HsNo VARCHAR(10),
 	CONSTRAINT fkCountry FOREIGN KEY (Country) REFERENCES Countries(ID),
 )
-
-DROP VIEW V_Addresses
-CREATE VIEW V_Addresses AS SELECT
-Adr.ID AS ID,
-ISNULL(CONVERT(varchar(50), Adr.Street), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.HsNo), '') AS Text,
-ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.City), '') + ISNULL('
-' + CONVERT(varchar(50), C.Name), '') AS SubText
-FROM Addresses Adr
-INNER JOIN Countries C ON Adr.Country = C.ID
-SELECT * FROM V_Addresses
 
 DROP TABLE People
 CREATE TABLE People
@@ -74,6 +61,10 @@ DROP VIEW V_Login
 CREATE VIEW V_Login AS SELECT ID, Forename + ' ' + Name AS Text, Code AS SubText FROM People
 SELECT * FROM V_Login
 
+DROP VIEW V_Plugins
+CREATE VIEW V_Plugins AS SELECT ID, Name AS Text, '' AS SubText FROM Plugins
+SELECT * FROM V_Plugins
+
 DROP VIEW V_People
 CREATE VIEW V_People AS SELECT
 P.ID AS ID,
@@ -84,3 +75,21 @@ ISNULL(CONVERT(varchar(50), Code), '') + '
 FROM People P
 INNER JOIN Addresses Adr ON P.Address = Adr.ID
 SELECT * FROM V_People
+
+DROP VIEW V_Countries
+CREATE VIEW V_Countries AS SELECT
+C.ID AS ID,
+ISNULL(CONVERT(varchar(50), C.Name), '') AS Text,
+ISNULL(CONVERT(varchar(50), C.Alpha2), '') + ISNULL(' / ' + CONVERT(varchar(50), C.Alpha3), '') + ISNULL(' / ' + CONVERT(varchar(50), C.AreaCode), '') AS SubText
+FROM Countries C
+SELECT * FROM V_Countries
+
+DROP VIEW V_Addresses
+CREATE VIEW V_Addresses AS SELECT
+Adr.ID AS ID,
+ISNULL(CONVERT(varchar(50), Adr.Street), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.HsNo), '') AS Text,
+ISNULL(CONVERT(varchar(50), Adr.Zip), '') + ISNULL(' ' + CONVERT(varchar(50), Adr.City), '') + ISNULL('
+' + CONVERT(varchar(50), C.Name), '') AS SubText
+FROM Addresses Adr
+INNER JOIN Countries C ON Adr.Country = C.ID
+SELECT * FROM V_Addresses

@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.plugins;
 
 import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import de.odinoxin.aiddesk.MainMenu;
 import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +23,11 @@ public abstract class Plugin extends Stage {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+        MainMenu.addPlugin(this);
+        this.setOnCloseRequest(ev -> {
+            MainMenu.removePlugin(this);
+        });
 
         this.setScene(new Scene(this.root));
     }
