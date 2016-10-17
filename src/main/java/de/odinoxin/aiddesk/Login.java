@@ -7,6 +7,7 @@ import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.Plugin;
 import de.odinoxin.aiddesk.plugins.people.Person;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -49,7 +50,7 @@ public class Login extends Plugin {
                 this.btnLogin.setDisable(false);
                 this.refboxUser.requestFocus();
             } catch (WebServiceException | MalformedURLException ex) {
-                MsgDialog.showMsg(this, "Error!", ex.getLocalizedMessage());
+                new MsgDialog(this, Alert.AlertType.ERROR, null, ex.getLocalizedMessage()).showAndWait();
             }
         });
         Plugin.setButtonEnter(this.btnConnect);
@@ -79,7 +80,7 @@ public class Login extends Plugin {
                 return;
             }
         }
-        MsgDialog.showMsg(this, "Login", "User or password incorrect!");
+        new MsgDialog(this, Alert.AlertType.ERROR, "Login", "User or password incorrect!").showAndWait();
     }
 
     public static String getServerUrl() {

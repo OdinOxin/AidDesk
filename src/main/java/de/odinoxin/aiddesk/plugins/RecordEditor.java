@@ -9,6 +9,7 @@ import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -90,12 +91,12 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 if (this.getRecordItem() != null && this.getRecordItem().getId() != 0) {
                     DecisionDialog dialog = new DecisionDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?");
                     Optional<ButtonType> dialogRes = dialog.showAndWait();
-                    if (ButtonType.OK.equals(dialogRes)) {
+                    if (ButtonType.OK.equals(dialogRes.get())) {
                         boolean succeeded = this.onDelete();
                         if (succeeded) {
                             this.loadRecord(0);
                             this.onNew();
-                            MsgDialog.showMsg(this, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.");
+                            new MsgDialog(this, Alert.AlertType.INFORMATION, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.").show();
                         }
                     }
                 }
@@ -160,7 +161,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         if (this.getRecordItem() != null && this.getRecordItem().isChanged()) {
             DecisionDialog dialog = new DecisionDialog(this, "Änderugen verwerfen?", "Möchten Sie die aktuellen Änderungen verwerfen?");
             Optional<ButtonType> dialogRes = dialog.showAndWait();
-            if (ButtonType.OK.equals(dialogRes))
+            if (ButtonType.OK.equals(dialogRes.get()))
                 load.call();
         } else
             load.call();

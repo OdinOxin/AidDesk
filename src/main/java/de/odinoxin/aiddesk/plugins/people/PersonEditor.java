@@ -7,6 +7,7 @@ import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
 public class PersonEditor extends RecordEditor<Person> {
@@ -57,7 +58,7 @@ public class PersonEditor extends RecordEditor<Person> {
     protected int onSave() {
         if (this.currentPwdw != null && this.getRecordItem().getPwd() != null)
             if (!PeopleMapper.changePwd(this.getRecordItem().getId(), this.currentPwdw, this.getRecordItem().getPwd()))
-                MsgDialog.showMsg(this, "Fehlgeschlagen!", "Passwort konnte nicht geändert werden.");
+                new MsgDialog(this, Alert.AlertType.ERROR, "Fehlgeschlagen!", "Passwort konnte nicht geändert werden.").showAndWait();
         return PeopleMapper.save(this.getRecordItem());
     }
 

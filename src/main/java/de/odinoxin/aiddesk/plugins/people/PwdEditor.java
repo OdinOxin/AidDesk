@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk.plugins.people;
 
+import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.scene.control.PasswordField;
 import de.odinoxin.aidcloud.mapper.LoginMapper;
@@ -25,11 +26,11 @@ public class PwdEditor extends Plugin {
             this.pwfNew = (PasswordField) this.root.lookup("#pwfNew");
             this.pwfRepeat = (PasswordField) this.root.lookup("#pwfRepeat");
             if (this.pwfNew.getText().isEmpty() || this.pwfRepeat.getText().isEmpty() || !this.pwfNew.getText().equals(this.pwfRepeat.getText())) {
-                MsgDialog.showMsg(this, "Ungültige Eingabe!", "Geben Sie das neue Passwort ein und wiederholen Sie dieses korrekt.");
+                new MsgDialog(this, Alert.AlertType.ERROR, "Ungültige Eingabe!", "Geben Sie das neue Passwort ein und wiederholen Sie dieses korrekt.").showAndWait();
                 return;
             }
             if (!LoginMapper.checkLogin(personEditor.recordId().get(), this.pwfCurrent.getText())) {
-                MsgDialog.showMsg(this, "Ungültige Eingabe!", "Geben Sie das aktuelle Passwort an, um ein neues Passwort zu speichern.");
+                new MsgDialog(this, Alert.AlertType.ERROR, "Ungültige Eingabe!", "Geben Sie das aktuelle Passwort an, um ein neues Passwort zu speichern.").showAndWait();
                 return;
             }
             personEditor.changePwd(this.pwfCurrent.getText(), this.pwfNew.getText());

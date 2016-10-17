@@ -1,27 +1,23 @@
 package de.odinoxin.aiddesk.dialogs;
 
-import javafx.scene.Parent;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
+import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Modality;
 import javafx.stage.Window;
-import de.odinoxin.aiddesk.controls.translateable.Label;
-import de.odinoxin.aiddesk.controls.translateable.Button;
 
-public class MsgDialog {
-    public static void showMsg(Window owner, String title, String msg) {
-        Stage stage = Dialog.getStage(owner, "msgdialog", title, msg);
+public class MsgDialog extends Alert {
 
-        Parent root = stage.getScene().getRoot();
-        Label lblMsg = (Label) root.lookup("#lblMsg");
-        lblMsg.setText(msg);
+    public MsgDialog(Window owner, AlertType type, String title, String msg) {
+        super(type, TranslatorMapper.getTranslation(msg));
 
-        Button btnOK = (Button) root.lookup("#btnOK");
-        btnOK.setOnAction(ev -> stage.close());
-        btnOK.setOnKeyPressed(ev ->
-        {
-            if (ev.getCode() == KeyCode.ENTER)
-                stage.close();
-        });
-        stage.show();
+        if (title != null)
+            this.setHeaderText(TranslatorMapper.getTranslation(title));
+
+        javafx.scene.control.Button btnOK = (javafx.scene.control.Button) this.getDialogPane().lookupButton(ButtonType.OK);
+        btnOK.setDefaultButton(false);
+
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.initOwner(owner);
     }
 }
