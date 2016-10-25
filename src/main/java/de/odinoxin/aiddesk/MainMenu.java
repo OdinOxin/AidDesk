@@ -5,6 +5,8 @@ import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.dialogs.DecisionDialog;
 import de.odinoxin.aiddesk.plugins.Plugin;
 import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
+import de.odinoxin.aiddesk.plugins.contact.information.ContactInformationEditor;
+import de.odinoxin.aiddesk.plugins.contact.types.ContactTypeEditor;
 import de.odinoxin.aiddesk.plugins.countries.CountryEditor;
 import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 import javafx.scene.control.ButtonType;
@@ -23,7 +25,7 @@ public class MainMenu extends Plugin {
     private static List<Plugin> plugins = new ArrayList<>();
 
     public MainMenu() {
-        super("/mainmenu.fxml", "Main Menu");
+        super("/mainmenu.fxml", "Main menu");
 
         this.refBoxPlugins = (RefBox) this.root.lookup("#refBoxPlugins");
         this.refBoxPlugins.refProperty().addListener((observable, oldValue, newValue) -> {
@@ -38,6 +40,12 @@ public class MainMenu extends Plugin {
                     case "Countries":
                         new CountryEditor();
                         break;
+                    case "Contact types":
+                        new ContactTypeEditor();
+                        break;
+                    case "Contact information":
+                        new ContactInformationEditor();
+                        break;
                 }
                 this.refBoxPlugins.setRef(0);
             }
@@ -46,7 +54,7 @@ public class MainMenu extends Plugin {
         this.btnExit = (Button) this.root.lookup("#btnExit");
 
         this.btnLogot.setOnAction(ev -> {
-            DecisionDialog dialog = new DecisionDialog(this, "Logout?", "Logout and close all related windows?");
+            DecisionDialog dialog = new DecisionDialog(this, "Log out?", "Log out and close all related windows?");
             Optional<ButtonType> res = dialog.showAndWait();
             if (ButtonType.OK.equals(res.get())) {
                 for (Plugin plugin : plugins) {

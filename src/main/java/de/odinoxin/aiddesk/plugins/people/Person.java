@@ -13,7 +13,7 @@ public class Person extends RecordItem {
     private StringProperty forename = new SimpleStringProperty();
     private StringProperty code = new SimpleStringProperty();
     private StringProperty pwd = new SimpleStringProperty();
-    private StringProperty language = new SimpleStringProperty();
+    private IntegerProperty language = new SimpleIntegerProperty();
     private IntegerProperty addressId = new SimpleIntegerProperty();
 
     public Person() {
@@ -33,7 +33,7 @@ public class Person extends RecordItem {
         this.setChanged(false);
     }
 
-    public Person(int id, String name, String forename, String code, String language, int addressId) {
+    public Person(int id, String name, String forename, String code, int language, int addressId) {
         this(id);
         this.setName(name);
         this.setForename(forename);
@@ -64,7 +64,7 @@ public class Person extends RecordItem {
         return pwd.get();
     }
 
-    public String getLanguage() {
+    public int getLanguage() {
         return language.get();
     }
 
@@ -88,7 +88,7 @@ public class Person extends RecordItem {
         this.pwd.set(pwd);
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(int language) {
         this.language.set(language);
     }
 
@@ -112,7 +112,7 @@ public class Person extends RecordItem {
         return pwd;
     }
 
-    public StringProperty languageProperty() {
+    public IntegerProperty languageProperty() {
         return language;
     }
 

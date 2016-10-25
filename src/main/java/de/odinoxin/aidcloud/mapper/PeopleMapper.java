@@ -24,9 +24,9 @@ public abstract class PeopleMapper {
         return peopleSvc;
     }
 
-    public static Person get(int personId) {
+    public static Person get(int id) {
         if (PeopleMapper.getSvc() != null) {
-            PersonEntity p = PeopleMapper.getSvc().getPeoplePort().getPerson(personId);
+            PersonEntity p = PeopleMapper.getSvc().getPeoplePort().getPerson(id);
             if (p != null) {
                 return new Person(p.getId(), p.getName(), p.getForename(), p.getCode(), p.getLanguage(), p.getAddressId());
             }
@@ -34,15 +34,15 @@ public abstract class PeopleMapper {
         return null;
     }
 
-    public static int save(Person p) {
+    public static int save(Person item) {
         if (PeopleMapper.getSvc() != null)
-            return PeopleMapper.getSvc().getPeoplePort().savePerson(p.toService());
+            return PeopleMapper.getSvc().getPeoplePort().savePerson(item.toService());
         return 0;
     }
 
-    public static boolean delete(int personId) {
+    public static boolean delete(int id) {
         if (PeopleMapper.getSvc() != null)
-            return PeopleMapper.getSvc().getPeoplePort().deletePerson(personId);
+            return PeopleMapper.getSvc().getPeoplePort().deletePerson(id);
         return false;
     }
 

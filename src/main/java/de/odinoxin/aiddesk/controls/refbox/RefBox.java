@@ -45,6 +45,7 @@ public class RefBox extends VBox {
     private BooleanProperty showNewButton = new SimpleBooleanProperty(this, "showNewButton", false);
     private BooleanProperty showEditButton = new SimpleBooleanProperty(this, "showEditButton", false);
     private BooleanProperty showDetails = new SimpleBooleanProperty(this, "showDetails", false);
+    private BooleanProperty translate = new SimpleBooleanProperty(this, "translate", false);
     private IntegerProperty detailsRows = new SimpleIntegerProperty(this, "detailsRows", 2);
     private ObjectProperty<State> state = new SimpleObjectProperty<>();
 
@@ -217,6 +218,14 @@ public class RefBox extends VBox {
         this.showDetails.set(showDetails);
     }
 
+    public boolean isTranslate() {
+        return translate.get();
+    }
+
+    public void setTranslate(boolean translate) {
+        this.translate.set(translate);
+    }
+
     public int getDetailsRows() {
         return detailsRows.get();
     }
@@ -290,7 +299,7 @@ public class RefBox extends VBox {
         this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
 
         String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
-        List<RefBoxListItem> items = RefBoxMapper.search(this.getName(), highlight);
+        List<RefBoxListItem> items = RefBoxMapper.search(this.getName(), highlight, this.isTranslate());
         this.refBoxList.getSuggestionsList().getItems().addAll(items);
         if (this.refBoxList.getSuggestionsList().getItems().size() > 0) {
             if (state.get() == State.NO_RESULTS)

@@ -15,6 +15,7 @@
 
     <RefBox id="refBoxPlugins"
             name="Plugins"
+            translate="true"
             VBox.vgrow="ALWAYS"/>
 
     <Separator orientation="HORIZONTAL"/>
@@ -32,7 +33,7 @@
         </rowConstraints>
 
         <Button id="btnLogout"
-                text="Logout"
+                text="Log out"
                 prefWidth="125"
                 GridPane.rowIndex="0"
                 GridPane.columnIndex="0"

@@ -15,7 +15,7 @@ public class MsgDialog extends Alert {
             this.setHeaderText(TranslatorMapper.getTranslation(title));
 
         javafx.scene.control.Button btnOK = (javafx.scene.control.Button) this.getDialogPane().lookupButton(ButtonType.OK);
-        btnOK.setDefaultButton(false);
+        btnOK.setDefaultButton(true);
 
         this.initModality(Modality.APPLICATION_MODAL);
         this.initOwner(owner);

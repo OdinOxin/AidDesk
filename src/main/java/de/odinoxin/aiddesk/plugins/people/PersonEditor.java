@@ -5,8 +5,10 @@ import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
+import de.odinoxin.aiddesk.plugins.Plugin;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
+import de.odinoxin.aiddesk.plugins.languages.LanguageEditor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
@@ -16,6 +18,7 @@ public class PersonEditor extends RecordEditor<Person> {
     private TextField txfName;
     private TextField txfCode;
     private Button btnPwd;
+    private RefBox refBoxLanguage;
     private RefBox refBoxAddress;
 
     private String currentPwdw;
@@ -32,6 +35,18 @@ public class PersonEditor extends RecordEditor<Person> {
         this.txfCode = (TextField) this.root.lookup("#txfCode");
         this.btnPwd = (Button) this.root.lookup("#btnPwd");
         this.btnPwd.setOnAction(ev -> new PwdEditor(this));
+        Plugin.setButtonEnter(this.btnPwd);
+        this.refBoxLanguage = (RefBox) this.root.lookup("#refBoxLanguage");
+        this.refBoxLanguage.setOnNewAction(ev -> {
+            LanguageEditor editor = new LanguageEditor();
+            editor.recordId().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setRef((int) newValue));
+            editor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.update());
+        });
+        this.refBoxLanguage.setOnEditAction(ev -> {
+            LanguageEditor editor = new LanguageEditor(this.refBoxLanguage.getRef());
+            editor.recordId().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setRef((int) newValue));
+            editor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.update());
+        });
         this.refBoxAddress = (RefBox) this.root.lookup("#refBoxAddress");
         this.refBoxAddress.setOnNewAction(ev -> {
             AddressEditor addressEditor = new AddressEditor();
@@ -89,6 +104,7 @@ public class PersonEditor extends RecordEditor<Person> {
         this.txfForename.textProperty().bindBidirectional(this.getRecordItem().forenameProperty());
         this.txfCode.textProperty().bindBidirectional(this.getRecordItem().codeProperty());
         this.btnPwd.disableProperty().bind(this.getRecordItem().idProperty().isEqualTo(0));
+        this.refBoxLanguage.refProperty().bindBidirectional(this.getRecordItem().languageProperty());
         this.refBoxAddress.refProperty().bindBidirectional(this.getRecordItem().addressIdProperty());
         this.getRecordItem().setChanged(false);
     }

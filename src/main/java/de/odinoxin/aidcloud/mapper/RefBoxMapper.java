@@ -39,12 +39,16 @@ public abstract class RefBoxMapper {
     }
 
     public static List<RefBoxListItem> search(String name, String[] expr) {
+        return search(name, expr, false);
+    }
+
+    public static List<RefBoxListItem> search(String name, String[] expr, boolean translate) {
         List<RefBoxListItem> res = new ArrayList<>();
         if (RefBoxMapper.getSvc() != null) {
             String[] search = expr;
             if (search == null)
                 search = new String[0];
-            List<RefBoxEntity> items = RefBoxMapper.getSvc().getRefBoxPort().search(name, Arrays.asList(search));
+            List<RefBoxEntity> items = RefBoxMapper.getSvc().getRefBoxPort().search(name, Arrays.asList(search), translate ? Login.getLanguage() : null);
             if (items != null) {
                 res.addAll(items.stream().map(item -> new RefBoxListItem(item.getId(), item.getText(), item.getSubText(), expr)).collect(Collectors.toList()));
             }

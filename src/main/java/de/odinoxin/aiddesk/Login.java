@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk;
 
+import de.odinoxin.aidcloud.mapper.LanguagesMapper;
 import de.odinoxin.aidcloud.mapper.LoginMapper;
 import de.odinoxin.aidcloud.mapper.PeopleMapper;
 import de.odinoxin.aidcloud.service.LoginService;
@@ -21,6 +22,7 @@ public class Login extends Plugin {
 
     private static String serverUrl;
     private static Person person;
+    private static String language;
 
     private TextField txfServer;
     private Button btnConnect;
@@ -75,6 +77,7 @@ public class Login extends Plugin {
             Person p = PeopleMapper.get(this.refboxUser.getRef());
             if (p != null) {
                 Login.person = p;
+                Login.language = LanguagesMapper.get(p.getLanguage()).getCode();
                 this.close();
                 new MainMenu();
                 return;
@@ -89,5 +92,8 @@ public class Login extends Plugin {
 
     public static Person getPerson() {
         return Login.person;
+    }
+    public static String getLanguage(){
+        return Login.language;
     }
 }

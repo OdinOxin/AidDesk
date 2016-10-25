@@ -10,6 +10,14 @@ INSERT INTO Translations VALUES ('Ändern', 'Change')
 INSERT INTO Translations VALUES ('Neu', 'New')
 INSERT INTO Translations VALUES ('Auswahl', 'Selection')
 
+INSERT INTO Translations VALUES ('Hauptmenü', 'Main menu')
+INSERT INTO Translations VALUES ('Ausloggen', 'Log out')
+INSERT INTO Translations VALUES ('Ausloggen?', 'Log out?')
+INSERT INTO Translations VALUES ('Ausloggen und alle zugehörigen Fenster schließen?', 'Log out and close all related windows?')
+INSERT INTO Translations VALUES ('Beenden', 'Exit')
+INSERT INTO Translations VALUES ('Beenden?', 'Exit?')
+INSERT INTO Translations VALUES ('AidDesk beenden und alle zugehörigen Fenster schließen?', 'Exit AidDesk and close all related windows?')
+
 INSERT INTO Translations VALUES ('Ungültige Eingabe!', 'Invalid input!')
 INSERT INTO Translations VALUES ('Geben Sie das neue Passwort ein und wiederholen Sie dieses korrekt.', 'Enter the new password and repeat it correctly.')
 INSERT INTO Translations VALUES ('Geben Sie das aktuelle Passwort an, um ein neues Passwort zu speichern.', 'Enter the current password, in order to save a new one.')
@@ -21,6 +29,9 @@ INSERT INTO Translations VALUES ('Daten löschen?', 'Delete data?')
 INSERT INTO Translations VALUES ('Wollen Sie die Daten wirklich unwiderruflich löschen?', 'Are you sure you want to delete the data irrevocably?')
 INSERT INTO Translations VALUES ('Gelöscht!', 'Deleted!')
 INSERT INTO Translations VALUES ('Die Daten wurden erfolgreich gelöscht.', 'Data have been deleted successfully.')
+
+INSERT INTO Translations VALUES ('Sprachen', 'Languages')
+INSERT INTO Translations VALUES ('Sprache', 'Language')
 
 INSERT INTO Translations VALUES ('Personen', 'People')
 INSERT INTO Translations VALUES ('Person', 'Person')
@@ -39,5 +50,17 @@ INSERT INTO Translations VALUES ('Hausnummer', 'House number')
 INSERT INTO Translations VALUES ('PLZ', 'ZIP')
 INSERT INTO Translations VALUES ('Ort', 'City')
 INSERT INTO Translations VALUES ('Land', 'Country')
+
+INSERT INTO Translations VALUES ('Länder', 'Countries')
+INSERT INTO Translations VALUES ('Alpha2', 'Alpha2')
+INSERT INTO Translations VALUES ('Alpha3', 'Alpha3')
+INSERT INTO Translations VALUES ('Vorwahl', 'Area code')
+
+INSERT INTO Translations VALUES ('Kontaktarten', 'Contact types')
+INSERT INTO Translations VALUES ('Kontaktart', 'Contact type')
+INSERT INTO Translations VALUES ('Abkürzung', 'Abbreviation')
+
+INSERT INTO Translations VALUES ('Kontaktinformationen', 'Contact information')
+
 --INSERT INTO Translations VALUES ('', '')
 SELECT * FROM Translations ORDER BY ID

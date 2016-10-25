@@ -24,7 +24,7 @@ public abstract class TranslatorMapper {
 
     public static String getTranslation(String text) {
         if (TranslatorMapper.getSvc() != null)
-            return TranslatorMapper.getSvc().getTranslatorPort().getTranslation(text, Login.getPerson() != null ? Login.getPerson().getLanguage() : null);
+            return TranslatorMapper.getSvc().getTranslatorPort().getTranslation(text, Login.getPerson() != null ? Login.getLanguage() : null);
         return text;
     }
 }
