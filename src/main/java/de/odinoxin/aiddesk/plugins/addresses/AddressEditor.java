@@ -20,7 +20,7 @@ public class AddressEditor extends RecordEditor<Address> {
     }
 
     public AddressEditor(int id) {
-        super("/plugins/addresseditor.fxml", "Adressen");
+        super("/plugins/addresseditor.fxml", "Addresses");
 
         this.txfStreet = (TextField) this.root.lookup("#txfStreet");
         this.txftxfHsNo = (TextField) this.root.lookup("#txfHsNo");

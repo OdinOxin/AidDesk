@@ -28,7 +28,7 @@ public class PersonEditor extends RecordEditor<Person> {
     }
 
     public PersonEditor(int id) {
-        super("/plugins/personeditor.fxml", "Personen");
+        super("/plugins/personeditor.fxml", "People");
 
         this.txfName = (TextField) this.root.lookup("#txfName");
         this.txfForename = (TextField) this.root.lookup("#txfForename");

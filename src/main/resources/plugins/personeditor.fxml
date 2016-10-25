@@ -50,7 +50,7 @@
                 GridPane.columnSpan="2"/>
 
         <Label id="lblForename"
-               text="Vorname"
+               text="Forename"
                minWidth="125"
                maxWidth="125"
                GridPane.rowIndex="1"
@@ -83,13 +83,13 @@
                    GridPane.columnIndex="1"/>
 
         <Label id="txtPwd"
-               text="Passwort"
+               text="Password"
                minWidth="125"
                maxWidth="125"
                GridPane.rowIndex="4"
                GridPane.columnIndex="0"/>
         <Button id="btnPwd"
-                text="Ändern"
+                text="Change"
                 prefWidth="125"
                 GridPane.rowIndex="4"
                 GridPane.columnIndex="1"/>
@@ -121,7 +121,7 @@
             <RowConstraints vgrow="NEVER"/>
         </rowConstraints>
 
-        <Header text="Adresse"
+        <Header text="Address"
                 GridPane.rowIndex="0"
                 GridPane.columnIndex="0"/>
 

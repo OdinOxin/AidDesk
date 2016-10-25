@@ -66,7 +66,7 @@ public class MainMenu extends Plugin {
         });
         Plugin.setButtonEnter(this.btnLogot);
         this.setOnCloseRequest(ev -> {
-            DecisionDialog dialog = new DecisionDialog(this, "Exit?", "Exit AidDesk and close all related windows?");
+            DecisionDialog dialog = new DecisionDialog(this, "Exit?", "Exit AidDesk?");
             Optional<ButtonType> res = dialog.showAndWait();
             if (ButtonType.OK.equals(res.get())) {
                 for (Plugin plugin : plugins) {

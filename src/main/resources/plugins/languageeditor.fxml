@@ -36,7 +36,7 @@
                GridPane.rowIndex="0"
                GridPane.columnIndex="1"/>
     <Label id="lblCode"
-           text="Abkürzung"
+           text="Abbreviation"
            minWidth="125"
            maxWidth="125"
            GridPane.rowIndex="1"
