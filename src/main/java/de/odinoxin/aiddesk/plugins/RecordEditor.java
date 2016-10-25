@@ -72,7 +72,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                     this.btnDelete.setDisable(true);
                 } else {
                     this.original = (T) newValue.clone();
-                    this.txfId.setText(newValue.getId() == 0 ? TranslatorMapper.getTranslation("Neu") : String.valueOf(newValue.getId()));
+                    this.txfId.setText(newValue.getId() == 0 ? TranslatorMapper.getTranslation("New") : String.valueOf(newValue.getId()));
                     if (this.btnSave.disableProperty().isBound())
                         this.btnSave.disableProperty().unbind();
                     this.btnSave.disableProperty().bind(this.storeable.not().or(newValue.changedProperty().not()));
@@ -89,14 +89,14 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.btnDelete.setOnAction(ev ->
             {
                 if (this.getRecordItem() != null && this.getRecordItem().getId() != 0) {
-                    DecisionDialog dialog = new DecisionDialog(this, "Daten löschen?", "Wollen Sie die Daten wirklich unwiderruflich löschen?");
+                    DecisionDialog dialog = new DecisionDialog(this, "Delete data?", "Delete data irrevocably?");
                     Optional<ButtonType> dialogRes = dialog.showAndWait();
                     if (ButtonType.OK.equals(dialogRes.get())) {
                         boolean succeeded = this.onDelete();
                         if (succeeded) {
                             this.loadRecord(0);
                             this.onNew();
-                            new MsgDialog(this, Alert.AlertType.INFORMATION, "Gelöscht!", "Die Daten wurden erfolgreich gelöscht.").show();
+                            new MsgDialog(this, Alert.AlertType.INFORMATION, "Deleted!", "Successfully deleted.").show();
                         }
                     }
                 }
@@ -159,7 +159,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         };
 
         if (this.getRecordItem() != null && this.getRecordItem().isChanged()) {
-            DecisionDialog dialog = new DecisionDialog(this, "Änderugen verwerfen?", "Möchten Sie die aktuellen Änderungen verwerfen?");
+            DecisionDialog dialog = new DecisionDialog(this, "Discard changes?", "Discard current changes?");
             Optional<ButtonType> dialogRes = dialog.showAndWait();
             if (ButtonType.OK.equals(dialogRes.get()))
                 load.call();
