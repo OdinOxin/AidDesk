@@ -2,14 +2,15 @@ package de.odinoxin.aiddesk.plugins.contact.information;
 
 import de.odinoxin.aidcloud.service.ContactInformationEntity;
 import de.odinoxin.aiddesk.plugins.RecordItem;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import de.odinoxin.aiddesk.plugins.contact.types.ContactType;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class ContactInformation extends RecordItem<ContactInformationEntity> {
 
-    private IntegerProperty contactType = new SimpleIntegerProperty();
+    private ObjectProperty<ContactType> contactType = new SimpleObjectProperty<>();
     private StringProperty information = new SimpleStringProperty();
 
     public ContactInformation() {
@@ -25,14 +26,18 @@ public class ContactInformation extends RecordItem<ContactInformationEntity> {
         this.setChanged(false);
     }
 
-    public ContactInformation(int id, int contactType, String information) {
+    public ContactInformation(int id, ContactType contactType, String information) {
         this(id);
         this.setContactType(contactType);
         this.setInformation(information);
         this.setChanged(false);
     }
 
-    public int getContactType() {
+    public ContactInformation(ContactInformationEntity entity) {
+        this(entity.getId(), new ContactType(entity.getContactType()), entity.getInformation());
+    }
+
+    public ContactType getContactType() {
         return contactType.get();
     }
 
@@ -40,7 +45,7 @@ public class ContactInformation extends RecordItem<ContactInformationEntity> {
         return information.get();
     }
 
-    public void setContactType(int contactType) {
+    public void setContactType(ContactType contactType) {
         this.contactType.set(contactType);
     }
 
@@ -48,7 +53,7 @@ public class ContactInformation extends RecordItem<ContactInformationEntity> {
         this.information.set(information);
     }
 
-    public IntegerProperty contactTypeProperty() {
+    public ObjectProperty<ContactType> contactTypeProperty() {
         return contactType;
     }
 
@@ -57,10 +62,10 @@ public class ContactInformation extends RecordItem<ContactInformationEntity> {
     }
 
     @Override
-    public ContactInformationEntity toService() {
+    public ContactInformationEntity toEntity() {
         ContactInformationEntity entity = new ContactInformationEntity();
         entity.setId(this.getId());
-        entity.setContactType(this.getContactType());
+        entity.setContactType(this.getContactType().toEntity());
         entity.setInformation(this.getInformation());
         return entity;
     }

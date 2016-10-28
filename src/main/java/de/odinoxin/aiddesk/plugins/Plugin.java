@@ -1,6 +1,6 @@
 package de.odinoxin.aiddesk.plugins;
 
-import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import de.odinoxin.aidcloud.provider.TranslatorProvider;
 import de.odinoxin.aiddesk.MainMenu;
 import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +15,7 @@ public abstract class Plugin extends Stage {
     protected Parent root;
 
     public Plugin(String res, String title) {
-        this.setTitle(TranslatorMapper.getTranslation(title));
+        this.setTitle(TranslatorProvider.getTranslation(title));
         this.getIcons().add(new Image(Plugin.class.getResource("/AidDesk.png").toString()));
 
         try {

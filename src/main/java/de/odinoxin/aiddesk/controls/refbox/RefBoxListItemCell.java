@@ -23,7 +23,7 @@ public class RefBoxListItemCell extends ListCell<RefBoxListItem> {
         if (item != null) {
             try {
                 this.matched = 0;
-                String idText = String.valueOf(item.getId());
+                String idText = String.valueOf(item.getRecord().getId());
                 this.grdItem = FXMLLoader.load(RefBox.class.getResource("/controls/refboxlistitem.fxml"));
                 this.markup("ID", idText, item.getHighlight());
                 this.markup("Text", item.getText(), item.getHighlight());

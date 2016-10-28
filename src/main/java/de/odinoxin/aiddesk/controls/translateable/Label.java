@@ -1,6 +1,6 @@
 package de.odinoxin.aiddesk.controls.translateable;
 
-import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import de.odinoxin.aidcloud.provider.TranslatorProvider;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +40,7 @@ public class Label extends HBox {
             ex.printStackTrace();
         }
 
-        this.text.addListener((observable, oldValue, newValue) -> this.lblText.setText(TranslatorMapper.getTranslation(newValue)));
+        this.text.addListener((observable, oldValue, newValue) -> this.lblText.setText(TranslatorProvider.getTranslation(newValue)));
         this.required.addListener((observable, oldValue, newValue) ->
         {
             this.lblRequired.setVisible(newValue);

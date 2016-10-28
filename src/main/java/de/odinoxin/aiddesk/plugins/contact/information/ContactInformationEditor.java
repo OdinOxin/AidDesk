@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.plugins.contact.information;
 
-import de.odinoxin.aidcloud.mapper.ContactInformationMapper;
+import de.odinoxin.aidcloud.provider.ContactInformationProvider;
+import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import javafx.scene.control.TextField;
@@ -11,17 +12,17 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
     private TextField txfInformation;
 
     public ContactInformationEditor() {
-        this(0);
+        this(null);
     }
 
-    public ContactInformationEditor(int id) {
+    public ContactInformationEditor(ContactInformation contactInformation) {
         super("/plugins/contactinformationeditor.fxml", "Contact information");
 
         this.refBoxContactType = (RefBox) this.root.lookup("#refBoxContactType");
         this.txfInformation = (TextField) this.root.lookup("#txfInformation");
 
-        this.loadRecord(id);
-        if (id == 0)
+        this.loadRecord(contactInformation);
+        if (contactInformation == null)
             this.onNew();
     }
 
@@ -31,39 +32,32 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
     }
 
     @Override
-    protected int onSave() {
-        return ContactInformationMapper.save(this.getRecordItem());
+    protected ContactInformation onSave() {
+        return ContactInformationProvider.save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return ContactInformationMapper.delete(this.getRecordItem().getId());
+        return ContactInformationProvider.delete(this.getRecordItem().getId());
     }
 
     @Override
-    protected boolean setRecord(int id) {
-        if (id == 0) {
+    protected void setRecord(ContactInformation contactInformation) {
+        if (contactInformation == null)
             this.setRecordItem(new ContactInformation());
-            return true;
-        } else {
-            ContactInformation item = ContactInformationMapper.get(id);
-            if (item != null) {
-                this.setRecordItem(item);
-                return true;
-            }
-        }
-        return false;
+        else
+            this.setRecordItem(contactInformation);
     }
 
     @Override
     protected void bind() {
-        this.refBoxContactType.refProperty().bindBidirectional(this.getRecordItem().contactTypeProperty());
+        this.refBoxContactType.objProperty().bindBidirectional(this.getRecordItem().contactTypeProperty());
         this.txfInformation.textProperty().bindBidirectional(this.getRecordItem().informationProperty());
         this.getRecordItem().setChanged(false);
     }
 
     @Override
-    protected String getRefBoxName() {
-        return "ContactInformation";
+    protected Provider<ContactInformation> getProvider() {
+        return new ContactInformationProvider();
     }
 }

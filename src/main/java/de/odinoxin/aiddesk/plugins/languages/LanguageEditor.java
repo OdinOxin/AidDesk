@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.plugins.languages;
 
-import de.odinoxin.aidcloud.mapper.LanguagesMapper;
+import de.odinoxin.aidcloud.provider.LanguageProvider;
+import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import javafx.application.Platform;
 import javafx.scene.control.TextField;
@@ -11,17 +12,17 @@ public class LanguageEditor extends RecordEditor<Language> {
     private TextField txfCode;
 
     public LanguageEditor() {
-        this(0);
+        this(null);
     }
 
-    public LanguageEditor(int id) {
+    public LanguageEditor(Language language) {
         super("/plugins/languageeditor.fxml", "Languages");
 
         this.txfName = (TextField) this.root.lookup("#txfName");
         this.txfCode = (TextField) this.root.lookup("#txfCode");
 
-        this.loadRecord(id);
-        if (id == 0)
+        this.loadRecord(language);
+        if (language == null)
             this.onNew();
     }
 
@@ -31,28 +32,21 @@ public class LanguageEditor extends RecordEditor<Language> {
     }
 
     @Override
-    protected int onSave() {
-        return LanguagesMapper.save(this.getRecordItem());
+    protected Language onSave() {
+        return LanguageProvider.save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return LanguagesMapper.delete(this.getRecordItem().getId());
+        return LanguageProvider.delete(this.getRecordItem().getId());
     }
 
     @Override
-    protected boolean setRecord(int id) {
-        if (id == 0) {
+    protected void setRecord(Language language) {
+        if (language == null)
             this.setRecordItem(new Language());
-            return true;
-        } else {
-            Language item = LanguagesMapper.get(id);
-            if (item != null) {
-                this.setRecordItem(item);
-                return true;
-            }
-        }
-        return false;
+        else
+            this.setRecordItem(language);
     }
 
     @Override
@@ -63,7 +57,7 @@ public class LanguageEditor extends RecordEditor<Language> {
     }
 
     @Override
-    protected String getRefBoxName() {
-        return "Languages";
+    protected Provider<Language> getProvider() {
+        return new LanguageProvider();
     }
 }

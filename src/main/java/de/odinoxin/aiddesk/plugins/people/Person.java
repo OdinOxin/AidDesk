@@ -1,11 +1,16 @@
 package de.odinoxin.aiddesk.plugins.people;
 
+import de.odinoxin.aidcloud.service.ContactInformationEntity;
 import de.odinoxin.aidcloud.service.PersonEntity;
 import de.odinoxin.aiddesk.plugins.RecordItem;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import de.odinoxin.aiddesk.plugins.addresses.Address;
+import de.odinoxin.aiddesk.plugins.contact.information.ContactInformation;
+import de.odinoxin.aiddesk.plugins.languages.Language;
+import javafx.beans.property.*;
+import javafx.collections.ObservableList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Person extends RecordItem {
 
@@ -13,8 +18,9 @@ public class Person extends RecordItem {
     private StringProperty forename = new SimpleStringProperty();
     private StringProperty code = new SimpleStringProperty();
     private StringProperty pwd = new SimpleStringProperty();
-    private IntegerProperty language = new SimpleIntegerProperty();
-    private IntegerProperty addressId = new SimpleIntegerProperty();
+    private ObjectProperty<Language> language = new SimpleObjectProperty<>();
+    private ObjectProperty<Address> address = new SimpleObjectProperty<>();
+    private ListProperty<ObjectProperty<ContactInformation>> contactInformation = new SimpleListProperty<>();
 
     public Person() {
         super();
@@ -23,7 +29,8 @@ public class Person extends RecordItem {
         this.code.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.pwd.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.language.addListener((observable, oldValue, newValue) -> setChanged(true));
-        this.addressId.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.address.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.contactInformation.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.setChanged(false);
     }
 
@@ -33,19 +40,30 @@ public class Person extends RecordItem {
         this.setChanged(false);
     }
 
-    public Person(int id, String name, String forename, String code, int language, int addressId) {
+    public Person(int id, String name, String forename, String code, Language language, Address address, List<ContactInformation> contactInformation) {
         this(id);
         this.setName(name);
         this.setForename(forename);
         this.setCode(code);
         this.setLanguage(language);
-        this.setAddressId(addressId);
+        this.setAddress(address);
+        this.setContactInformation(contactInformation);
+        this.setChanged(false);
+    }
+
+    public Person(PersonEntity entity)
+    {
+        this(entity.getId(), entity.getName(), entity.getForename(), entity.getCode(), new Language(entity.getLanguage()), new Address(entity.getAddress()), null);
+        List<ContactInformation> list = new ArrayList<>();
+        for(ContactInformationEntity contactInformationEntity : entity.getContactInformation())
+            list.add(new ContactInformation(contactInformationEntity));
+        this.setContactInformation(list);
         this.setChanged(false);
     }
 
     @Override
     protected Object clone() {
-        return new Person(this.getId(), this.getName(), this.getForename(), this.getCode(), this.getLanguage(), this.getAddressId());
+        return new Person(this.getId(), this.getName(), this.getForename(), this.getCode(), this.getLanguage(), this.getAddress(), this.getContactInformation());
     }
 
     public String getName() {
@@ -64,12 +82,20 @@ public class Person extends RecordItem {
         return pwd.get();
     }
 
-    public int getLanguage() {
+    public Language getLanguage() {
         return language.get();
     }
 
-    public int getAddressId() {
-        return addressId.get();
+    public Address getAddress() {
+        return address.get();
+    }
+
+    public List<ContactInformation> getContactInformation() {
+        ObservableList<ObjectProperty<ContactInformation>> list = contactInformation.get();
+        List<ContactInformation> result = new ArrayList<>();
+        for (ObjectProperty<ContactInformation> objProp : list)
+            result.add(objProp.get());
+        return result;
     }
 
     public void setName(String name) {
@@ -88,12 +114,19 @@ public class Person extends RecordItem {
         this.pwd.set(pwd);
     }
 
-    public void setLanguage(int language) {
+    public void setLanguage(Language language) {
         this.language.set(language);
     }
 
-    public void setAddressId(int addressId) {
-        this.addressId.set(addressId);
+    public void setAddress(Address address) {
+        this.address.set(address);
+    }
+
+    public void setContactInformation(List<ContactInformation> contactInformation) {
+        SimpleListProperty<ObjectProperty<ContactInformation>> list = new SimpleListProperty();
+        for (ContactInformation info : contactInformation)
+            list.add(new SimpleObjectProperty<>(info));
+        this.contactInformation.set(list);
     }
 
     public StringProperty nameProperty() {
@@ -112,22 +145,26 @@ public class Person extends RecordItem {
         return pwd;
     }
 
-    public IntegerProperty languageProperty() {
+    public ObjectProperty<Language> languageProperty() {
         return language;
     }
 
-    public IntegerProperty addressIdProperty() {
-        return addressId;
+    public ObjectProperty<Address> addressProperty() {
+        return address;
     }
 
-    public PersonEntity toService() {
-        PersonEntity p = new PersonEntity();
-        p.setId(this.getId());
-        p.setName(this.getName());
-        p.setForename(this.getForename());
-        p.setCode(this.getCode());
-        p.setLanguage(this.getLanguage());
-        p.setAddressId(this.getAddressId());
-        return p;
+    public ListProperty<ObjectProperty<ContactInformation>> contactInformationProperty() {
+        return contactInformation;
+    }
+
+    public PersonEntity toEntity() {
+        PersonEntity entity = new PersonEntity();
+        entity.setId(this.getId());
+        entity.setName(this.getName());
+        entity.setForename(this.getForename());
+        entity.setCode(this.getCode());
+        entity.setLanguage(this.getLanguage().toEntity());
+        entity.setAddress(this.getAddress().toEntity());
+        return entity;
     }
 }

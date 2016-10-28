@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.plugins;
 
-import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import de.odinoxin.aidcloud.provider.Provider;
+import de.odinoxin.aidcloud.provider.TranslatorProvider;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.dialogs.Callback;
@@ -27,10 +28,8 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     private ObjectProperty<T> recordItem = new SimpleObjectProperty<>();
     private BooleanProperty storeable = new SimpleBooleanProperty(true);
     private BooleanProperty deletable = new SimpleBooleanProperty(true);
-    private ReadOnlyIntegerWrapper idWrapper = new ReadOnlyIntegerWrapper();
     private ReadOnlyBooleanWrapper changedWrapper = new ReadOnlyBooleanWrapper();
     private T original;
-    private int loading = -1;
 
     public RecordEditor(String res, String title) {
         super("/plugins/recordeditor.fxml", title);
@@ -39,23 +38,23 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             Node recordView = FXMLLoader.load(RecordEditor.class.getResource(res));
 
             this.refBoxKey = (RefBox) this.root.lookup("#refBoxKey");
-            this.refBoxKey.setName(this.getRefBoxName());
+            this.refBoxKey.setProvider(this.getProvider());
             this.refBoxKey.setOnNewAction(ev ->
             {
-                this.loadRecord(0);
+                this.setRecord(null);
                 this.onNew();
             });
-            this.refBoxKey.refProperty().addListener((observable, oldValue, newValue) -> this.loadRecord((int) newValue));
+            this.refBoxKey.objProperty().addListener((observable, oldValue, newValue) -> this.loadRecord((T) newValue));
             this.txfId = (TextField) this.root.lookup("#txfId");
             ((ScrollPane) this.root.lookup("#scpDetails")).setContent(recordView);
 
             this.btnSave = (Button) this.root.lookup("#btnSave");
             this.btnSave.setOnAction(ev ->
             {
-                int newId = this.onSave();
-                if (newId != 0) {
+                T newObj = this.onSave();
+                if (newObj != null) {
                     this.getRecordItem().setChanged(false);
-                    this.loadRecord(newId);
+                    this.loadRecord(newObj);
                 }
             });
             setButtonEnter(this.btnSave);
@@ -72,7 +71,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                     this.btnDelete.setDisable(true);
                 } else {
                     this.original = (T) newValue.clone();
-                    this.txfId.setText(newValue.getId() == 0 ? TranslatorMapper.getTranslation("New") : String.valueOf(newValue.getId()));
+                    this.txfId.setText(newValue.getId() == 0 ? TranslatorProvider.getTranslation("New") : String.valueOf(newValue.getId()));
                     if (this.btnSave.disableProperty().isBound())
                         this.btnSave.disableProperty().unbind();
                     this.btnSave.disableProperty().bind(this.storeable.not().or(newValue.changedProperty().not()));
@@ -94,7 +93,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                     if (ButtonType.OK.equals(dialogRes.get())) {
                         boolean succeeded = this.onDelete();
                         if (succeeded) {
-                            this.loadRecord(0);
+                            this.loadRecord(null);
                             this.onNew();
                             new MsgDialog(this, Alert.AlertType.INFORMATION, "Deleted!", "Successfully deleted.").show();
                         }
@@ -111,65 +110,52 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     }
 
     private void discard() {
-        if (this.original != null)
-            this.loadRecord(this.original.getId());
+        this.loadRecord(this.original);
     }
 
-    protected T getRecordItem() {
+    public T getRecordItem() {
         return recordItem.get();
     }
 
     protected void setRecordItem(T recordItem) {
         this.recordItem.set(recordItem);
-        if (this.idWrapper.isBound())
-            this.idWrapper.unbind();
-        this.idWrapper.bind(recordItem.idProperty());
         if (this.changedWrapper.isBound())
             this.changedWrapper.unbind();
         this.changedWrapper.bind(recordItem.changedProperty());
     }
 
-    private ObjectProperty<T> recordItem() {
+    public ObjectProperty<T> recordItem() {
         return recordItem;
-    }
-
-    public ReadOnlyIntegerProperty recordId() {
-        return this.idWrapper.getReadOnlyProperty();
     }
 
     public ReadOnlyBooleanProperty isChanged() {
         return this.changedWrapper.getReadOnlyProperty();
     }
 
-    protected void loadRecord(int id) {
-
-        if (id == this.loading)
-            return;
-
-        Callback load = () ->
+    protected void loadRecord(T record) {
+        Callback apply = () ->
         {
-            this.loading = id;
-            if (this.refBoxKey.getRef() == id)
-                this.refBoxKey.update();
-            else
-                this.refBoxKey.setRef(id);
-            if (this.setRecord(id))
-                this.bind();
-            this.loading = -1;
+            this.setRecord(record);
+            this.bind();
         };
+
+        if ((this.getRecordItem() == null && record == null) || (this.getRecordItem() != null && record != null && this.getRecordItem().getId() == record.getId()))
+            return;
 
         if (this.getRecordItem() != null && this.getRecordItem().isChanged()) {
             DecisionDialog dialog = new DecisionDialog(this, "Discard changes?", "Discard current changes?");
             Optional<ButtonType> dialogRes = dialog.showAndWait();
             if (ButtonType.OK.equals(dialogRes.get()))
-                load.call();
+                apply.call();
+            else
+                this.refBoxKey.setObj(this.getRecordItem());
         } else
-            load.call();
+            apply.call();
     }
 
     protected abstract void onNew();
 
-    protected abstract int onSave();
+    protected abstract T onSave();
 
     protected void setStoreable(boolean storeable) {
         this.storeable.set(storeable);
@@ -181,9 +167,9 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         this.deletable.set(deletable);
     }
 
-    protected abstract boolean setRecord(int id);
+    protected abstract void setRecord(T record);
 
     protected abstract void bind();
 
-    protected abstract String getRefBoxName();
+    protected abstract Provider<T> getProvider();
 }

@@ -33,6 +33,11 @@ public class ContactType extends RecordItem<ContactTypeEntity> {
         this.setChanged(false);
     }
 
+    public ContactType(ContactTypeEntity entity)
+    {
+        this(entity.getId(), entity.getName(), entity.getCode(), entity.getRegex());
+    }
+
     public String getName() {
         return name.get();
     }
@@ -70,7 +75,7 @@ public class ContactType extends RecordItem<ContactTypeEntity> {
     }
 
     @Override
-    public ContactTypeEntity toService() {
+    public ContactTypeEntity toEntity() {
         ContactTypeEntity entity = new ContactTypeEntity();
         entity.setId(this.getId());
         entity.setName(this.getName());

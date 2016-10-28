@@ -1,6 +1,6 @@
 package de.odinoxin.aiddesk.controls.translateable;
 
-import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import de.odinoxin.aidcloud.provider.TranslatorProvider;
 import javafx.scene.Node;
 
 public class Button extends javafx.scene.control.Button {
@@ -25,6 +25,6 @@ public class Button extends javafx.scene.control.Button {
     }
 
     private void loadTranslation() {
-        this.setText(TranslatorMapper.getTranslation(this.getText()));
+        this.setText(TranslatorProvider.getTranslation(this.getText()));
     }
 }

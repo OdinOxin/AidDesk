@@ -30,6 +30,10 @@ public class Language extends RecordItem<LanguageEntity> {
         this.setChanged(false);
     }
 
+    public Language(LanguageEntity entity) {
+        this(entity.getId(), entity.getName(), entity.getCode());
+    }
+
     public String getName() {
         return name.get();
     }
@@ -55,7 +59,7 @@ public class Language extends RecordItem<LanguageEntity> {
     }
 
     @Override
-    public LanguageEntity toService() {
+    public LanguageEntity toEntity() {
         LanguageEntity entity = new LanguageEntity();
         entity.setId(this.getId());
         entity.setName(this.getName());

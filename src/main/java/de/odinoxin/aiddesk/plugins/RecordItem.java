@@ -10,8 +10,7 @@ public abstract class RecordItem<T> implements Cloneable {
     private IntegerProperty id = new SimpleIntegerProperty(this, "id", 0);
     private BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
 
-    public RecordItem()
-    {
+    public RecordItem() {
         idProperty().addListener((observable, oldValue, newValue) -> setChanged(true));
     }
 
@@ -49,5 +48,5 @@ public abstract class RecordItem<T> implements Cloneable {
         return changed;
     }
 
-    public abstract T toService();
+    public abstract T toEntity();
 }

@@ -2,10 +2,8 @@ package de.odinoxin.aiddesk.plugins.addresses;
 
 import de.odinoxin.aidcloud.service.AddressEntity;
 import de.odinoxin.aiddesk.plugins.RecordItem;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import de.odinoxin.aiddesk.plugins.countries.Country;
+import javafx.beans.property.*;
 
 public class Address extends RecordItem<AddressEntity> {
 
@@ -13,7 +11,8 @@ public class Address extends RecordItem<AddressEntity> {
     private StringProperty hsNo = new SimpleStringProperty();
     private StringProperty zip = new SimpleStringProperty();
     private StringProperty city = new SimpleStringProperty();
-    private IntegerProperty country = new SimpleIntegerProperty();
+    private ObjectProperty<Country> country = new SimpleObjectProperty<>();
+    private ReadOnlyIntegerWrapper countryId = new ReadOnlyIntegerWrapper();
 
     public Address() {
         super();
@@ -21,7 +20,12 @@ public class Address extends RecordItem<AddressEntity> {
         this.hsNo.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.zip.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.city.addListener((observable, oldValue, newValue) -> setChanged(true));
-        this.country.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.country.addListener((observable, oldValue, newValue) -> {
+            setChanged(true);
+            if (this.countryId.isBound())
+                this.countryId.unbind();
+            this.countryId.bind(this.getCountry().idProperty());
+        });
         this.setChanged(false);
     }
 
@@ -31,7 +35,7 @@ public class Address extends RecordItem<AddressEntity> {
         this.setChanged(false);
     }
 
-    public Address(int id, String street, String hsNo, String zip, String city, int country) {
+    public Address(int id, String street, String hsNo, String zip, String city, Country country) {
         this(id);
         this.setStreet(street);
         this.setHsNo(hsNo);
@@ -39,6 +43,10 @@ public class Address extends RecordItem<AddressEntity> {
         this.setCity(city);
         this.setCountry(country);
         this.setChanged(true);
+    }
+
+    public Address(AddressEntity entity) {
+        this(entity.getId(), entity.getStreet(), entity.getHsNo(), entity.getZip(), entity.getCity(), new Country(entity.getCountry()));
     }
 
     @Override
@@ -62,8 +70,12 @@ public class Address extends RecordItem<AddressEntity> {
         return city.get();
     }
 
-    public int getCountry() {
+    public Country getCountry() {
         return country.get();
+    }
+
+    public ReadOnlyIntegerProperty countryIdProperty() {
+        return this.countryId.getReadOnlyProperty();
     }
 
     public void setStreet(String street) {
@@ -82,7 +94,7 @@ public class Address extends RecordItem<AddressEntity> {
         this.city.set(city);
     }
 
-    public void setCountry(int country) {
+    public void setCountry(Country country) {
         this.country.set(country);
     }
 
@@ -102,19 +114,19 @@ public class Address extends RecordItem<AddressEntity> {
         return city;
     }
 
-    public IntegerProperty countryProperty() {
+    public ObjectProperty<Country> countryProperty() {
         return country;
     }
 
     @Override
-    public AddressEntity toService() {
-        AddressEntity adr = new AddressEntity();
-        adr.setId(this.getId());
-        adr.setStreet(this.getStreet());
-        adr.setHsNo(this.getHsNo());
-        adr.setZip(this.getZip());
-        adr.setCity(this.getCity());
-        adr.setCountry(this.getCountry());
-        return adr;
+    public AddressEntity toEntity() {
+        AddressEntity entity = new AddressEntity();
+        entity.setId(this.getId());
+        entity.setStreet(this.getStreet());
+        entity.setHsNo(this.getHsNo());
+        entity.setZip(this.getZip());
+        entity.setCity(this.getCity());
+        entity.setCountry(this.getCountry().toEntity());
+        return entity;
     }
 }

@@ -1,29 +1,30 @@
 package de.odinoxin.aiddesk.controls.refbox;
 
+import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
-public class RefBoxListItem {
+public class RefBoxListItem<T extends RecordItem> {
 
-    private int id;
+    private T record;
     private String text;
     private String subText;
     private String[] highlight;
     private DoubleProperty matchProperty = new SimpleDoubleProperty(this, "match");
 
-    public RefBoxListItem(int id, String text, String subText) {
-        this.id = id;
+    public RefBoxListItem(T record, String text, String subText) {
+        this.record = record;
         this.text = text;
         this.subText = subText;
     }
 
-    public RefBoxListItem(int id, String text, String subText, String[] highlight) {
-        this(id, text, subText);
+    public RefBoxListItem(T record, String text, String subText, String[] highlight) {
+        this(record, text, subText);
         this.highlight = highlight;
     }
 
-    public int getId() {
-        return id;
+    public T getRecord() {
+        return record;
     }
 
     public String getText() {
@@ -42,8 +43,8 @@ public class RefBoxListItem {
         return this.matchProperty.get();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setRecord(T record) {
+        this.record = record;
     }
 
     public void setText(String text) {

@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.controls.refbox;
 
-import de.odinoxin.aidcloud.mapper.RefBoxMapper;
+import de.odinoxin.aidcloud.provider.Provider;
+import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,17 +15,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
-public class RefBox extends VBox {
+public class RefBox<T extends RecordItem> extends VBox {
 
     @FXML
     private TextField txfText;
@@ -40,7 +39,7 @@ public class RefBox extends VBox {
     private TextArea txfDetails;
     private RefBoxList refBoxList;
 
-    private IntegerProperty ref = new SimpleIntegerProperty(this, "ref", 0);
+    private ObjectProperty<T> obj = new SimpleObjectProperty<>(this, "obj", null);
     private StringProperty name = new SimpleStringProperty(this, "name");
     private BooleanProperty showNewButton = new SimpleBooleanProperty(this, "showNewButton", false);
     private BooleanProperty showEditButton = new SimpleBooleanProperty(this, "showEditButton", false);
@@ -51,6 +50,8 @@ public class RefBox extends VBox {
 
     private boolean ignoreTextChange;
     private boolean keepText;
+
+    private Provider<T> provider;
 
     public RefBox() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/controls/refbox.fxml"));
@@ -73,11 +74,11 @@ public class RefBox extends VBox {
             if (this.ignoreTextChange || name.get() == null)
                 return;
             this.keepText = true;
-            this.setRef(0);
+            this.setObj(null);
             this.keepText = false;
             this.search();
         });
-        this.ref.addListener((observable, oldValue, newValue) -> this.update());
+        this.obj.addListener((observable, oldValue, newValue) -> this.update());
         this.state.addListener((observable, oldValue, newValue) ->
         {
             switch (newValue) {
@@ -165,7 +166,7 @@ public class RefBox extends VBox {
         this.detailsRows.addListener((observable, oldValue, newValue) -> this.txfDetails.setPrefHeight((int) newValue * 20 + 15));
         this.txfDetails.setPrefHeight(this.getDetailsRows() * 20 + 15);
 
-        this.setRef(0);
+        this.setObj(null);
     }
 
     public String getText() {
@@ -176,12 +177,12 @@ public class RefBox extends VBox {
         this.txfText.setText(text);
     }
 
-    public int getRef() {
-        return this.ref.get();
+    public T getObj() {
+        return obj.get();
     }
 
-    public void setRef(int ref) {
-        this.ref.set(ref);
+    public void setObj(T obj) {
+        this.obj.set(obj);
         if (this.refBoxList != null)
             this.refBoxList.hide();
     }
@@ -234,12 +235,20 @@ public class RefBox extends VBox {
         this.detailsRows.set(detailsRows);
     }
 
+    public Provider<T> getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider<T> provider) {
+        this.provider = provider;
+    }
+
     public StringProperty textProperty() {
         return this.txfText.textProperty();
     }
 
-    public IntegerProperty refProperty() {
-        return this.ref;
+    public ObjectProperty<T> objProperty() {
+        return obj;
     }
 
     public StringProperty nameProperty() {
@@ -275,19 +284,27 @@ public class RefBox extends VBox {
     }
 
     public void update() {
-        RefBoxListItem item = RefBoxMapper.getItem(this.getName(), this.getRef());
-        this.ignoreTextChange = true;
-        if (item != null) {
-            this.setText(item.getText());
-            this.txfDetails.setText(item.getSubText());
-            this.state.set(State.LOGGED_IN);
-        } else {
-            this.state.set(State.SEARCHING);
-            if (!this.keepText)
-                this.txfText.setText("");
-            this.txfDetails.setText("");
-        }
-        this.ignoreTextChange = false;
+////        RefBoxListItem item = RefBoxProvider.getItem(this.getName(), this.getRef());
+//        this.ignoreTextChange = true;
+//        if (this.getObj() != null) {
+//            if (this.getObj() instanceof Person) {
+//                this.setText(String.format("%s %s",
+//                        ((Person) this.getObj()).getForename(),
+//                        ((Person) this.getObj()).getName()));
+//                this.txfDetails.setText(((Person) this.getObj()).getCode());
+//            }
+//
+//
+////            this.setText(item.getText());
+////            this.txfDetails.setText(item.getSubText());
+//            this.state.set(State.LOGGED_IN);
+//        } else {
+//            this.state.set(State.SEARCHING);
+//            if (!this.keepText)
+//                this.txfText.setText("");
+//            this.txfDetails.setText("");
+//        }
+//        this.ignoreTextChange = false;
     }
 
     private void search() {
@@ -299,51 +316,59 @@ public class RefBox extends VBox {
         this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
 
         String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
-        List<RefBoxListItem> items = RefBoxMapper.search(this.getName(), highlight, this.isTranslate());
-        this.refBoxList.getSuggestionsList().getItems().addAll(items);
-        if (this.refBoxList.getSuggestionsList().getItems().size() > 0) {
-            if (state.get() == State.NO_RESULTS)
-                this.state.set(State.SEARCHING);
-            this.refBoxList.getSuggestionsList().setOnKeyPressed(ev ->
+        if(this.provider != null)
+        {
+            List<RefBoxListItem<T>> result = this.provider.search(highlight);
+            for(RefBoxListItem<T> item : result)
             {
-                switch (ev.getCode()) {
-                    case TAB:
-                        this.btnSearch.requestFocus();
-                    case ENTER:
-                        RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
-                        this.setRef(item == null ? 0 : item.getId());
-                        break;
-                    case ESCAPE:
-                        this.refBoxList.hide();
-                        break;
-                }
-            });
-            this.refBoxList.getSuggestionsList().setOnMouseClicked(ev ->
-            {
-                if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2) {
-                    RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
-                    this.setRef(item == null ? 0 : item.getId());
-                }
-            });
-            for (RefBoxListItem item : this.refBoxList.getSuggestionsList().getItems()) {
-                item.matchProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-                {
-                    Collections.sort(RefBox.this.refBoxList.getSuggestionsList().getItems(), (RefBoxListItem item1, RefBoxListItem item2) ->
-                    {
-                        if (item1.getMatch() < item2.getMatch())
-                            return 1;
-                        else if (item1.getMatch() == item2.getMatch())
-                            return 0;
-                        return -1;
-                    });
-                    RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
-                });
-            }
 
-            this.refBoxList.show(this.getScene().getWindow());
-        } else {
-            this.state.set(State.NO_RESULTS);
+            }
         }
+//        List<RefBoxListItem> items = RefBoxProvider.search(this.getName(), highlight, this.isTranslate());
+//        this.refBoxList.getSuggestionsList().getItems().addAll(items);
+//        if (this.refBoxList.getSuggestionsList().getItems().size() > 0) {
+//            if (state.get() == State.NO_RESULTS)
+//                this.state.set(State.SEARCHING);
+//            this.refBoxList.getSuggestionsList().setOnKeyPressed(ev ->
+//            {
+//                switch (ev.getCode()) {
+//                    case TAB:
+//                        this.btnSearch.requestFocus();
+//                    case ENTER:
+//                        RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
+//                        this.setRef(item == null ? 0 : item.getId());
+//                        break;
+//                    case ESCAPE:
+//                        this.refBoxList.hide();
+//                        break;
+//                }
+//            });
+//            this.refBoxList.getSuggestionsList().setOnMouseClicked(ev ->
+//            {
+//                if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2) {
+//                    RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
+//                    this.setRef(item == null ? 0 : item.getId());
+//                }
+//            });
+//            for (RefBoxListItem item : this.refBoxList.getSuggestionsList().getItems()) {
+//                item.matchProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
+//                {
+//                    Collections.sort(RefBox.this.refBoxList.getSuggestionsList().getItems(), (RefBoxListItem item1, RefBoxListItem item2) ->
+//                    {
+//                        if (item1.getMatch() < item2.getMatch())
+//                            return 1;
+//                        else if (item1.getMatch() == item2.getMatch())
+//                            return 0;
+//                        return -1;
+//                    });
+//                    RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
+//                });
+//            }
+//
+//            this.refBoxList.show(this.getScene().getWindow());
+//        } else {
+//            this.state.set(State.NO_RESULTS);
+//        }
     }
 
     private ChangeListener<Boolean> getBtnHighlighter(Button btn) {

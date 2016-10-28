@@ -1,11 +1,13 @@
 package de.odinoxin.aiddesk.plugins.addresses;
 
-import de.odinoxin.aidcloud.mapper.AddressesMapper;
+import de.odinoxin.aidcloud.provider.AddressProvider;
+import de.odinoxin.aidcloud.provider.Provider;
+import de.odinoxin.aiddesk.controls.refbox.RefBox;
+import de.odinoxin.aiddesk.plugins.RecordEditor;
+import de.odinoxin.aiddesk.plugins.countries.Country;
 import de.odinoxin.aiddesk.plugins.countries.CountryEditor;
 import javafx.application.Platform;
 import javafx.scene.control.TextField;
-import de.odinoxin.aiddesk.controls.refbox.RefBox;
-import de.odinoxin.aiddesk.plugins.RecordEditor;
 
 public class AddressEditor extends RecordEditor<Address> {
 
@@ -13,25 +15,25 @@ public class AddressEditor extends RecordEditor<Address> {
     private TextField txftxfHsNo;
     private TextField txftxfZip;
     private TextField txftxfCity;
-    private RefBox refBoxCountry;
+    private RefBox<Country> refBoxCountry;
 
     public AddressEditor() {
-        this(0);
+        this(null);
     }
 
-    public AddressEditor(int id) {
+    public AddressEditor(Address address) {
         super("/plugins/addresseditor.fxml", "Addresses");
 
         this.txfStreet = (TextField) this.root.lookup("#txfStreet");
         this.txftxfHsNo = (TextField) this.root.lookup("#txfHsNo");
         this.txftxfZip = (TextField) this.root.lookup("#txfZip");
         this.txftxfCity = (TextField) this.root.lookup("#txfCity");
-        this.refBoxCountry = (RefBox) this.root.lookup("#refBoxCountry");
+        this.refBoxCountry = (RefBox<Country>) this.root.lookup("#refBoxCountry");
         this.refBoxCountry.setOnNewAction(ev -> new CountryEditor());
-        this.refBoxCountry.setOnEditAction(ev -> new CountryEditor(this.refBoxCountry.getRef()).recordId().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setRef((int) newValue)));
+        this.refBoxCountry.setOnEditAction(ev -> new CountryEditor(this.refBoxCountry.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setObj((Country) newValue)));
 
-        this.loadRecord(id);
-        if (id == 0)
+        this.loadRecord(address);
+        if (address == null)
             this.onNew();
     }
 
@@ -41,28 +43,21 @@ public class AddressEditor extends RecordEditor<Address> {
     }
 
     @Override
-    protected int onSave() {
-        return AddressesMapper.save(this.getRecordItem());
+    protected Address onSave() {
+        return AddressProvider.save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return AddressesMapper.delete(this.getRecordItem().getId());
+        return AddressProvider.delete(this.getRecordItem().getId());
     }
 
     @Override
-    protected boolean setRecord(int id) {
-        if (id == 0) {
+    protected void setRecord(Address address) {
+        if (address == null)
             this.setRecordItem(new Address());
-            return true;
-        } else {
-            Address adr = AddressesMapper.get(id);
-            if (adr != null) {
-                this.setRecordItem(adr);
-                return true;
-            }
-        }
-        return false;
+        else
+            this.setRecordItem(address);
     }
 
     @Override
@@ -71,12 +66,12 @@ public class AddressEditor extends RecordEditor<Address> {
         this.txftxfHsNo.textProperty().bindBidirectional(this.getRecordItem().hsNoProperty());
         this.txftxfZip.textProperty().bindBidirectional(this.getRecordItem().zipProperty());
         this.txftxfCity.textProperty().bindBidirectional(this.getRecordItem().cityProperty());
-        this.refBoxCountry.refProperty().bindBidirectional(this.getRecordItem().countryProperty());
+        this.refBoxCountry.objProperty().bindBidirectional(this.getRecordItem().countryProperty());
         this.getRecordItem().setChanged(false);
     }
 
     @Override
-    protected String getRefBoxName() {
-        return "Addresses";
+    protected Provider<Address> getProvider() {
+        return new AddressProvider();
     }
 }

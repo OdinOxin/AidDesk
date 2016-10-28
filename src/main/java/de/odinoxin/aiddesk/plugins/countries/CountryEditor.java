@@ -1,8 +1,9 @@
 package de.odinoxin.aiddesk.plugins.countries;
 
-import javafx.scene.control.TextField;
+import de.odinoxin.aidcloud.provider.CountryProvider;
+import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
-import de.odinoxin.aidcloud.mapper.CountriesMapper;
+import javafx.scene.control.TextField;
 
 public class CountryEditor extends RecordEditor<Country> {
 
@@ -12,10 +13,10 @@ public class CountryEditor extends RecordEditor<Country> {
     private TextField txfAreaCode;
 
     public CountryEditor() {
-        this(0);
+        this(null);
     }
 
-    public CountryEditor(int id) {
+    public CountryEditor(Country country) {
         super("/plugins/countryeditor.fxml", "Countries");
 
         this.txfAlpha2 = (TextField) this.root.lookup("#txfAlpha2");
@@ -23,8 +24,8 @@ public class CountryEditor extends RecordEditor<Country> {
         this.txfName = (TextField) this.root.lookup("#txfName");
         this.txfAreaCode = (TextField) this.root.lookup("#txfAreaCode");
 
-        this.loadRecord(id);
-        if (id == 0)
+        this.loadRecord(country);
+        if (country == null)
             this.onNew();
     }
 
@@ -34,28 +35,21 @@ public class CountryEditor extends RecordEditor<Country> {
     }
 
     @Override
-    protected int onSave() {
-        return CountriesMapper.saveCountry(this.getRecordItem());
+    protected Country onSave() {
+        return CountryProvider.saveCountry(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return CountriesMapper.deleteCountry(this.getRecordItem().getId());
+        return CountryProvider.deleteCountry(this.getRecordItem().getId());
     }
 
     @Override
-    protected boolean setRecord(int id) {
-        if (id == 0) {
+    protected void setRecord(Country country) {
+        if (country == null)
             this.setRecordItem(new Country());
-            return true;
-        } else {
-            Country country = CountriesMapper.getCountry(id);
-            if (country != null) {
-                this.setRecordItem(country);
-                return true;
-            }
-        }
-        return false;
+        else
+            this.setRecordItem(country);
     }
 
     @Override
@@ -68,7 +62,7 @@ public class CountryEditor extends RecordEditor<Country> {
     }
 
     @Override
-    protected String getRefBoxName() {
-        return "Countries";
+    protected Provider<Country> getProvider() {
+        return new CountryProvider();
     }
 }

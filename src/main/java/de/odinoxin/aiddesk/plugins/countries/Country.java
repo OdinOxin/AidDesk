@@ -35,6 +35,10 @@ public class Country extends RecordItem<CountryEntity> {
         this.setChanged(false);
     }
 
+    public Country(CountryEntity entity) {
+        this(entity.getId(), entity.getAlpha2(), entity.getAlpha3(), entity.getName(), entity.getAreaCode());
+    }
+
     public String getAlpha2() {
         return alpha2.get();
     }
@@ -84,7 +88,7 @@ public class Country extends RecordItem<CountryEntity> {
     }
 
     @Override
-    public CountryEntity toService() {
+    public CountryEntity toEntity() {
         CountryEntity countryEntity = new CountryEntity();
         countryEntity.setId(this.getId());
         countryEntity.setAlpha2(this.getAlpha2());

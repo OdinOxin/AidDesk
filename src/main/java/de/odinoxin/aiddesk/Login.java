@@ -1,8 +1,6 @@
 package de.odinoxin.aiddesk;
 
-import de.odinoxin.aidcloud.mapper.LanguagesMapper;
-import de.odinoxin.aidcloud.mapper.LoginMapper;
-import de.odinoxin.aidcloud.mapper.PeopleMapper;
+import de.odinoxin.aidcloud.provider.LoginProvider;
 import de.odinoxin.aidcloud.service.LoginService;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
@@ -26,7 +24,7 @@ public class Login extends Plugin {
 
     private TextField txfServer;
     private Button btnConnect;
-    private RefBox refboxUser;
+    private RefBox<Person> refboxUser;
     private PasswordField pwfPwd;
     private Button btnLogin;
 
@@ -44,7 +42,7 @@ public class Login extends Plugin {
         this.btnConnect.setOnAction(ev -> {
             try {
                 String url = this.txfServer.getText();
-                LoginService loginSvc = new LoginService(new URL(url + "/Login?wsdl"));
+                new LoginService(new URL(url + "/Login?wsdl")); //May throw an Exception
                 Login.serverUrl = url;
                 this.refboxUser.setDisable(false);
                 this.refboxUser.setName("Login");
@@ -56,11 +54,12 @@ public class Login extends Plugin {
             }
         });
         Plugin.setButtonEnter(this.btnConnect);
-        this.refboxUser = (RefBox) this.root.lookup("#refboxUser");
-        this.pwfPwd = (PasswordField) this.root.lookup("#pwfPwd");
-        this.btnLogin = (Button) this.root.lookup("#btnLogin");
+        this.refboxUser = (RefBox<Person>) this.root.lookup("#refboxUser");
         this.refboxUser.setOnAction(ev -> this.tryLogin());
+        this.refboxUser.setProvider(new LoginProvider());
+        this.pwfPwd = (PasswordField) this.root.lookup("#pwfPwd");
         this.pwfPwd.setOnAction(ev -> this.tryLogin());
+        this.btnLogin = (Button) this.root.lookup("#btnLogin");
         this.btnLogin.setOnAction(ev -> this.tryLogin());
         this.btnLogin.setOnKeyPressed(ev -> {
             if (ev.getCode() == KeyCode.ENTER)
@@ -73,15 +72,15 @@ public class Login extends Plugin {
     }
 
     private void tryLogin() {
-        if (LoginMapper.checkLogin(this.refboxUser.getRef(), this.pwfPwd.getText())) {
-            Person p = PeopleMapper.get(this.refboxUser.getRef());
-            if (p != null) {
-                Login.person = p;
-                Login.language = LanguagesMapper.get(p.getLanguage()).getCode();
-                this.close();
-                new MainMenu();
-                return;
-            }
+        Person p = this.refboxUser.getObj();
+        if (p == null)
+            return;
+        if (LoginProvider.checkLogin(p.getId(), this.pwfPwd.getText())) {
+            Login.person = p;
+            Login.language = p.getLanguage().getCode();
+            this.close();
+            new MainMenu();
+            return;
         }
         new MsgDialog(this, Alert.AlertType.ERROR, "Login", "User or password incorrect!").showAndWait();
     }
@@ -93,7 +92,8 @@ public class Login extends Plugin {
     public static Person getPerson() {
         return Login.person;
     }
-    public static String getLanguage(){
+
+    public static String getLanguage() {
         return Login.language;
     }
 }

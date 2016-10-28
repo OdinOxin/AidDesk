@@ -1,6 +1,6 @@
 package de.odinoxin.aiddesk.dialogs;
 
-import de.odinoxin.aidcloud.mapper.TranslatorMapper;
+import de.odinoxin.aidcloud.provider.TranslatorProvider;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,7 +17,7 @@ public abstract class Dialog {
 
     public static Stage getStage(Window owner, String res, String title, String msg) {
         Stage stage = new Stage();
-        stage.setTitle(TranslatorMapper.getTranslation(title));
+        stage.setTitle(TranslatorProvider.getTranslation(title));
         stage.getIcons().add(new Image(Dialog.class.getResource("/AidDesk.png").toString()));
 
         Parent root;
