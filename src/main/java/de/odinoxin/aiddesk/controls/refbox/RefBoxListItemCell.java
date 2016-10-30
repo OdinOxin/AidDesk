@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk.controls.refbox;
 
+import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.GridPane;
@@ -11,13 +12,13 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RefBoxListItemCell extends ListCell<RefBoxListItem> {
+public class RefBoxListItemCell<T extends RecordItem> extends ListCell<RefBoxListItem<T>> {
 
     private GridPane grdItem;
     private int matched;
 
     @Override
-    protected void updateItem(RefBoxListItem item, boolean empty) {
+    protected void updateItem(RefBoxListItem<T> item, boolean empty) {
         super.updateItem(item, empty);
 
         if (item != null) {

@@ -53,6 +53,17 @@ public class PersonProvider implements Provider<Person> {
     }
 
     @Override
+    public RefBoxListItem<Person> getRefBoxItem(Person item) {
+        if (item == null)
+            return null;
+        return new RefBoxListItem<>(item,
+                item.getForename() + " " + item.getName(),
+                item.getCode() + "\n" +
+                        item.getAddress().getStreet() + " " + item.getAddress().getHsNo() + "\n" +
+                        item.getAddress().getZip() + " " + item.getAddress().getCountry().getName());
+    }
+
+    @Override
     public List<RefBoxListItem<Person>> search(String[] expr) {
         if (PersonProvider.getSvc() != null) {
             List<PersonEntity> entities = PersonProvider.getSvc().getPersonProviderPort().searchPerson(Arrays.asList(expr));
@@ -60,11 +71,7 @@ public class PersonProvider implements Provider<Person> {
             for (PersonEntity entity : entities) {
                 if (entity == null)
                     continue;
-                result.add(new RefBoxListItem<Person>(new Person(entity),
-                        entity.getForename() + " " + entity.getName(),
-                        entity.getCode() + "\n" +
-                                entity.getAddress().getStreet() + " " + entity.getAddress().getHsNo() + "\n" +
-                                entity.getAddress().getZip() + " " + entity.getAddress().getCountry().getName()));
+                result.add(getRefBoxItem(new Person(entity)));
             }
             return result;
         }

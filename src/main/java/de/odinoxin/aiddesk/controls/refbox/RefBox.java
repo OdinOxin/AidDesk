@@ -15,12 +15,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 public class RefBox<T extends RecordItem> extends VBox {
@@ -37,7 +39,7 @@ public class RefBox<T extends RecordItem> extends VBox {
     private Button btnSearch;
     @FXML
     private TextArea txfDetails;
-    private RefBoxList refBoxList;
+    private RefBoxList<T> refBoxList;
 
     private ObjectProperty<T> obj = new SimpleObjectProperty<>(this, "obj", null);
     private StringProperty name = new SimpleStringProperty(this, "name");
@@ -284,27 +286,23 @@ public class RefBox<T extends RecordItem> extends VBox {
     }
 
     public void update() {
-////        RefBoxListItem item = RefBoxProvider.getItem(this.getName(), this.getRef());
-//        this.ignoreTextChange = true;
-//        if (this.getObj() != null) {
-//            if (this.getObj() instanceof Person) {
-//                this.setText(String.format("%s %s",
-//                        ((Person) this.getObj()).getForename(),
-//                        ((Person) this.getObj()).getName()));
-//                this.txfDetails.setText(((Person) this.getObj()).getCode());
-//            }
-//
-//
-////            this.setText(item.getText());
-////            this.txfDetails.setText(item.getSubText());
-//            this.state.set(State.LOGGED_IN);
-//        } else {
-//            this.state.set(State.SEARCHING);
-//            if (!this.keepText)
-//                this.txfText.setText("");
-//            this.txfDetails.setText("");
-//        }
-//        this.ignoreTextChange = false;
+        this.ignoreTextChange = true;
+        if (this.getObj() != null) {
+            RefBoxListItem<T> item;
+            if (this.provider != null)
+                item = this.provider.getRefBoxItem(this.getObj());
+            else
+                item = new RefBoxListItem<T>(null, "Provider not set!", "", new String[]{"Provider", "not", "set!"});
+            this.setText(item.getText());
+            this.txfDetails.setText(item.getSubText());
+            this.state.set(State.LOGGED_IN);
+        } else {
+            this.state.set(State.SEARCHING);
+            if (!this.keepText)
+                this.txfText.setText("");
+            this.txfDetails.setText("");
+        }
+        this.ignoreTextChange = false;
     }
 
     private void search() {
@@ -316,59 +314,53 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
 
         String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
-        if(this.provider != null)
-        {
+        if (this.provider != null) {
             List<RefBoxListItem<T>> result = this.provider.search(highlight);
-            for(RefBoxListItem<T> item : result)
-            {
-
+            if (result != null) {
+                this.refBoxList.getSuggestionsList().getItems().addAll(result);
+                if (result.size() > 0) {
+                    if (this.state.get() == State.NO_RESULTS)
+                        this.state.set(State.SEARCHING);
+                    this.refBoxList.getSuggestionsList().setOnKeyPressed(ev ->
+                    {
+                        switch (ev.getCode()) {
+                            case TAB:
+                                this.btnSearch.requestFocus();
+                            case ENTER:
+                                RefBoxListItem<T> item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
+                                this.setObj(item == null ? null : item.getRecord());
+                                break;
+                            case ESCAPE:
+                                this.refBoxList.hide();
+                                break;
+                        }
+                    });
+                    this.refBoxList.getSuggestionsList().setOnMouseClicked(ev ->
+                    {
+                        if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2) {
+                            RefBoxListItem<T> item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
+                            this.setObj(item == null ? null : item.getRecord());
+                        }
+                    });
+                    for (RefBoxListItem item : this.refBoxList.getSuggestionsList().getItems()) {
+                        item.matchProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
+                        {
+                            Collections.sort(RefBox.this.refBoxList.getSuggestionsList().getItems(), (RefBoxListItem item1, RefBoxListItem item2) ->
+                            {
+                                if (item1.getMatch() < item2.getMatch())
+                                    return 1;
+                                else if (item1.getMatch() == item2.getMatch())
+                                    return 0;
+                                return -1;
+                            });
+                            RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
+                        });
+                    }
+                    this.refBoxList.show(this.getScene().getWindow());
+                } else
+                    this.state.set(State.NO_RESULTS);
             }
         }
-//        List<RefBoxListItem> items = RefBoxProvider.search(this.getName(), highlight, this.isTranslate());
-//        this.refBoxList.getSuggestionsList().getItems().addAll(items);
-//        if (this.refBoxList.getSuggestionsList().getItems().size() > 0) {
-//            if (state.get() == State.NO_RESULTS)
-//                this.state.set(State.SEARCHING);
-//            this.refBoxList.getSuggestionsList().setOnKeyPressed(ev ->
-//            {
-//                switch (ev.getCode()) {
-//                    case TAB:
-//                        this.btnSearch.requestFocus();
-//                    case ENTER:
-//                        RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
-//                        this.setRef(item == null ? 0 : item.getId());
-//                        break;
-//                    case ESCAPE:
-//                        this.refBoxList.hide();
-//                        break;
-//                }
-//            });
-//            this.refBoxList.getSuggestionsList().setOnMouseClicked(ev ->
-//            {
-//                if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2) {
-//                    RefBoxListItem item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
-//                    this.setRef(item == null ? 0 : item.getId());
-//                }
-//            });
-//            for (RefBoxListItem item : this.refBoxList.getSuggestionsList().getItems()) {
-//                item.matchProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-//                {
-//                    Collections.sort(RefBox.this.refBoxList.getSuggestionsList().getItems(), (RefBoxListItem item1, RefBoxListItem item2) ->
-//                    {
-//                        if (item1.getMatch() < item2.getMatch())
-//                            return 1;
-//                        else if (item1.getMatch() == item2.getMatch())
-//                            return 0;
-//                        return -1;
-//                    });
-//                    RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
-//                });
-//            }
-//
-//            this.refBoxList.show(this.getScene().getWindow());
-//        } else {
-//            this.state.set(State.NO_RESULTS);
-//        }
     }
 
     private ChangeListener<Boolean> getBtnHighlighter(Button btn) {

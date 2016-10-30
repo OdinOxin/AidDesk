@@ -51,6 +51,11 @@ public class CountryProvider implements Provider<Country> {
     }
 
     @Override
+    public RefBoxListItem<Country> getRefBoxItem(Country item) {
+        return null;
+    }
+
+    @Override
     public List<RefBoxListItem<Country>> search(String[] expr) {
         return null;
     }

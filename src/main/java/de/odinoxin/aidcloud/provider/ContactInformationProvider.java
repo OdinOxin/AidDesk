@@ -51,6 +51,11 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
     }
 
     @Override
+    public RefBoxListItem<ContactInformation> getRefBoxItem(ContactInformation item) {
+        return null;
+    }
+
+    @Override
     public List<RefBoxListItem<ContactInformation>> search(String[] expr) {
         return null;
     }

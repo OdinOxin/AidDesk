@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk.controls.refbox;
 
+import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ListView;
@@ -7,9 +8,9 @@ import javafx.stage.Popup;
 
 import java.io.IOException;
 
-public class RefBoxList extends Popup {
+public class RefBoxList<T extends RecordItem> extends Popup {
 
-    private ListView<RefBoxListItem> lvSuggestions;
+    private ListView<RefBoxListItem<T>> lvSuggestions;
 
     public RefBoxList(Point2D pos) {
         try {
@@ -25,7 +26,7 @@ public class RefBoxList extends Popup {
         getContent().add(this.lvSuggestions);
     }
 
-    public ListView<RefBoxListItem> getSuggestionsList() {
+    public ListView<RefBoxListItem<T>> getSuggestionsList() {
         return this.lvSuggestions;
     }
 

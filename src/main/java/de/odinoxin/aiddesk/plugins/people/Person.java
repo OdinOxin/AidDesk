@@ -51,13 +51,14 @@ public class Person extends RecordItem {
         this.setChanged(false);
     }
 
-    public Person(PersonEntity entity)
-    {
-        this(entity.getId(), entity.getName(), entity.getForename(), entity.getCode(), new Language(entity.getLanguage()), new Address(entity.getAddress()), null);
-        List<ContactInformation> list = new ArrayList<>();
-        for(ContactInformationEntity contactInformationEntity : entity.getContactInformation())
-            list.add(new ContactInformation(contactInformationEntity));
-        this.setContactInformation(list);
+    public Person(PersonEntity entity) {
+        this(entity.getId(), entity.getName(), entity.getForename(), entity.getCode(), entity.getLanguage() == null ? null : new Language(entity.getLanguage()), entity.getAddress() == null ? null : new Address(entity.getAddress()), null);
+        if (entity.getContactInformation() != null) {
+            List<ContactInformation> list = new ArrayList<>();
+            for (ContactInformationEntity contactInformationEntity : entity.getContactInformation())
+                list.add(new ContactInformation(contactInformationEntity));
+            this.setContactInformation(list);
+        }
         this.setChanged(false);
     }
 
@@ -124,8 +125,9 @@ public class Person extends RecordItem {
 
     public void setContactInformation(List<ContactInformation> contactInformation) {
         SimpleListProperty<ObjectProperty<ContactInformation>> list = new SimpleListProperty();
-        for (ContactInformation info : contactInformation)
-            list.add(new SimpleObjectProperty<>(info));
+        if (contactInformation != null)
+            for (ContactInformation info : contactInformation)
+                list.add(new SimpleObjectProperty<>(info));
         this.contactInformation.set(list);
     }
 

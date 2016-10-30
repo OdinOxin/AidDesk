@@ -77,7 +77,7 @@ public class Login extends Plugin {
             return;
         if (LoginProvider.checkLogin(p.getId(), this.pwfPwd.getText())) {
             Login.person = p;
-            Login.language = p.getLanguage().getCode();
+            Login.language = p.getLanguage() == null ? null : p.getLanguage().getCode();
             this.close();
             new MainMenu();
             return;

@@ -52,6 +52,11 @@ public class LanguageProvider implements Provider<Language> {
     }
 
     @Override
+    public RefBoxListItem<Language> getRefBoxItem(Language item) {
+        return null;
+    }
+
+    @Override
     public List<RefBoxListItem<Language>> search(String[] expr) {
         return null;
     }

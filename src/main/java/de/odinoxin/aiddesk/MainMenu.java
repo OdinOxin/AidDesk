@@ -99,10 +99,17 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
     }
 
     @Override
+    public RefBoxListItem<PluginItem> getRefBoxItem(PluginItem item) {
+        if (item == null)
+            return null;
+        return new RefBoxListItem<>(item, item.getName(), "");
+    }
+
+    @Override
     public List<RefBoxListItem<PluginItem>> search(String[] expr) {
         List<RefBoxListItem<PluginItem>> items = new ArrayList<>();
         for (PluginItem item : PLUGIN_ITEMS)
-            items.add(new RefBoxListItem<PluginItem>(item, item.getName(), ""));
+            items.add(getRefBoxItem(item));
         return items;
     }
 

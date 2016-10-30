@@ -51,6 +51,11 @@ public class AddressProvider implements Provider<Address> {
     }
 
     @Override
+    public RefBoxListItem<Address> getRefBoxItem(Address item) {
+        return null;
+    }
+
+    @Override
     public List<RefBoxListItem<Address>> search(String[] expr) {
         return null;
     }

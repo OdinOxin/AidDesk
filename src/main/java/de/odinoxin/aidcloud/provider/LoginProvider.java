@@ -35,17 +35,25 @@ public class LoginProvider implements Provider<Person> {
     }
 
     @Override
+    public RefBoxListItem<Person> getRefBoxItem(Person item) {
+        if (item == null)
+            return null;
+        return new RefBoxListItem<>(item,
+                item.getForename() + " " + item.getName(),
+                item.getCode());
+    }
+
+    @Override
     public List<RefBoxListItem<Person>> search(String[] expr) {
         if (LoginProvider.getSvc() != null) {
             List<PersonEntity> entities = LoginProvider.getSvc().searchLogin(expr == null ? null : Arrays.asList(expr));
             List<RefBoxListItem<Person>> result = new ArrayList<>();
-            for (PersonEntity entity : entities) {
-                if (entity == null)
-                    continue;
-                result.add(new RefBoxListItem<Person>(new Person(entity),
-                        entity.getForename() + " " + entity.getName(),
-                        entity.getCode()));
-            }
+            if (entities != null)
+                for (PersonEntity entity : entities) {
+                    if (entity == null)
+                        continue;
+                    result.add(getRefBoxItem(new Person(entity)));
+                }
             return result;
         }
         return null;
