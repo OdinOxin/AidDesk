@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.odinoxin.aiddesk.controls.Header?>
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import de.odinoxin.aiddesk.controls.translateable.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns="http://javafx.com/javafx/8"
+          id="humansGrid"
+          vgap="5"
+          hgap="5">
+
+    <padding>
+        <Insets left="5" top="5" right="5" bottom="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
+
+    <GridPane GridPane.rowIndex="0"
+              GridPane.columnIndex="0"
+              hgap="5"
+              vgap="5">
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <Header text="Person"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="0"
+                GridPane.columnSpan="2"/>
+
+        <Label id="lblForename"
+               text="Forename"
+               minWidth="125"
+               maxWidth="125"
+               GridPane.rowIndex="1"
+               GridPane.columnIndex="0"/>
+        <TextField id="txfForename"
+                   maxWidth="400"
+                   GridPane.rowIndex="1"
+                   GridPane.columnIndex="1"/>
+
+        <Label id="lblName"
+               text="Name"
+               minWidth="125"
+               maxWidth="125"
+               GridPane.rowIndex="2"
+               GridPane.columnIndex="0"/>
+        <TextField id="txfName"
+                   maxWidth="400"
+                   GridPane.rowIndex="2"
+                   GridPane.columnIndex="1"/>
+
+        <Label id="lblCode"
+               text="Kürzel"
+               minWidth="125"
+               maxWidth="125"
+               GridPane.rowIndex="3"
+               GridPane.columnIndex="0"/>
+        <TextField id="txfCode"
+                   maxWidth="400"
+                   GridPane.rowIndex="3"
+                   GridPane.columnIndex="1"/>
+
+        <Label id="txtPwd"
+               text="Password"
+               minWidth="125"
+               maxWidth="125"
+               GridPane.rowIndex="4"
+               GridPane.columnIndex="0"/>
+        <Button id="btnPwd"
+                text="Change"
+                prefWidth="125"
+                GridPane.rowIndex="4"
+                GridPane.columnIndex="1"/>
+
+        <Label id="lblLanguage"
+               text="Language"
+               minWidth="125"
+               maxWidth="125"
+               GridPane.rowIndex="5"
+               GridPane.columnIndex="0"/>
+        <RefBox id="refBoxLanguage"
+                name="Languages"
+                showEditButton="true"
+                showNewButton="true"
+                GridPane.rowIndex="5"
+                GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <GridPane GridPane.rowIndex="0"
+              GridPane.columnIndex="1"
+              hgap="5"
+              vgap="5">
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <Header text="Address"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="0"/>
+
+        <RefBox id="refBoxAddress"
+                name="Addresses"
+                showNewButton="true"
+                showEditButton="true"
+                showDetails="true"
+                GridPane.rowIndex="1"
+                GridPane.columnIndex="0"/>
+    </GridPane>
+</GridPane>

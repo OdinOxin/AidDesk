@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.geometry.Insets?>
+
+<ListView id="lvSuggestions">
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+</ListView>

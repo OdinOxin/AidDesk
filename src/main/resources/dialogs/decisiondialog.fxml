@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import de.odinoxin.aiddesk.controls.translateable.Label?>
+<?import de.odinoxin.aiddesk.controls.translateable.Button?>
+
+<VBox xmlns="http://javafx.com/javafx/8"
+      id="msgGrid"
+      alignment="CENTER"
+      spacing="25">
+
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+
+    <Label id="lblMsg"
+           minWidth="-Infinity"
+           maxWidth="-Infinity"/>
+
+    <HBox id="hbxButtons"
+          minWidth="-Infinity"
+          maxWidth="-Infinity"
+          spacing="5">
+        <Button id="btnPositive"
+                text="Ja"/>
+        <Button id="btnNegative"
+                text="Nein"/>
+    </HBox>
+</VBox>

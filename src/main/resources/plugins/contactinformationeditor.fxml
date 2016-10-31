@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import de.odinoxin.aiddesk.controls.translateable.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns="http://javafx.com/javafx/8"
+          vgap="5"
+          hgap="5">
+
+    <padding>
+        <Insets left="5" top="5" right="5" bottom="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
+
+    <Label id="lblContactType"
+           text="Contact type"
+           minWidth="125"
+           maxWidth="125"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="0"/>
+    <RefBox id="refBoxContactType"
+            name="ContactTypes"
+            showNewButton="true"
+            showEditButton="true"
+            maxWidth="400"
+            GridPane.rowIndex="0"
+            GridPane.columnIndex="1"/>
+    <Label id="lblInformation"
+           text="Information"
+           minWidth="125"
+           maxWidth="125"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfInformation"
+               maxWidth="400"
+               GridPane.rowIndex="1"
+               GridPane.columnIndex="1"/>
+</GridPane>

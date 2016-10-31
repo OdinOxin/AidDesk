@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.TextField?>
+<?import de.odinoxin.aiddesk.controls.translateable.Label?>
+
+<GridPane xmlns="http://javafx.com/javafx/8"
+          vgap="5"
+          hgap="5">
+
+    <padding>
+        <Insets left="5" top="5" right="5" bottom="5"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
+
+    <Label id="lblAlpha2"
+           text="Alpha2"
+           minWidth="125"
+           maxWidth="125"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfAlpha2"
+               maxWidth="75"
+               GridPane.rowIndex="0"
+               GridPane.columnIndex="1"/>
+    <Label id="lblAlpha3"
+           text="Alpha3"
+           minWidth="125"
+           maxWidth="125"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfAlpha3"
+               maxWidth="75"
+               GridPane.rowIndex="1"
+               GridPane.columnIndex="1"/>
+    <Label id="lblName"
+           text="Name"
+           minWidth="125"
+           maxWidth="125"
+           GridPane.rowIndex="2"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfName"
+               maxWidth="400"
+               GridPane.rowIndex="2"
+               GridPane.columnIndex="1"/>
+    <Label id="lblAreaCode"
+           text="Vorwahl"
+           minWidth="125"
+           maxWidth="125"
+           GridPane.rowIndex="3"
+           GridPane.columnIndex="0"/>
+    <TextField id="txfAreaCode"
+               maxWidth="75"
+               GridPane.rowIndex="3"
+               GridPane.columnIndex="1"/>
+</GridPane>

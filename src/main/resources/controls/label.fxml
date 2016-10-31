@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+
+<fx:root type="javafx.scene.layout.HBox"
+         xmlns:fx="http://javafx.com/fxml"
+         alignment="CENTER_LEFT">
+
+    <Label fx:id="lblText"/>
+    <Label fx:id="lblRequired"
+           text="*"
+           style="-fx-text-fill: red"/>
+
+</fx:root>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Separator?>
+<?import de.odinoxin.aiddesk.controls.translateable.Label?>
+
+<?import javafx.geometry.Insets?>
+<fx:root type="javafx.scene.layout.HBox"
+         xmlns:fx="http://javafx.com/fxml"
+         spacing="5"
+         alignment="CENTER_LEFT">
+
+    <Separator orientation="HORIZONTAL"
+               prefWidth="15">
+        <padding>
+            <Insets top="3"/>
+        </padding>
+    </Separator>
+
+    <Label fx:id="lblHeader"
+           style="-fx-font-weight: bold"/>
+
+    <Separator orientation="HORIZONTAL"
+               HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets top="3"/>
+        </padding>
+    </Separator>
+
+</fx:root>

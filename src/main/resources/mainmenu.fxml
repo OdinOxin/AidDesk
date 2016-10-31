@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import de.odinoxin.aiddesk.controls.translateable.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/8"
+      id="dbGrid"
+      spacing="5">
+
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+
+    <RefBox id="refBoxPlugins"
+            name="Plugins"
+            translate="true"
+            VBox.vgrow="ALWAYS"/>
+
+    <Separator orientation="HORIZONTAL"/>
+
+    <GridPane hgap="5"
+              vgap="5">
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+
+        <Button id="btnLogout"
+                text="Log out"
+                prefWidth="125"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="0"
+                GridPane.halignment="RIGHT"/>
+        <Button id="btnExit"
+                text="Exit"
+                prefWidth="125"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="1"
+                GridPane.halignment="LEFT"/>
+    </GridPane>
+
+
+</VBox>

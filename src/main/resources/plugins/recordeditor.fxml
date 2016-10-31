@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import de.odinoxin.aiddesk.controls.translateable.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/8"
+      id="humansGrid"
+      style="-fx-background-color: lightgray">
+
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+
+    <GridPane hgap="5">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <HBox GridPane.columnIndex="0"
+              alignment="CENTER_LEFT"
+              spacing="5">
+            <Label id="txtKey"
+                   text="Selection"
+                   minWidth="125"
+                   maxWidth="125"/>
+            <RefBox id="refBoxKey"
+                    prefWidth="300"
+                    showNewButton="true"/>
+        </HBox>
+        <HBox GridPane.columnIndex="1"
+              alignment="CENTER_RIGHT"
+              spacing="5">
+            <Label id="lblId"
+                   text="ID"
+                   alignment="CENTER_RIGHT"
+                   minWidth="50"
+                   maxWidth="50"
+                   required="true"/>
+            <TextField id="txfId"
+                       editable="false"
+                       minWidth="125"
+                       maxWidth="125"
+                       alignment="CENTER_RIGHT"/>
+        </HBox>
+    </GridPane>
+
+    <Separator id="sepKey">
+        <padding>
+            <Insets top="5"/>
+        </padding>
+    </Separator>
+
+    <ScrollPane id="scpDetails"
+                fitToWidth="true"
+                fitToHeight="true"
+                VBox.vgrow="ALWAYS"
+                style="-fx-background-color: transparent">
+        <padding>
+            <Insets left="-5" right="-5"/>
+        </padding>
+    </ScrollPane>
+
+    <Separator id="sepButtons">
+        <padding>
+            <Insets bottom="5"/>
+        </padding>
+    </Separator>
+
+    <HBox alignment="CENTER_RIGHT"
+          spacing="5">
+        <Button id="btnSave"
+                prefWidth="125"
+                text="Save"/>
+        <Button id="btnDiscard"
+                prefWidth="125"
+                text="Discard"/>
+        <Button id="btnDelete"
+                prefWidth="125"
+                text="Delete"/>
+    </HBox>
+
+</VBox>
