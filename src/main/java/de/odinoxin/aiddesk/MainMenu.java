@@ -36,7 +36,6 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
     public MainMenu() {
         super("/mainmenu.fxml", "Main menu");
 
-        this.refBoxPlugins = (RefBox<PluginItem>) this.root.lookup("#refBoxPlugins");
         this.refBoxPlugins.objProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 switch (newValue.getId()) {
