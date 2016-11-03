@@ -14,7 +14,6 @@
     </padding>
 
     <RefBox id="refBoxPlugins"
-            name="Plugins"
             translate="true"
             VBox.vgrow="ALWAYS"/>
 

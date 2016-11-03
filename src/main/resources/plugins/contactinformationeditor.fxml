@@ -30,7 +30,6 @@
            GridPane.rowIndex="0"
            GridPane.columnIndex="0"/>
     <RefBox id="refBoxContactType"
-            name="ContactTypes"
             showNewButton="true"
             showEditButton="true"
             maxWidth="400"

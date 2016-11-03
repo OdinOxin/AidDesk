@@ -43,7 +43,6 @@ public class RefBox<T extends RecordItem> extends VBox {
     private RefBoxList<T> refBoxList;
 
     private ObjectProperty<T> obj = new SimpleObjectProperty<>(this, "obj", null);
-    private StringProperty name = new SimpleStringProperty(this, "name");
     private BooleanProperty showNewButton = new SimpleBooleanProperty(this, "showNewButton", false);
     private BooleanProperty showEditButton = new SimpleBooleanProperty(this, "showEditButton", false);
     private BooleanProperty showDetails = new SimpleBooleanProperty(this, "showDetails", false);
@@ -74,7 +73,7 @@ public class RefBox<T extends RecordItem> extends VBox {
         });
         this.txfText.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
         {
-            if (this.ignoreTextChange || name.get() == null)
+            if (this.ignoreTextChange)
                 return;
             this.keepText = true;
             this.setObj(null);
@@ -190,14 +189,6 @@ public class RefBox<T extends RecordItem> extends VBox {
             this.refBoxList.hide();
     }
 
-    public String getName() {
-        return this.name.get();
-    }
-
-    public void setName(String name) {
-        this.name.set(name);
-    }
-
     public boolean isShowNewButton() {
         return showNewButton.get();
     }
@@ -254,10 +245,6 @@ public class RefBox<T extends RecordItem> extends VBox {
         return obj;
     }
 
-    public StringProperty nameProperty() {
-        return this.name;
-    }
-
     public BooleanProperty showNewButton() {
         return showNewButton;
     }
@@ -288,20 +275,25 @@ public class RefBox<T extends RecordItem> extends VBox {
 
     public void update() {
         this.ignoreTextChange = true;
-        if (this.getObj() != null) {
-            RefBoxListItem<T> item;
-            if (this.provider != null)
+        RefBoxListItem<T> item;
+        if (this.provider != null) {
+            if (this.getObj() != null) {
                 item = this.provider.getRefBoxItem(this.getObj());
-            else
-                item = new RefBoxListItem<T>(null, "Provider not set!", "", new String[]{"Provider", "not", "set!"});
+                this.setText(item.getText());
+                this.txfDetails.setText(item.getSubText());
+                this.state.set(State.LOGGED_IN);
+            } else {
+                this.state.set(State.SEARCHING);
+                if (!this.keepText)
+                    this.txfText.setText("");
+                this.txfDetails.setText("");
+            }
+
+        } else {
+            item = new RefBoxListItem<T>(null, "Provider not set!", "", new String[]{"Provider", "not", "set!"});
             this.setText(item.getText());
             this.txfDetails.setText(item.getSubText());
-            this.state.set(State.LOGGED_IN);
-        } else {
-            this.state.set(State.SEARCHING);
-            if (!this.keepText)
-                this.txfText.setText("");
-            this.txfDetails.setText("");
+            this.state.set(State.NO_RESULTS);
         }
         this.ignoreTextChange = false;
     }
@@ -318,7 +310,7 @@ public class RefBox<T extends RecordItem> extends VBox {
         if (this.provider != null) {
             List<RefBoxListItem<T>> result = this.provider.search(highlight == null ? null : Arrays.asList(highlight));
             if (result != null) {
-                for(RefBoxListItem<T> item : result)
+                for (RefBoxListItem<T> item : result)
                     item.setHighlight(highlight);
                 this.refBoxList.getSuggestionsList().getItems().addAll(result);
                 if (result.size() > 0) {
@@ -363,6 +355,11 @@ public class RefBox<T extends RecordItem> extends VBox {
                 } else
                     this.state.set(State.NO_RESULTS);
             }
+        } else {
+            RefBoxListItem<T> item = new RefBoxListItem<>(null, "Provider not set!", "", new String[]{"Provider", "not", "set!"});
+            this.setText(item.getText());
+            this.txfDetails.setText(item.getSubText());
+            this.state.set(State.NO_RESULTS);
         }
     }
 

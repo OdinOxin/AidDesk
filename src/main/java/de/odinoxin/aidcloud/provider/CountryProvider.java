@@ -8,6 +8,7 @@ import de.odinoxin.aiddesk.plugins.countries.Country;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CountryProvider implements Provider<Country> {
@@ -52,11 +53,26 @@ public class CountryProvider implements Provider<Country> {
 
     @Override
     public RefBoxListItem<Country> getRefBoxItem(Country item) {
-        return null;
+        if (item == null)
+            return null;
+        return new RefBoxListItem<>(item,
+                (item.getName() == null ? "" : item.getName()),
+                (item.getAlpha2() == null ? "" : item.getAlpha2()) + " " +
+                        (item.getAlpha3() == null ? "" : item.getAlpha3()) + " " +
+                        (item.getAreaCode() == null ? "" : item.getAreaCode()));
     }
 
     @Override
     public List<RefBoxListItem<Country>> search(List<String> expr) {
+        if (CountryProvider.getSvc() != null) {
+            List<CountryEntity> entities = CountryProvider.getSvc().getCountryProviderPort().searchCountry(expr);
+            List<RefBoxListItem<Country>> result = new ArrayList<>();
+            if (entities != null)
+                for (CountryEntity entity : entities)
+                    if (entity != null)
+                        result.add(getRefBoxItem(new Country(entity)));
+            return result;
+        }
         return null;
     }
 }

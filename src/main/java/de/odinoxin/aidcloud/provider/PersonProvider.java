@@ -56,10 +56,15 @@ public class PersonProvider implements Provider<Person> {
         if (item == null)
             return null;
         return new RefBoxListItem<>(item,
-                item.getForename() + " " + item.getName(),
-                item.getCode() + "\n" +
-                        item.getAddress().getStreet() + " " + item.getAddress().getHsNo() + "\n" +
-                        item.getAddress().getZip() + " " + item.getAddress().getCountry().getName());
+                (item.getForename() == null ? "" : item.getForename()) + " " + (item.getName() == null ? "" : item.getName()),
+                (item.getCode() == null ? "" : item.getCode()) + "\n" +
+                        (item.getAddress() == null ? "" :
+                                (item.getAddress().getStreet() == null ? "" : item.getAddress().getStreet()) + " " +
+                                        (item.getAddress().getHsNo() == null ? "" : item.getAddress().getHsNo()) + "\n" +
+                                        (item.getAddress().getZip() == null ? "" : item.getAddress().getZip()) + " " +
+                                        (item.getAddress().getCountry() == null ? "" :
+                                                (item.getAddress().getCountry().getName() == null ? "" : item.getAddress().getCountry().getName())))
+        );
     }
 
     @Override
@@ -67,11 +72,11 @@ public class PersonProvider implements Provider<Person> {
         if (PersonProvider.getSvc() != null) {
             List<PersonEntity> entities = PersonProvider.getSvc().getPersonProviderPort().searchPerson(expr);
             List<RefBoxListItem<Person>> result = new ArrayList<>();
-            for (PersonEntity entity : entities) {
-                if (entity == null)
-                    continue;
-                result.add(getRefBoxItem(new Person(entity)));
-            }
+            if (entities != null)
+                for (PersonEntity entity : entities) {
+                    if (entity != null)
+                        result.add(getRefBoxItem(new Person(entity)));
+                }
             return result;
         }
         return null;

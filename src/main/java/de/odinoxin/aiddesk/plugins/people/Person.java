@@ -94,8 +94,9 @@ public class Person extends RecordItem {
     public List<ContactInformation> getContactInformation() {
         ObservableList<ObjectProperty<ContactInformation>> list = contactInformation.get();
         List<ContactInformation> result = new ArrayList<>();
-        for (ObjectProperty<ContactInformation> objProp : list)
-            result.add(objProp.get());
+        if (list != null)
+            for (ObjectProperty<ContactInformation> objProp : list)
+                result.add(objProp.get());
         return result;
     }
 
@@ -165,8 +166,8 @@ public class Person extends RecordItem {
         entity.setName(this.getName());
         entity.setForename(this.getForename());
         entity.setCode(this.getCode());
-        entity.setLanguage(this.getLanguage().toEntity());
-        entity.setAddress(this.getAddress().toEntity());
+        entity.setLanguage(this.getLanguage() == null ? null : this.getLanguage().toEntity());
+        entity.setAddress(this.getAddress() == null ? null : this.getAddress().toEntity());
         return entity;
     }
 }

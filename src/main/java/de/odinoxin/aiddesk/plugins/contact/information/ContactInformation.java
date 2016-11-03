@@ -65,7 +65,7 @@ public class ContactInformation extends RecordItem<ContactInformationEntity> {
     public ContactInformationEntity toEntity() {
         ContactInformationEntity entity = new ContactInformationEntity();
         entity.setId(this.getId());
-        entity.setContactType(this.getContactType().toEntity());
+        entity.setContactType(this.getContactType() == null ? null : this.getContactType().toEntity());
         entity.setInformation(this.getInformation());
         return entity;
     }

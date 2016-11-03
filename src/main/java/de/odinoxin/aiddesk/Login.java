@@ -45,7 +45,6 @@ public class Login extends Plugin {
                 new LoginService(new URL(url + "/Login?wsdl")); //May throw an Exception
                 Login.serverUrl = url;
                 this.refboxUser.setDisable(false);
-                this.refboxUser.setName("Login");
                 this.pwfPwd.setDisable(false);
                 this.btnLogin.setDisable(false);
                 this.refboxUser.requestFocus();

@@ -126,7 +126,7 @@ public class Address extends RecordItem<AddressEntity> {
         entity.setHsNo(this.getHsNo());
         entity.setZip(this.getZip());
         entity.setCity(this.getCity());
-        entity.setCountry(this.getCountry().toEntity());
+        entity.setCountry(this.getCountry() == null ? null : this.getCountry().toEntity());
         return entity;
     }
 }

@@ -8,6 +8,7 @@ import de.odinoxin.aiddesk.plugins.addresses.Address;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddressProvider implements Provider<Address> {
@@ -52,11 +53,26 @@ public class AddressProvider implements Provider<Address> {
 
     @Override
     public RefBoxListItem<Address> getRefBoxItem(Address item) {
-        return null;
+        if (item == null)
+            return null;
+        return new RefBoxListItem<>(item,
+                (item.getStreet() == null ? "" : item.getStreet()) + " " +
+                        (item.getHsNo() == null ? "" : item.getHsNo()),
+                (item.getZip() == null ? "" : item.getZip()) + " " +
+                        (item.getCountry() == null ? "" : item.getCountry().getName() == null ? "" : item.getCountry().getName()));
     }
 
     @Override
     public List<RefBoxListItem<Address>> search(List<String> expr) {
+        if (AddressProvider.getSvc() != null) {
+            List<AddressEntity> entities = AddressProvider.getSvc().getAddressProviderPort().searchAddress(expr);
+            List<RefBoxListItem<Address>> result = new ArrayList<>();
+            if (entities != null)
+                for (AddressEntity entity : entities)
+                    if (entity != null)
+                        result.add(getRefBoxItem(new Address(entity)));
+            return result;
+        }
         return null;
     }
 }

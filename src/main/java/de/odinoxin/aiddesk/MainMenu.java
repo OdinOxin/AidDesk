@@ -28,14 +28,20 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
 
     private static final PluginItem[] PLUGIN_ITEMS =
             {
-                    new PluginItem(1, "MainMenu"),
-                    new PluginItem(2, "PersonEditor"),
+                    new PluginItem(0, "MainMenu"),
+                    new PluginItem(1, "PersonEditor"),
+                    new PluginItem(2, "AddressEditor"),
+                    new PluginItem(3, "CountryEditor"),
+                    new PluginItem(4, "ContactTypeEditor"),
+                    new PluginItem(5, "ContactInformationEditor"),
             };
     private static List<Plugin> plugins = new ArrayList<>();
 
     public MainMenu() {
         super("/mainmenu.fxml", "Main menu");
 
+        this.refBoxPlugins = (RefBox<PluginItem>) this.root.lookup("#refBoxPlugins");
+        this.refBoxPlugins.setProvider(this);
         this.refBoxPlugins.objProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 switch (newValue.getId()) {

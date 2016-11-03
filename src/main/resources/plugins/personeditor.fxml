@@ -101,7 +101,6 @@
                GridPane.rowIndex="5"
                GridPane.columnIndex="0"/>
         <RefBox id="refBoxLanguage"
-                name="Languages"
                 showEditButton="true"
                 showNewButton="true"
                 GridPane.rowIndex="5"
@@ -126,7 +125,6 @@
                 GridPane.columnIndex="0"/>
 
         <RefBox id="refBoxAddress"
-                name="Addresses"
                 showNewButton="true"
                 showEditButton="true"
                 showDetails="true"

@@ -8,6 +8,7 @@ import de.odinoxin.aiddesk.plugins.contact.information.ContactInformation;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactInformationProvider implements Provider<ContactInformation> {
@@ -52,11 +53,25 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
 
     @Override
     public RefBoxListItem<ContactInformation> getRefBoxItem(ContactInformation item) {
-        return null;
+        if (item == null)
+            return null;
+        return new RefBoxListItem<>(item,
+                (item.getContactType() == null ? "" : item.getContactType().getCode() == null ? "" : item.getContactType().getCode()) + ": " +
+                        (item.getInformation() == null ? "" : item.getInformation()),
+                (item.getContactType() == null ? "" : item.getContactType().getName() == null ? "" : item.getContactType().getName()));
     }
 
     @Override
     public List<RefBoxListItem<ContactInformation>> search(List<String> expr) {
+        if (ContactInformationProvider.getSvc() != null) {
+            List<ContactInformationEntity> entities = ContactInformationProvider.getSvc().getContactInformationProviderPort().searchContactInformation(expr);
+            List<RefBoxListItem<ContactInformation>> result = new ArrayList<>();
+            if (entities != null)
+                for (ContactInformationEntity entity : entities)
+                    if (entity != null)
+                        result.add(getRefBoxItem(new ContactInformation(entity)));
+            return result;
+        }
         return null;
     }
 }

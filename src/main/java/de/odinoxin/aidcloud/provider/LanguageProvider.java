@@ -8,6 +8,7 @@ import de.odinoxin.aiddesk.plugins.languages.Language;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LanguageProvider implements Provider<Language> {
@@ -53,11 +54,25 @@ public class LanguageProvider implements Provider<Language> {
 
     @Override
     public RefBoxListItem<Language> getRefBoxItem(Language item) {
-        return null;
+        if (item == null)
+            return null;
+        return new RefBoxListItem<>(item,
+                (item.getName() == null ? "" : item.getName()),
+                (item.getCode() == null ? "" : item.getCode()));
     }
 
     @Override
     public List<RefBoxListItem<Language>> search(List<String> expr) {
+        if(LanguageProvider.getSvc() != null)
+        {
+            List<LanguageEntity> entities = LanguageProvider.getSvc().getLanguageProviderPort().searchLanguage(expr);
+            List<RefBoxListItem<Language>> result = new ArrayList<>();
+            if(entities != null)
+                for(LanguageEntity entity : entities)
+                    if(entity != null)
+                        result.add(getRefBoxItem(new Language(entity)));
+            return result;
+        }
         return null;
     }
 }

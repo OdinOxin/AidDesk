@@ -48,11 +48,9 @@ public class LoginProvider implements Provider<Person> {
             List<PersonEntity> entities = LoginProvider.getSvc().searchLogin(expr);
             List<RefBoxListItem<Person>> result = new ArrayList<>();
             if (entities != null)
-                for (PersonEntity entity : entities) {
-                    if (entity == null)
-                        continue;
-                    result.add(this.getRefBoxItem(new Person(entity)));
-                }
+                for (PersonEntity entity : entities)
+                    if (entity != null)
+                        result.add(this.getRefBoxItem(new Person(entity)));
             return result;
         }
         return null;
