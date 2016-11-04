@@ -43,7 +43,7 @@ public class Address extends RecordItem<AddressEntity> {
     }
 
     public Address(AddressEntity entity) {
-        this(entity.getId(), entity.getStreet(), entity.getHsNo(), entity.getZip(), entity.getCity(), new Country(entity.getCountry()));
+        this(entity.getId(), entity.getStreet(), entity.getHsNo(), entity.getZip(), entity.getCity(), entity.getCountry() == null ? null : new Country(entity.getCountry()));
     }
 
     @Override

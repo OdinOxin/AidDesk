@@ -56,6 +56,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 if (newObj != null) {
                     this.getRecordItem().setChanged(false);
                     this.loadRecord(newObj);
+                    this.refBoxKey.setObj(newObj);
                 }
             });
             setButtonEnter(this.btnSave);
@@ -126,7 +127,8 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         Callback apply = () ->
         {
             this.setRecord(record);
-            this.bind();
+            if (this.getRecordItem() != null)
+                this.bind();
         };
 
         if (this.getRecordItem() != null && this.getRecordItem().isChanged()) {

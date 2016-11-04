@@ -34,7 +34,7 @@ public class ContactInformation extends RecordItem<ContactInformationEntity> {
     }
 
     public ContactInformation(ContactInformationEntity entity) {
-        this(entity.getId(), new ContactType(entity.getContactType()), entity.getInformation());
+        this(entity.getId(), entity.getContactType() == null ? null : new ContactType(entity.getContactType()), entity.getInformation());
     }
 
     @Override

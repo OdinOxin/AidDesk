@@ -7,6 +7,7 @@ import de.odinoxin.aiddesk.plugins.addresses.Address;
 import de.odinoxin.aiddesk.plugins.contact.information.ContactInformation;
 import de.odinoxin.aiddesk.plugins.languages.Language;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
@@ -125,11 +126,11 @@ public class Person extends RecordItem {
     }
 
     public void setContactInformation(List<ContactInformation> contactInformation) {
-        SimpleListProperty<ObjectProperty<ContactInformation>> list = new SimpleListProperty();
+        List<ObjectProperty<ContactInformation>> tmpList = new ArrayList<>();
         if (contactInformation != null)
             for (ContactInformation info : contactInformation)
-                list.add(new SimpleObjectProperty<>(info));
-        this.contactInformation.set(list);
+                tmpList.add(new SimpleObjectProperty<>(info));
+        this.contactInformation.set(new SimpleListProperty<>(FXCollections.observableList(tmpList)));
     }
 
     public StringProperty nameProperty() {
@@ -168,6 +169,8 @@ public class Person extends RecordItem {
         entity.setCode(this.getCode());
         entity.setLanguage(this.getLanguage() == null ? null : this.getLanguage().toEntity());
         entity.setAddress(this.getAddress() == null ? null : this.getAddress().toEntity());
+        for (ContactInformation info : this.getContactInformation())
+            entity.getContactInformation().add(info.toEntity());
         return entity;
     }
 }
