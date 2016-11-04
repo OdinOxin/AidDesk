@@ -38,6 +38,11 @@ public class ContactType extends RecordItem<ContactTypeEntity> {
         this(entity.getId(), entity.getName(), entity.getCode(), entity.getRegex());
     }
 
+    @Override
+    protected Object clone() {
+        return new ContactType(this.getId(), this.getName(), this.getCode(), this.getRegex());
+    }
+
     public String getName() {
         return name.get();
     }

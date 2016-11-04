@@ -1,14 +1,16 @@
 package de.odinoxin.aiddesk.plugins.contact.information;
 
 import de.odinoxin.aidcloud.provider.ContactInformationProvider;
+import de.odinoxin.aidcloud.provider.ContactTypeProvider;
 import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
+import de.odinoxin.aiddesk.plugins.contact.types.ContactType;
 import javafx.scene.control.TextField;
 
 public class ContactInformationEditor extends RecordEditor<ContactInformation> {
 
-    private RefBox refBoxContactType;
+    private RefBox<ContactType> refBoxContactType;
     private TextField txfInformation;
 
     public ContactInformationEditor() {
@@ -18,7 +20,8 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
     public ContactInformationEditor(ContactInformation contactInformation) {
         super("/plugins/contactinformationeditor.fxml", "Contact information");
 
-        this.refBoxContactType = (RefBox) this.root.lookup("#refBoxContactType");
+        this.refBoxContactType = (RefBox<ContactType>) this.root.lookup("#refBoxContactType");
+        this.refBoxContactType.setProvider(new ContactTypeProvider());
         this.txfInformation = (TextField) this.root.lookup("#txfInformation");
 
         this.loadRecord(contactInformation);

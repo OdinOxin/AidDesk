@@ -20,7 +20,7 @@ import java.util.Optional;
 public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     private TextField txfId;
-    private RefBox refBoxKey;
+    private RefBox<T> refBoxKey;
     private Button btnSave;
     private Button btnDiscard;
     private Button btnDelete;
@@ -37,11 +37,12 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         try {
             Node recordView = FXMLLoader.load(RecordEditor.class.getResource(res));
 
-            this.refBoxKey = (RefBox) this.root.lookup("#refBoxKey");
+            this.refBoxKey = (RefBox<T>) this.root.lookup("#refBoxKey");
             this.refBoxKey.setProvider(this.getProvider());
             this.refBoxKey.setOnNewAction(ev ->
             {
-                this.setRecord(null);
+                this.loadRecord(null);
+                this.refBoxKey.setObj(this.getRecordItem());
                 this.onNew();
             });
             this.refBoxKey.objProperty().addListener((observable, oldValue, newValue) -> this.loadRecord((T) newValue));
@@ -90,7 +91,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 if (this.getRecordItem() != null && this.getRecordItem().getId() != 0) {
                     DecisionDialog dialog = new DecisionDialog(this, "Delete data?", "Delete data irrevocably?");
                     Optional<ButtonType> dialogRes = dialog.showAndWait();
-                    if (ButtonType.OK.equals(dialogRes.get())) {
+                    if (dialogRes.isPresent() && ButtonType.OK.equals(dialogRes.get())) {
                         boolean succeeded = this.onDelete();
                         if (succeeded) {
                             this.loadRecord(null);
@@ -113,17 +114,6 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         this.loadRecord(this.original);
     }
 
-    public T getRecordItem() {
-        return recordItem.get();
-    }
-
-    protected void setRecordItem(T recordItem) {
-        this.recordItem.set(recordItem);
-        if (this.changedWrapper.isBound())
-            this.changedWrapper.unbind();
-        this.changedWrapper.bind(recordItem.changedProperty());
-    }
-
     public ObjectProperty<T> recordItem() {
         return recordItem;
     }
@@ -138,9 +128,6 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.setRecord(record);
             this.bind();
         };
-
-        if ((this.getRecordItem() == null && record == null) || (this.getRecordItem() != null && record != null && this.getRecordItem().getId() == record.getId()))
-            return;
 
         if (this.getRecordItem() != null && this.getRecordItem().isChanged()) {
             DecisionDialog dialog = new DecisionDialog(this, "Discard changes?", "Discard current changes?");
@@ -168,6 +155,17 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     }
 
     protected abstract void setRecord(T record);
+
+    public T getRecordItem() {
+        return recordItem.get();
+    }
+
+    protected void setRecordItem(T recordItem) {
+        this.recordItem.set(recordItem);
+        if (this.changedWrapper.isBound())
+            this.changedWrapper.unbind();
+        this.changedWrapper.bind(recordItem.changedProperty());
+    }
 
     protected abstract void bind();
 

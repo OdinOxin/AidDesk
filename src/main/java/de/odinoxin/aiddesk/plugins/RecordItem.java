@@ -5,6 +5,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
+import java.lang.reflect.ParameterizedType;
+
 public abstract class RecordItem<T> implements Cloneable {
 
     private IntegerProperty id = new SimpleIntegerProperty(this, "id", 0);
@@ -15,14 +17,7 @@ public abstract class RecordItem<T> implements Cloneable {
     }
 
     @Override
-    protected Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
+    protected abstract Object clone();
 
     public int getId() {
         return id.get();

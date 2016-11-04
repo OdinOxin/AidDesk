@@ -37,6 +37,11 @@ public class ContactInformation extends RecordItem<ContactInformationEntity> {
         this(entity.getId(), new ContactType(entity.getContactType()), entity.getInformation());
     }
 
+    @Override
+    protected Object clone() {
+        return new ContactInformation(this.getId(), this.getContactType(), this.getInformation());
+    }
+
     public ContactType getContactType() {
         return contactType.get();
     }

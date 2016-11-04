@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.plugins.addresses;
 
 import de.odinoxin.aidcloud.provider.AddressProvider;
+import de.odinoxin.aidcloud.provider.CountryProvider;
 import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
@@ -29,6 +30,7 @@ public class AddressEditor extends RecordEditor<Address> {
         this.txftxfZip = (TextField) this.root.lookup("#txfZip");
         this.txftxfCity = (TextField) this.root.lookup("#txfCity");
         this.refBoxCountry = (RefBox<Country>) this.root.lookup("#refBoxCountry");
+        this.refBoxCountry.setProvider(new CountryProvider());
         this.refBoxCountry.setOnNewAction(ev -> new CountryEditor());
         this.refBoxCountry.setOnEditAction(ev -> new CountryEditor(this.refBoxCountry.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setObj((Country) newValue)));
 

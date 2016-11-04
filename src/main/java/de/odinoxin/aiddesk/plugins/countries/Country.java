@@ -39,6 +39,11 @@ public class Country extends RecordItem<CountryEntity> {
         this(entity.getId(), entity.getAlpha2(), entity.getAlpha3(), entity.getName(), entity.getAreaCode());
     }
 
+    @Override
+    protected Object clone() {
+        return new Country(this.getId(), this.getAlpha2(), this.getAlpha3(), this.getName(), this.getAreaCode());
+    }
+
     public String getAlpha2() {
         return alpha2.get();
     }

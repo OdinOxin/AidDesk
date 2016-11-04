@@ -1,5 +1,7 @@
 package de.odinoxin.aiddesk.plugins.people;
 
+import de.odinoxin.aidcloud.provider.AddressProvider;
+import de.odinoxin.aidcloud.provider.LanguageProvider;
 import de.odinoxin.aidcloud.provider.PersonProvider;
 import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aiddesk.Login;
@@ -40,6 +42,7 @@ public class PersonEditor extends RecordEditor<Person> {
         this.btnPwd.setOnAction(ev -> new PwdEditor(this));
         Plugin.setButtonEnter(this.btnPwd);
         this.refBoxLanguage = (RefBox<Language>) this.root.lookup("#refBoxLanguage");
+        this.refBoxLanguage.setProvider(new LanguageProvider());
         this.refBoxLanguage.setOnNewAction(ev -> {
             LanguageEditor editor = new LanguageEditor();
             editor.recordItem().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setObj(newValue));
@@ -51,6 +54,7 @@ public class PersonEditor extends RecordEditor<Person> {
             editor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.update());
         });
         this.refBoxAddress = (RefBox<Address>) this.root.lookup("#refBoxAddress");
+        this.refBoxAddress.setProvider(new AddressProvider());
         this.refBoxAddress.setOnNewAction(ev -> {
             AddressEditor addressEditor = new AddressEditor();
             addressEditor.recordItem().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setObj(newValue));

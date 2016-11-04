@@ -126,6 +126,11 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
             this.name = TranslatorProvider.getTranslation(name);
         }
 
+        @Override
+        protected Object clone() {
+            return new PluginItem(this.getId(), this.getName());
+        }
+
         public String getName() {
             return name;
         }

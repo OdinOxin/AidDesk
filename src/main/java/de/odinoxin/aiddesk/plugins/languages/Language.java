@@ -34,6 +34,11 @@ public class Language extends RecordItem<LanguageEntity> {
         this(entity.getId(), entity.getName(), entity.getCode());
     }
 
+    @Override
+    protected Object clone() {
+        return new Language(this.getId(), this.getName(), this.getCode());
+    }
+
     public String getName() {
         return name.get();
     }

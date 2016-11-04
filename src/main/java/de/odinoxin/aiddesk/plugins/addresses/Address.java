@@ -3,7 +3,10 @@ package de.odinoxin.aiddesk.plugins.addresses;
 import de.odinoxin.aidcloud.service.AddressEntity;
 import de.odinoxin.aiddesk.plugins.RecordItem;
 import de.odinoxin.aiddesk.plugins.countries.Country;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class Address extends RecordItem<AddressEntity> {
 
@@ -12,7 +15,6 @@ public class Address extends RecordItem<AddressEntity> {
     private StringProperty zip = new SimpleStringProperty();
     private StringProperty city = new SimpleStringProperty();
     private ObjectProperty<Country> country = new SimpleObjectProperty<>();
-    private ReadOnlyIntegerWrapper countryId = new ReadOnlyIntegerWrapper();
 
     public Address() {
         super();
@@ -20,12 +22,7 @@ public class Address extends RecordItem<AddressEntity> {
         this.hsNo.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.zip.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.city.addListener((observable, oldValue, newValue) -> setChanged(true));
-        this.country.addListener((observable, oldValue, newValue) -> {
-            setChanged(true);
-            if (this.countryId.isBound())
-                this.countryId.unbind();
-            this.countryId.bind(this.getCountry().idProperty());
-        });
+        this.country.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.setChanged(false);
     }
 
@@ -72,10 +69,6 @@ public class Address extends RecordItem<AddressEntity> {
 
     public Country getCountry() {
         return country.get();
-    }
-
-    public ReadOnlyIntegerProperty countryIdProperty() {
-        return this.countryId.getReadOnlyProperty();
     }
 
     public void setStreet(String street) {
