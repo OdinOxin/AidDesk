@@ -59,6 +59,7 @@ public class AddressProvider implements Provider<Address> {
                 (item.getStreet() == null ? "" : item.getStreet()) + " " +
                         (item.getHsNo() == null ? "" : item.getHsNo()),
                 (item.getZip() == null ? "" : item.getZip()) + " " +
+                        (item.getCity() == null ? "" : item.getCity()) + "\n" +
                         (item.getCountry() == null ? "" : item.getCountry().getName() == null ? "" : item.getCountry().getName()));
     }
 

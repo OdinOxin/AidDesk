@@ -43,28 +43,12 @@ public class PersonEditor extends RecordEditor<Person> {
         Plugin.setButtonEnter(this.btnPwd);
         this.refBoxLanguage = (RefBox<Language>) this.root.lookup("#refBoxLanguage");
         this.refBoxLanguage.setProvider(new LanguageProvider());
-        this.refBoxLanguage.setOnNewAction(ev -> {
-            LanguageEditor editor = new LanguageEditor();
-            editor.recordItem().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setObj(newValue));
-            editor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.update());
-        });
-        this.refBoxLanguage.setOnEditAction(ev -> {
-            LanguageEditor editor = new LanguageEditor(this.refBoxLanguage.getObj());
-            editor.recordItem().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setObj(newValue));
-            editor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.update());
-        });
+        this.refBoxLanguage.setOnNewAction(ev -> new LanguageEditor().recordItem().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setObj(newValue)));
+        this.refBoxLanguage.setOnEditAction(ev -> new LanguageEditor(this.refBoxLanguage.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setObj(newValue)));
         this.refBoxAddress = (RefBox<Address>) this.root.lookup("#refBoxAddress");
         this.refBoxAddress.setProvider(new AddressProvider());
-        this.refBoxAddress.setOnNewAction(ev -> {
-            AddressEditor addressEditor = new AddressEditor();
-            addressEditor.recordItem().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setObj(newValue));
-            addressEditor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxAddress.update());
-        });
-        this.refBoxAddress.setOnEditAction(ev -> {
-            AddressEditor addressEditor = new AddressEditor(this.refBoxAddress.getObj());
-            addressEditor.recordItem().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setObj(newValue));
-            addressEditor.isChanged().addListener((observable, oldValue, newValue) -> this.refBoxAddress.update());
-        });
+        this.refBoxAddress.setOnNewAction(ev -> new AddressEditor().recordItem().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setObj(newValue)));
+        this.refBoxAddress.setOnEditAction(ev -> new AddressEditor(this.refBoxAddress.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setObj(newValue)));
 
         this.loadRecord(person);
         if (person == null)

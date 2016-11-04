@@ -31,8 +31,8 @@ public class AddressEditor extends RecordEditor<Address> {
         this.txftxfCity = (TextField) this.root.lookup("#txfCity");
         this.refBoxCountry = (RefBox<Country>) this.root.lookup("#refBoxCountry");
         this.refBoxCountry.setProvider(new CountryProvider());
-        this.refBoxCountry.setOnNewAction(ev -> new CountryEditor());
-        this.refBoxCountry.setOnEditAction(ev -> new CountryEditor(this.refBoxCountry.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setObj((Country) newValue)));
+        this.refBoxCountry.setOnNewAction(ev -> new CountryEditor().recordItem().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setObj(newValue)));
+        this.refBoxCountry.setOnEditAction(ev -> new CountryEditor(this.refBoxCountry.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setObj(newValue)));
 
         this.loadRecord(address);
         if (address == null)
