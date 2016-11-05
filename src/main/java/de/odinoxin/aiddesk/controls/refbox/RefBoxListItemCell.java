@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RefBoxListItemCell<T extends RecordItem> extends ListCell<RefBoxListItem<T>> {
+class RefBoxListItemCell<T extends RecordItem> extends ListCell<RefBoxListItem<T>> {
 
     private GridPane grdItem;
     private int matched;
@@ -65,9 +65,9 @@ public class RefBoxListItemCell<T extends RecordItem> extends ListCell<RefBoxLis
         } else {
             VBox vbox = (VBox) this.grdItem.lookup("#" + controlId);
             String[] lines = value.split("\\r?\\n");
-            for (int i = 0; i < lines.length; i++) {
+            for (String line : lines) {
                 tfl = new TextFlow();
-                hightlight(tfl, true, lines[i], highlight);
+                hightlight(tfl, true, line, highlight);
                 vbox.getChildren().add(tfl);
             }
         }

@@ -302,7 +302,7 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.txfText.requestFocus();
         if (this.refBoxList != null)
             this.refBoxList.hide();
-        this.refBoxList = new RefBoxList(this.localToScreen(0, this.txfText.getHeight()));
+        this.refBoxList = new RefBoxList<>(this.localToScreen(0, this.txfText.getHeight()));
         this.refBoxList.setPrefWidth(this.getWidth());
         this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
 
@@ -324,6 +324,10 @@ public class RefBox<T extends RecordItem> extends VBox {
                             case ENTER:
                                 RefBoxListItem<T> item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
                                 this.setObj(item == null ? null : item.getRecord());
+                                break;
+                            case A:
+                                if(ev.isControlDown())
+                                    this.txfText.selectAll();
                                 break;
                             case ESCAPE:
                                 this.refBoxList.hide();
@@ -352,6 +356,7 @@ public class RefBox<T extends RecordItem> extends VBox {
                         });
                     }
                     this.refBoxList.show(this.getScene().getWindow());
+                    this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
                 } else
                     this.state.set(State.NO_RESULTS);
             }

@@ -96,6 +96,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                         boolean succeeded = this.onDelete();
                         if (succeeded) {
                             this.loadRecord(null);
+                            this.refBoxKey.setObj(null);
                             this.onNew();
                             new MsgDialog(this, Alert.AlertType.INFORMATION, "Deleted!", "Successfully deleted.").show();
                         }
