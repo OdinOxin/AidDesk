@@ -12,10 +12,6 @@ public class ContactTypeEditor extends RecordEditor<ContactType> {
     private TextField txfCode;
     private TextField txfRegex;
 
-    public ContactTypeEditor() {
-        this(null);
-    }
-
     public ContactTypeEditor(ContactType contactType) {
         super("/plugins/contacttypeeditor.fxml", "Contact type");
 
@@ -35,12 +31,12 @@ public class ContactTypeEditor extends RecordEditor<ContactType> {
 
     @Override
     protected ContactType onSave() {
-        return ContactTypeProvider.save(this.getRecordItem());
+        return this.getProvider().save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return ContactTypeProvider.delete(this.getRecordItem().getId());
+        return this.getProvider().delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -60,7 +56,7 @@ public class ContactTypeEditor extends RecordEditor<ContactType> {
     }
 
     @Override
-    protected Provider<ContactType> getProvider() {
+    protected Provider<ContactType> initProvider() {
         return new ContactTypeProvider();
     }
 }

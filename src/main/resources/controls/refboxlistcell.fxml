@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import javafx.geometry.Insets?>
+<RefBox xmlns="http://javafx.com/javafx/8">
+    <!--<padding>-->
+        <!--<Insets top="5" left="5" right="5" bottom="5"/>-->
+    <!--</padding>-->
+</RefBox>

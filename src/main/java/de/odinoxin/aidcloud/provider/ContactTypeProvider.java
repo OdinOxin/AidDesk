@@ -5,6 +5,7 @@ import de.odinoxin.aidcloud.service.ContactTypeProviderService;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.plugins.contact.types.ContactType;
+import de.odinoxin.aiddesk.plugins.contact.types.ContactTypeEditor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,7 +29,8 @@ public class ContactTypeProvider implements Provider<ContactType> {
         return svc;
     }
 
-    public static ContactType get(int id) {
+    @Override
+    public ContactType get(int id) {
         if (ContactTypeProvider.getSvc() != null) {
             ContactTypeEntity entity = ContactTypeProvider.getSvc().getContactTypeProviderPort().getContactType(id);
             if (entity != null)
@@ -37,7 +39,8 @@ public class ContactTypeProvider implements Provider<ContactType> {
         return null;
     }
 
-    public static ContactType save(ContactType item) {
+    @Override
+    public ContactType save(ContactType item) {
         if (ContactTypeProvider.getSvc() != null) {
             ContactTypeEntity entity = ContactTypeProvider.getSvc().getContactTypeProviderPort().saveContactType(item.toEntity());
             if (entity != null)
@@ -46,7 +49,8 @@ public class ContactTypeProvider implements Provider<ContactType> {
         return null;
     }
 
-    public static boolean delete(int id) {
+    @Override
+    public boolean delete(int id) {
         if (ContactTypeProvider.getSvc() != null)
             return ContactTypeProvider.getSvc().getContactTypeProviderPort().deleteContactType(id);
         return false;
@@ -73,5 +77,10 @@ public class ContactTypeProvider implements Provider<ContactType> {
             return result;
         }
         return null;
+    }
+
+    @Override
+    public ContactTypeEditor openEditor(ContactType entity) {
+        return new ContactTypeEditor(entity);
     }
 }

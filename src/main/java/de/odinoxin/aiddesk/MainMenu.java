@@ -7,6 +7,7 @@ import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.dialogs.DecisionDialog;
 import de.odinoxin.aiddesk.plugins.Plugin;
+import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.RecordItem;
 import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
 import de.odinoxin.aiddesk.plugins.contact.information.ContactInformationEditor;
@@ -46,19 +47,19 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
             if (newValue != null) {
                 switch (newValue.getId()) {
                     case 1:
-                        new PersonEditor(Login.getPerson());
+                        new PersonEditor(null);
                         break;
                     case 2:
-                        new AddressEditor();
+                        new AddressEditor(null);
                         break;
                     case 3:
-                        new CountryEditor();
+                        new CountryEditor(null);
                         break;
                     case 4:
-                        new ContactTypeEditor();
+                        new ContactTypeEditor(null);
                         break;
                     case 5:
-                        new ContactInformationEditor();
+                        new ContactInformationEditor(null);
                         break;
                 }
                 this.refBoxPlugins.setObj(null);
@@ -104,6 +105,21 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
     }
 
     @Override
+    public PluginItem get(int id) {
+        return null;
+    }
+
+    @Override
+    public PluginItem save(PluginItem item) {
+        return null;
+    }
+
+    @Override
+    public boolean delete(int id) {
+        return false;
+    }
+
+    @Override
     public RefBoxListItem<PluginItem> getRefBoxItem(PluginItem item) {
         if (item == null)
             return null;
@@ -116,6 +132,11 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
         for (PluginItem item : PLUGIN_ITEMS)
             items.add(getRefBoxItem(item));
         return items;
+    }
+
+    @Override
+    public PluginItemEditor openEditor(PluginItem entity) {
+        return null;
     }
 
     static class PluginItem extends RecordItem<Object> {
@@ -138,6 +159,12 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
         @Override
         public Object toEntity() {
             return null;
+        }
+    }
+
+    private static abstract class PluginItemEditor extends RecordEditor<PluginItem> {
+        private PluginItemEditor() {
+            super(null, null);
         }
     }
 }

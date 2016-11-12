@@ -21,10 +21,11 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     private TextField txfId;
     private RefBox<T> refBoxKey;
+    private Provider<T> provider;
     private Button btnSave;
     private Button btnDiscard;
-    private Button btnDelete;
 
+    private Button btnDelete;
     private ObjectProperty<T> recordItem = new SimpleObjectProperty<>();
     private BooleanProperty storeable = new SimpleBooleanProperty(true);
     private BooleanProperty deletable = new SimpleBooleanProperty(true);
@@ -37,15 +38,17 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         try {
             Node recordView = FXMLLoader.load(RecordEditor.class.getResource(res));
 
+            this.provider = this.initProvider();
+
             this.refBoxKey = (RefBox<T>) this.root.lookup("#refBoxKey");
-            this.refBoxKey.setProvider(this.getProvider());
+            this.refBoxKey.setProvider(this.provider);
             this.refBoxKey.setOnNewAction(ev ->
             {
                 this.loadRecord(null);
                 this.refBoxKey.setObj(this.getRecordItem());
                 this.onNew();
             });
-            this.refBoxKey.objProperty().addListener((observable, oldValue, newValue) -> this.loadRecord((T) newValue));
+            this.refBoxKey.objProperty().addListener((observable, oldValue, newValue) -> this.loadRecord(newValue == null || this.provider == null ? null : this.provider.get(newValue.getId())));
             this.txfId = (TextField) this.root.lookup("#txfId");
             ((ScrollPane) this.root.lookup("#scpDetails")).setContent(recordView);
 
@@ -172,5 +175,9 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     protected abstract void bind();
 
-    protected abstract Provider<T> getProvider();
+    protected abstract Provider<T> initProvider();
+
+    protected Provider<T> getProvider() {
+        return this.provider;
+    }
 }

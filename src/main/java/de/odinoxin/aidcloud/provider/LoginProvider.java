@@ -5,6 +5,7 @@ import de.odinoxin.aidcloud.service.PersonEntity;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.plugins.people.Person;
+import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +35,21 @@ public class LoginProvider implements Provider<Person> {
     }
 
     @Override
+    public Person get(int id) {
+        return null;
+    }
+
+    @Override
+    public Person save(Person item) {
+        return null;
+    }
+
+    @Override
+    public boolean delete(int id) {
+        return false;
+    }
+
+    @Override
     public RefBoxListItem<Person> getRefBoxItem(Person item) {
         if (item == null)
             return null;
@@ -53,6 +69,11 @@ public class LoginProvider implements Provider<Person> {
                         result.add(this.getRefBoxItem(new Person(entity)));
             return result;
         }
+        return null;
+    }
+
+    @Override
+    public PersonEditor openEditor(Person entity) {
         return null;
     }
 }

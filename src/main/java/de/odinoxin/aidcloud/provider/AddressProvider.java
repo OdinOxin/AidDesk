@@ -5,6 +5,7 @@ import de.odinoxin.aidcloud.service.AddressProviderService;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.plugins.addresses.Address;
+import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,7 +28,8 @@ public class AddressProvider implements Provider<Address> {
         return addressSvc;
     }
 
-    public static Address get(int id) {
+    @Override
+    public Address get(int id) {
         if (AddressProvider.getSvc() != null) {
             AddressEntity entity = AddressProvider.getSvc().getAddressProviderPort().getAddress(id);
             if (entity != null)
@@ -36,7 +38,8 @@ public class AddressProvider implements Provider<Address> {
         return null;
     }
 
-    public static Address save(Address item) {
+    @Override
+    public Address save(Address item) {
         if (AddressProvider.getSvc() != null) {
             AddressEntity entity = AddressProvider.getSvc().getAddressProviderPort().saveAddress(item.toEntity());
             if (entity != null)
@@ -45,7 +48,8 @@ public class AddressProvider implements Provider<Address> {
         return null;
     }
 
-    public static boolean delete(int id) {
+    @Override
+    public boolean delete(int id) {
         if (AddressProvider.getSvc() != null)
             return AddressProvider.getSvc().getAddressProviderPort().deleteAddress(id);
         return false;
@@ -75,5 +79,10 @@ public class AddressProvider implements Provider<Address> {
             return result;
         }
         return null;
+    }
+
+    @Override
+    public AddressEditor openEditor(Address entity) {
+        return new AddressEditor(entity);
     }
 }

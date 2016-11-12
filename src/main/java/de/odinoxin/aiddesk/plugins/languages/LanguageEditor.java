@@ -11,10 +11,6 @@ public class LanguageEditor extends RecordEditor<Language> {
     private TextField txfName;
     private TextField txfCode;
 
-    public LanguageEditor() {
-        this(null);
-    }
-
     public LanguageEditor(Language language) {
         super("/plugins/languageeditor.fxml", "Languages");
 
@@ -33,12 +29,12 @@ public class LanguageEditor extends RecordEditor<Language> {
 
     @Override
     protected Language onSave() {
-        return LanguageProvider.save(this.getRecordItem());
+        return this.getProvider().save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return LanguageProvider.delete(this.getRecordItem().getId());
+        return this.getProvider().delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -57,7 +53,7 @@ public class LanguageEditor extends RecordEditor<Language> {
     }
 
     @Override
-    protected Provider<Language> getProvider() {
+    protected Provider<Language> initProvider() {
         return new LanguageProvider();
     }
 }

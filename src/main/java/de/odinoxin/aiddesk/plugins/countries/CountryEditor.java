@@ -12,10 +12,6 @@ public class CountryEditor extends RecordEditor<Country> {
     private TextField txfName;
     private TextField txfAreaCode;
 
-    public CountryEditor() {
-        this(null);
-    }
-
     public CountryEditor(Country country) {
         super("/plugins/countryeditor.fxml", "Countries");
 
@@ -36,12 +32,12 @@ public class CountryEditor extends RecordEditor<Country> {
 
     @Override
     protected Country onSave() {
-        return CountryProvider.saveCountry(this.getRecordItem());
+        return this.getProvider().save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return CountryProvider.deleteCountry(this.getRecordItem().getId());
+        return this.getProvider().delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -62,7 +58,7 @@ public class CountryEditor extends RecordEditor<Country> {
     }
 
     @Override
-    protected Provider<Country> getProvider() {
+    protected Provider<Country> initProvider() {
         return new CountryProvider();
     }
 }

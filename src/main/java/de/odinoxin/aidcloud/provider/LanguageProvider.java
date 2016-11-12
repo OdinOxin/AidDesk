@@ -5,6 +5,7 @@ import de.odinoxin.aidcloud.service.LanguageProviderService;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.plugins.languages.Language;
+import de.odinoxin.aiddesk.plugins.languages.LanguageEditor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,7 +29,8 @@ public class LanguageProvider implements Provider<Language> {
         return svc;
     }
 
-    public static Language get(int id) {
+    @Override
+    public Language get(int id) {
         if (LanguageProvider.getSvc() != null) {
             LanguageEntity entity = LanguageProvider.getSvc().getLanguageProviderPort().getLanguage(id);
             if (entity != null)
@@ -37,7 +39,8 @@ public class LanguageProvider implements Provider<Language> {
         return null;
     }
 
-    public static Language save(Language item) {
+    @Override
+    public Language save(Language item) {
         if (LanguageProvider.getSvc() != null) {
             LanguageEntity entity = LanguageProvider.getSvc().getLanguageProviderPort().saveLanguage(item.toEntity());
             if (entity != null)
@@ -46,7 +49,8 @@ public class LanguageProvider implements Provider<Language> {
         return null;
     }
 
-    public static boolean delete(int id) {
+    @Override
+    public boolean delete(int id) {
         if (LanguageProvider.getSvc() != null)
             return LanguageProvider.getSvc().getLanguageProviderPort().deleteLanguage(id);
         return false;
@@ -63,16 +67,20 @@ public class LanguageProvider implements Provider<Language> {
 
     @Override
     public List<RefBoxListItem<Language>> search(List<String> expr) {
-        if(LanguageProvider.getSvc() != null)
-        {
+        if (LanguageProvider.getSvc() != null) {
             List<LanguageEntity> entities = LanguageProvider.getSvc().getLanguageProviderPort().searchLanguage(expr);
             List<RefBoxListItem<Language>> result = new ArrayList<>();
-            if(entities != null)
-                for(LanguageEntity entity : entities)
-                    if(entity != null)
+            if (entities != null)
+                for (LanguageEntity entity : entities)
+                    if (entity != null)
                         result.add(getRefBoxItem(new Language(entity)));
             return result;
         }
         return null;
+    }
+
+    @Override
+    public LanguageEditor openEditor(Language entity) {
+        return new LanguageEditor(entity);
     }
 }

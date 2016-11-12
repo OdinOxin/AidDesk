@@ -5,6 +5,7 @@ import de.odinoxin.aidcloud.service.ContactInformationProviderService;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.plugins.contact.information.ContactInformation;
+import de.odinoxin.aiddesk.plugins.contact.information.ContactInformationEditor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,7 +28,8 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
         return svc;
     }
 
-    public static ContactInformation get(int id) {
+    @Override
+    public ContactInformation get(int id) {
         if (ContactInformationProvider.getSvc() != null) {
             ContactInformationEntity entity = ContactInformationProvider.getSvc().getContactInformationProviderPort().getContactInformation(id);
             if (entity != null)
@@ -36,7 +38,8 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
         return null;
     }
 
-    public static ContactInformation save(ContactInformation item) {
+    @Override
+    public ContactInformation save(ContactInformation item) {
         if (ContactInformationProvider.getSvc() != null) {
             ContactInformationEntity entity = ContactInformationProvider.getSvc().getContactInformationProviderPort().saveContactInformation(item.toEntity());
             if (entity != null)
@@ -45,7 +48,8 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
         return null;
     }
 
-    public static boolean delete(int id) {
+    @Override
+    public boolean delete(int id) {
         if (ContactInformationProvider.getSvc() != null)
             return ContactInformationProvider.getSvc().getContactInformationProviderPort().deleteContactInformation(id);
         return false;
@@ -73,5 +77,10 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
             return result;
         }
         return null;
+    }
+
+    @Override
+    public ContactInformationEditor openEditor(ContactInformation entity) {
+        return new ContactInformationEditor(entity);
     }
 }

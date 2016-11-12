@@ -5,6 +5,7 @@ import de.odinoxin.aidcloud.service.CountryProviderService;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.plugins.countries.Country;
+import de.odinoxin.aiddesk.plugins.countries.CountryEditor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,7 +28,8 @@ public class CountryProvider implements Provider<Country> {
         return countriesSvc;
     }
 
-    public static Country getCountry(int id) {
+    @Override
+    public Country get(int id) {
         if (CountryProvider.getSvc() != null) {
             CountryEntity entity = CountryProvider.getSvc().getCountryProviderPort().getCountry(id);
             if (entity != null)
@@ -36,7 +38,8 @@ public class CountryProvider implements Provider<Country> {
         return null;
     }
 
-    public static Country saveCountry(Country item) {
+    @Override
+    public Country save(Country item) {
         if (CountryProvider.getSvc() != null) {
             CountryEntity entity = CountryProvider.getSvc().getCountryProviderPort().saveCountry(item.toEntity());
             if (entity != null)
@@ -45,7 +48,8 @@ public class CountryProvider implements Provider<Country> {
         return null;
     }
 
-    public static boolean deleteCountry(int id) {
+    @Override
+    public boolean delete(int id) {
         if (CountryProvider.getSvc() != null)
             return CountryProvider.getSvc().getCountryProviderPort().deleteCountry(id);
         return false;
@@ -74,5 +78,10 @@ public class CountryProvider implements Provider<Country> {
             return result;
         }
         return null;
+    }
+
+    @Override
+    public CountryEditor openEditor(Country entity) {
+        return new CountryEditor(entity);
     }
 }

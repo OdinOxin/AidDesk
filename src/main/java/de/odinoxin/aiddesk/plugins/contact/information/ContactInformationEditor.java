@@ -14,17 +14,11 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
     private RefBox<ContactType> refBoxContactType;
     private TextField txfInformation;
 
-    public ContactInformationEditor() {
-        this(null);
-    }
-
     public ContactInformationEditor(ContactInformation contactInformation) {
         super("/plugins/contactinformationeditor.fxml", "Contact information");
 
         this.refBoxContactType = (RefBox<ContactType>) this.root.lookup("#refBoxContactType");
         this.refBoxContactType.setProvider(new ContactTypeProvider());
-        this.refBoxContactType.setOnNewAction(ev -> new ContactTypeEditor().recordItem().addListener((observable, oldValue, newValue) -> this.refBoxContactType.setObj(newValue)));
-        this.refBoxContactType.setOnEditAction(ev -> new ContactTypeEditor(this.refBoxContactType.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxContactType.setObj(newValue)));
         this.txfInformation = (TextField) this.root.lookup("#txfInformation");
 
         this.loadRecord(contactInformation);
@@ -39,12 +33,12 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
 
     @Override
     protected ContactInformation onSave() {
-        return ContactInformationProvider.save(this.getRecordItem());
+        return this.getProvider().save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return ContactInformationProvider.delete(this.getRecordItem().getId());
+        return this.getProvider().delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -63,7 +57,7 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
     }
 
     @Override
-    protected Provider<ContactInformation> getProvider() {
+    protected Provider<ContactInformation> initProvider() {
         return new ContactInformationProvider();
     }
 }

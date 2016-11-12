@@ -1,20 +1,19 @@
 package de.odinoxin.aiddesk.plugins.people;
 
-import de.odinoxin.aidcloud.provider.AddressProvider;
-import de.odinoxin.aidcloud.provider.LanguageProvider;
-import de.odinoxin.aidcloud.provider.PersonProvider;
-import de.odinoxin.aidcloud.provider.Provider;
+import de.odinoxin.aidcloud.provider.*;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
+import de.odinoxin.aiddesk.controls.refbox.RefBoxListCell;
 import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.Plugin;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.addresses.Address;
-import de.odinoxin.aiddesk.plugins.addresses.AddressEditor;
+import de.odinoxin.aiddesk.plugins.contact.information.ContactInformation;
 import de.odinoxin.aiddesk.plugins.languages.Language;
-import de.odinoxin.aiddesk.plugins.languages.LanguageEditor;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 public class PersonEditor extends RecordEditor<Person> {
@@ -25,12 +24,9 @@ public class PersonEditor extends RecordEditor<Person> {
     private Button btnPwd;
     private RefBox<Language> refBoxLanguage;
     private RefBox<Address> refBoxAddress;
+    private ListView<ContactInformation> lvContactInformation;
 
     private String currentPwdw;
-
-    public PersonEditor() {
-        this(null);
-    }
 
     public PersonEditor(Person person) {
         super("/plugins/personeditor.fxml", "People");
@@ -43,12 +39,18 @@ public class PersonEditor extends RecordEditor<Person> {
         Plugin.setButtonEnter(this.btnPwd);
         this.refBoxLanguage = (RefBox<Language>) this.root.lookup("#refBoxLanguage");
         this.refBoxLanguage.setProvider(new LanguageProvider());
-        this.refBoxLanguage.setOnNewAction(ev -> new LanguageEditor().recordItem().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setObj(newValue)));
-        this.refBoxLanguage.setOnEditAction(ev -> new LanguageEditor(this.refBoxLanguage.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxLanguage.setObj(newValue)));
         this.refBoxAddress = (RefBox<Address>) this.root.lookup("#refBoxAddress");
         this.refBoxAddress.setProvider(new AddressProvider());
-        this.refBoxAddress.setOnNewAction(ev -> new AddressEditor().recordItem().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setObj(newValue)));
-        this.refBoxAddress.setOnEditAction(ev -> new AddressEditor(this.refBoxAddress.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxAddress.setObj(newValue)));
+        this.lvContactInformation = (ListView<ContactInformation>) this.root.lookup("#lvContactInformation");
+//        this.lvContactInformation.getItems().addListener((ListChangeListener.Change<? extends ContactInformation> c) -> {
+//            if (this.getRecordItem() == null)
+//                return;
+//            if (c.wasAdded()) {
+//                if (!this.getRecordItem().getContactInformation().contains(c.getAddedSubList().get(0)))
+//                    this.getRecordItem().getContactInformation().add(c.getAddedSubList().get(0));
+//            } else if (c.wasRemoved())
+//                this.getRecordItem().getContactInformation().remove(c.getRemoved().get(0));
+//        });
 
         this.loadRecord(person);
         if (person == null)
@@ -65,12 +67,12 @@ public class PersonEditor extends RecordEditor<Person> {
         if (this.currentPwdw != null && this.getRecordItem().getPwd() != null)
             if (!PersonProvider.changePwd(this.getRecordItem().getId(), this.currentPwdw, this.getRecordItem().getPwd()))
                 new MsgDialog(this, Alert.AlertType.ERROR, "Fehlgeschlagen!", "Passwort konnte nicht geändert werden.").showAndWait();
-        return PersonProvider.save(this.getRecordItem());
+        return this.getProvider().save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return PersonProvider.delete(this.getRecordItem().getId());
+        return this.getProvider().delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -91,15 +93,36 @@ public class PersonEditor extends RecordEditor<Person> {
         this.btnPwd.disableProperty().bind(this.getRecordItem().idProperty().isEqualTo(0));
         this.refBoxLanguage.objProperty().bindBidirectional(this.getRecordItem().languageProperty());
         this.refBoxAddress.objProperty().bindBidirectional(this.getRecordItem().addressProperty());
+
+        this.lvContactInformation.setCellFactory(param -> new RefBoxListCell<>(new ContactInformationProvider(), this.getRecordItem().getContactInformation()));
+        this.lvContactInformation.getItems().clear();
+        this.lvContactInformation.getItems().addAll(this.getRecordItem().getContactInformation());
+        this.lvContactInformation.getItems().add(null);
+        this.getRecordItem().contactInformationProperty().addListener((ListChangeListener.Change<? extends ContactInformation> c) -> {
+            if (c.next()) {
+                if (!c.wasReplaced() && c.wasAdded()) {
+//                    this.lvContactInformation.getItems().clear();
+//                    this.lvContactInformation.getItems().addAll(this.getRecordItem().getContactInformation());
+//                    this.lvContactInformation.getItems().add(null);
+
+//                    this.lvContactInformation.getItems().remove(this.lvContactInformation.getItems().size() - 1);
+//                    this.lvContactInformation.getItems().add(c.getAddedSubList().get(0));
+//                    this.lvContactInformation.getItems().add(null);
+
+                    this.lvContactInformation.getItems().add(c.getFrom(), c.getAddedSubList().get(0));
+                }
+            }
+        });
+
         this.getRecordItem().setChanged(false);
     }
 
     @Override
-    protected Provider<Person> getProvider() {
+    protected Provider<Person> initProvider() {
         return new PersonProvider();
     }
 
-    public void changePwd(String oldPwd, String newPwd) {
+    void changePwd(String oldPwd, String newPwd) {
         this.currentPwdw = oldPwd;
         this.getRecordItem().setPwd(newPwd);
     }

@@ -5,6 +5,7 @@ import de.odinoxin.aidcloud.service.PersonProviderService;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.plugins.people.Person;
+import de.odinoxin.aiddesk.plugins.people.PersonEditor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,7 +28,8 @@ public class PersonProvider implements Provider<Person> {
         return peopleSvc;
     }
 
-    public static Person get(int id) {
+    @Override
+    public Person get(int id) {
         if (PersonProvider.getSvc() != null) {
             PersonEntity entity = PersonProvider.getSvc().getPersonProviderPort().getPerson(id);
             if (entity != null)
@@ -36,7 +38,8 @@ public class PersonProvider implements Provider<Person> {
         return null;
     }
 
-    public static Person save(Person item) {
+    @Override
+    public Person save(Person item) {
         if (PersonProvider.getSvc() != null) {
             PersonEntity entity = PersonProvider.getSvc().getPersonProviderPort().savePerson(item.toEntity());
             if (entity != null)
@@ -45,7 +48,8 @@ public class PersonProvider implements Provider<Person> {
         return null;
     }
 
-    public static boolean delete(int id) {
+    @Override
+    public boolean delete(int id) {
         if (PersonProvider.getSvc() != null)
             return PersonProvider.getSvc().getPersonProviderPort().deletePerson(id);
         return false;
@@ -80,6 +84,11 @@ public class PersonProvider implements Provider<Person> {
             return result;
         }
         return null;
+    }
+
+    @Override
+    public PersonEditor openEditor(Person entity) {
+        return new PersonEditor(entity);
     }
 
     public static boolean changePwd(int id, String currentPwd, String newPwd) {

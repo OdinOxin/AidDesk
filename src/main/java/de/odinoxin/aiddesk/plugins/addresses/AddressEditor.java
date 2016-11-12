@@ -18,10 +18,6 @@ public class AddressEditor extends RecordEditor<Address> {
     private TextField txftxfCity;
     private RefBox<Country> refBoxCountry;
 
-    public AddressEditor() {
-        this(null);
-    }
-
     public AddressEditor(Address address) {
         super("/plugins/addresseditor.fxml", "Addresses");
 
@@ -31,8 +27,6 @@ public class AddressEditor extends RecordEditor<Address> {
         this.txftxfCity = (TextField) this.root.lookup("#txfCity");
         this.refBoxCountry = (RefBox<Country>) this.root.lookup("#refBoxCountry");
         this.refBoxCountry.setProvider(new CountryProvider());
-        this.refBoxCountry.setOnNewAction(ev -> new CountryEditor().recordItem().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setObj(newValue)));
-        this.refBoxCountry.setOnEditAction(ev -> new CountryEditor(this.refBoxCountry.getObj()).recordItem().addListener((observable, oldValue, newValue) -> this.refBoxCountry.setObj(newValue)));
 
         this.loadRecord(address);
         if (address == null)
@@ -46,12 +40,12 @@ public class AddressEditor extends RecordEditor<Address> {
 
     @Override
     protected Address onSave() {
-        return AddressProvider.save(this.getRecordItem());
+        return this.getProvider().save(this.getRecordItem());
     }
 
     @Override
     protected boolean onDelete() {
-        return AddressProvider.delete(this.getRecordItem().getId());
+        return this.getProvider().delete(this.getRecordItem().getId());
     }
 
     @Override
@@ -73,7 +67,7 @@ public class AddressEditor extends RecordEditor<Address> {
     }
 
     @Override
-    protected Provider<Address> getProvider() {
+    protected Provider<Address> initProvider() {
         return new AddressProvider();
     }
 }

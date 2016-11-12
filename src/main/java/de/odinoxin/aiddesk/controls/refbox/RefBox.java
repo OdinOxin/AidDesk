@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.controls.refbox;
 
 import de.odinoxin.aidcloud.provider.Provider;
+import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -104,6 +105,13 @@ public class RefBox<T extends RecordItem> extends VBox {
         });
         this.btnNew.minHeightProperty().bind(this.txfText.heightProperty());
         this.btnNew.maxHeightProperty().bind(this.txfText.heightProperty());
+        this.btnNew.setOnAction(ev -> {
+            if (this.getProvider() != null) {
+                RecordEditor<T> editor = this.getProvider().openEditor(null);
+                if (editor != null)
+                    editor.recordItem().addListener((observable, oldValue, newValue) -> this.setObj(newValue));
+            }
+        });
         this.btnNew.setOnKeyPressed(ev ->
         {
             switch (ev.getCode()) {
@@ -120,13 +128,16 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.btnNew.setVisible(this.isShowNewButton());
         this.btnNew.setManaged(this.isShowNewButton());
         this.btnNew.focusedProperty().addListener(this.getBtnHighlighter(this.btnNew));
-        this.showEditButton.addListener((observable, oldValue, newValue) ->
-        {
-            this.btnEdit.setVisible(newValue);
-            this.btnEdit.setManaged(newValue);
-        });
+        this.showEditButton.addListener((observable, oldValue, newValue) -> this.update());
         this.btnEdit.minHeightProperty().bind(this.txfText.heightProperty());
         this.btnEdit.maxHeightProperty().bind(this.txfText.heightProperty());
+        this.btnEdit.setOnAction(ev -> {
+            if (this.getProvider() != null) {
+                RecordEditor<T> editor = this.getProvider().openEditor(this.getObj());
+                if (editor != null)
+                    editor.recordItem().addListener((observable, oldValue, newValue) -> this.setObj(newValue));
+            }
+        });
         this.btnEdit.setOnKeyPressed(ev ->
         {
             switch (ev.getCode()) {
@@ -140,8 +151,6 @@ public class RefBox<T extends RecordItem> extends VBox {
                     break;
             }
         });
-        this.btnEdit.setVisible(this.isShowEditButton());
-        this.btnEdit.setManaged(this.isShowEditButton());
         this.btnEdit.focusedProperty().addListener(this.getBtnHighlighter(this.btnEdit));
         this.btnSearch.minHeightProperty().bind(this.txfText.heightProperty());
         this.btnSearch.maxHeightProperty().bind(this.txfText.heightProperty());
@@ -169,6 +178,7 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.txfDetails.setPrefHeight(this.getDetailsRows() * 20 + 15);
 
         this.setObj(null);
+        this.update();
     }
 
     public String getText() {
@@ -235,6 +245,7 @@ public class RefBox<T extends RecordItem> extends VBox {
 
     public void setProvider(Provider<T> provider) {
         this.provider = provider;
+        this.update();
     }
 
     public StringProperty textProperty() {
@@ -288,8 +299,10 @@ public class RefBox<T extends RecordItem> extends VBox {
                     this.txfText.setText("");
                 this.txfDetails.setText("");
             }
-
-        } else {
+            boolean showEditBtn = this.getObj() != null && this.isShowEditButton();
+            this.btnEdit.setVisible(showEditBtn);
+            this.btnEdit.setManaged(showEditBtn);
+        } else if (!this.isDisabled()) {
             item = new RefBoxListItem<T>(null, "Provider not set!", "", new String[]{"Provider", "not", "set!"});
             this.setText(item.getText());
             this.txfDetails.setText(item.getSubText());
@@ -326,7 +339,7 @@ public class RefBox<T extends RecordItem> extends VBox {
                                 this.setObj(item == null ? null : item.getRecord());
                                 break;
                             case A:
-                                if(ev.isControlDown())
+                                if (ev.isControlDown())
                                     this.txfText.selectAll();
                                 break;
                             case ESCAPE:
@@ -355,8 +368,10 @@ public class RefBox<T extends RecordItem> extends VBox {
                             RefBox.this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
                         });
                     }
-                    this.refBoxList.show(this.getScene().getWindow());
-                    this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
+                    if (this.getScene() != null) {
+                        this.refBoxList.show(this.getScene().getWindow());
+                        this.refBoxList.getSuggestionsList().getSelectionModel().selectFirst();
+                    }
                 } else
                     this.state.set(State.NO_RESULTS);
             }

@@ -6,8 +6,12 @@ import de.odinoxin.aiddesk.plugins.RecordItem;
 import de.odinoxin.aiddesk.plugins.addresses.Address;
 import de.odinoxin.aiddesk.plugins.contact.information.ContactInformation;
 import de.odinoxin.aiddesk.plugins.languages.Language;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
@@ -21,7 +25,7 @@ public class Person extends RecordItem {
     private StringProperty pwd = new SimpleStringProperty();
     private ObjectProperty<Language> language = new SimpleObjectProperty<>();
     private ObjectProperty<Address> address = new SimpleObjectProperty<>();
-    private ListProperty<ObjectProperty<ContactInformation>> contactInformation = new SimpleListProperty<>();
+    private ObservableList<ContactInformation> contactInformation = FXCollections.observableArrayList();
 
     public Person() {
         super();
@@ -31,7 +35,7 @@ public class Person extends RecordItem {
         this.pwd.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.language.addListener((observable, oldValue, newValue) -> setChanged(true));
         this.address.addListener((observable, oldValue, newValue) -> setChanged(true));
-        this.contactInformation.addListener((observable, oldValue, newValue) -> setChanged(true));
+        this.contactInformation.addListener((ListChangeListener.Change<? extends ContactInformation> c) -> setChanged(true));
         this.setChanged(false);
     }
 
@@ -93,12 +97,7 @@ public class Person extends RecordItem {
     }
 
     public List<ContactInformation> getContactInformation() {
-        ObservableList<ObjectProperty<ContactInformation>> list = contactInformation.get();
-        List<ContactInformation> result = new ArrayList<>();
-        if (list != null)
-            for (ObjectProperty<ContactInformation> objProp : list)
-                result.add(objProp.get());
-        return result;
+        return contactInformation;
     }
 
     public void setName(String name) {
@@ -126,11 +125,12 @@ public class Person extends RecordItem {
     }
 
     public void setContactInformation(List<ContactInformation> contactInformation) {
-        List<ObjectProperty<ContactInformation>> tmpList = new ArrayList<>();
-        if (contactInformation != null)
-            for (ContactInformation info : contactInformation)
-                tmpList.add(new SimpleObjectProperty<>(info));
-        this.contactInformation.set(new SimpleListProperty<>(FXCollections.observableList(tmpList)));
+        if (this.contactInformation != null) {
+            this.contactInformation.clear();
+            if (contactInformation != null)
+                this.contactInformation.addAll(contactInformation);
+        } else if (contactInformation != null)
+            this.contactInformation = FXCollections.observableArrayList(contactInformation);
     }
 
     public StringProperty nameProperty() {
@@ -157,7 +157,7 @@ public class Person extends RecordItem {
         return address;
     }
 
-    public ListProperty<ObjectProperty<ContactInformation>> contactInformationProperty() {
+    public ObservableList<ContactInformation> contactInformationProperty() {
         return contactInformation;
     }
 
@@ -170,7 +170,8 @@ public class Person extends RecordItem {
         entity.setLanguage(this.getLanguage() == null ? null : this.getLanguage().toEntity());
         entity.setAddress(this.getAddress() == null ? null : this.getAddress().toEntity());
         for (ContactInformation info : this.getContactInformation())
-            entity.getContactInformation().add(info.toEntity());
+            if (info != null)
+                entity.getContactInformation().add(info.toEntity());
         return entity;
     }
 }

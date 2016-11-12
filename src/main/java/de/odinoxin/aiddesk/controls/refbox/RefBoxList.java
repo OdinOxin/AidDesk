@@ -20,10 +20,12 @@ public class RefBoxList<T extends RecordItem> extends Popup {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        setX(pos.getX());
-        setY(pos.getY());
-        setAutoHide(true);
-        getContent().add(this.lvSuggestions);
+        if (pos != null) {
+            setX(pos.getX());
+            setY(pos.getY());
+        }
+        this.setAutoHide(true);
+        this.getContent().add(this.lvSuggestions);
     }
 
     public ListView<RefBoxListItem<T>> getSuggestionsList() {
