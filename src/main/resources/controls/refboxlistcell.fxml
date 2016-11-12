@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
-<?import javafx.geometry.Insets?>
-<RefBox xmlns="http://javafx.com/javafx/8">
-    <!--<padding>-->
-        <!--<Insets top="5" left="5" right="5" bottom="5"/>-->
-    <!--</padding>-->
-</RefBox>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.SVGPath?>
+<HBox xmlns="http://javafx.com/javafx/8"
+      spacing="5">
+    <Button id="btnRemove">
+        <graphic>
+            <SVGPath scaleX="2.5" scaleY="2.5"
+                     content="M 0 0 h 1 l 2 2 l 2 -2 h 1 v 1 l -2 2 l 2 2 v 1 h -1 l -2 -2 l -2 2 h -1 v -1 l 2 -2 l -2 -2 z"/>
+        </graphic>
+    </Button>
+    <RefBox id="refBox"
+            HBox.hgrow="ALWAYS"
+            maxWidth="Infinity"/>
+</HBox>

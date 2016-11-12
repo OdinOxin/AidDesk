@@ -11,7 +11,7 @@ import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.addresses.Address;
 import de.odinoxin.aiddesk.plugins.contact.information.ContactInformation;
 import de.odinoxin.aiddesk.plugins.languages.Language;
-import javafx.collections.ListChangeListener;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -93,27 +93,11 @@ public class PersonEditor extends RecordEditor<Person> {
         this.btnPwd.disableProperty().bind(this.getRecordItem().idProperty().isEqualTo(0));
         this.refBoxLanguage.objProperty().bindBidirectional(this.getRecordItem().languageProperty());
         this.refBoxAddress.objProperty().bindBidirectional(this.getRecordItem().addressProperty());
-
+        this.lvContactInformation.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> this.lvContactInformation.getSelectionModel().clearSelection()));
         this.lvContactInformation.setCellFactory(param -> new RefBoxListCell<>(new ContactInformationProvider(), this.getRecordItem().getContactInformation()));
         this.lvContactInformation.getItems().clear();
-        this.lvContactInformation.getItems().addAll(this.getRecordItem().getContactInformation());
         this.lvContactInformation.getItems().add(null);
-        this.getRecordItem().contactInformationProperty().addListener((ListChangeListener.Change<? extends ContactInformation> c) -> {
-            if (c.next()) {
-                if (!c.wasReplaced() && c.wasAdded()) {
-//                    this.lvContactInformation.getItems().clear();
-//                    this.lvContactInformation.getItems().addAll(this.getRecordItem().getContactInformation());
-//                    this.lvContactInformation.getItems().add(null);
-
-//                    this.lvContactInformation.getItems().remove(this.lvContactInformation.getItems().size() - 1);
-//                    this.lvContactInformation.getItems().add(c.getAddedSubList().get(0));
-//                    this.lvContactInformation.getItems().add(null);
-
-                    this.lvContactInformation.getItems().add(c.getFrom(), c.getAddedSubList().get(0));
-                }
-            }
-        });
-
+        this.lvContactInformation.getItems().addAll(this.getRecordItem().getContactInformation());
         this.getRecordItem().setChanged(false);
     }
 

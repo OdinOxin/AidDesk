@@ -9,8 +9,7 @@
 <?import javafx.scene.shape.SVGPath?>
 
 <fx:root type="javafx.scene.layout.VBox"
-         xmlns:fx="http://javafx.com/fxml"
-         maxWidth="400">
+         xmlns:fx="http://javafx.com/fxml">
 
     <StackPane alignment="CENTER_RIGHT">
 
