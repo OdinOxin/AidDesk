@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk;
 
 import de.odinoxin.aidcloud.provider.LoginProvider;
+import de.odinoxin.aidcloud.provider.PersonProvider;
 import de.odinoxin.aidcloud.service.LoginService;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
@@ -19,8 +20,8 @@ import java.net.URL;
 public class Login extends Plugin {
 
     private static String serverUrl;
+    private static String session;
     private static Person person;
-    private static String language;
 
     private TextField txfServer;
     private Button btnConnect;
@@ -74,9 +75,7 @@ public class Login extends Plugin {
         Person p = this.refboxUser.getObj();
         if (p == null)
             return;
-        if (LoginProvider.checkLogin(p.getId(), this.pwfPwd.getText())) {
-            Login.person = p;
-            Login.language = p.getLanguage() == null ? null : p.getLanguage().getCode();
+        if (this.openSession(p.getId(), this.pwfPwd.getText())) {
             this.close();
             new MainMenu();
             return;
@@ -84,15 +83,27 @@ public class Login extends Plugin {
         new MsgDialog(this, Alert.AlertType.ERROR, "Login", "User or password incorrect!").showAndWait();
     }
 
+    private boolean openSession(int id, String pwd) {
+        Login.session = LoginProvider.getSession(id, pwd);
+        if (Login.session != null) {
+            Login.person = new Person(id); //Not useless, cause of auth info source; Used to perform next line!
+            Login.person = new PersonProvider().get(id);
+            Login.person.setPwd(pwd);
+            Login.person.setChanged(false);
+            return true;
+        }
+        return false;
+    }
+
     public static String getServerUrl() {
         return Login.serverUrl;
     }
 
-    public static Person getPerson() {
-        return Login.person;
+    public static String getSession() {
+        return Login.session;
     }
 
-    public static String getLanguage() {
-        return Login.language;
+    public static Person getPerson() {
+        return Login.person;
     }
 }

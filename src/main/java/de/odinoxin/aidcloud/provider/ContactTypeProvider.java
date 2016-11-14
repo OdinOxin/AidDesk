@@ -14,25 +14,27 @@ import java.util.List;
 
 public class ContactTypeProvider implements Provider<ContactType> {
 
-    private static ContactTypeProviderService svc;
+    private static de.odinoxin.aidcloud.service.ContactTypeProvider svc;
 
-    private static ContactTypeProviderService getSvc() {
+    private static de.odinoxin.aidcloud.service.ContactTypeProvider getSvc() {
         if (svc == null) {
             if (Login.getServerUrl() == null)
                 return null;
             try {
-                svc = new ContactTypeProviderService(new URL(Login.getServerUrl() + "/ContactTypeProvider?wsdl"));
+                svc = new ContactTypeProviderService(new URL(Login.getServerUrl() + "/ContactTypeProvider?wsdl")).getContactTypeProviderPort();
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             }
         }
+        if (svc != null)
+            Requester.setRequestHeaders(svc);
         return svc;
     }
 
     @Override
     public ContactType get(int id) {
         if (ContactTypeProvider.getSvc() != null) {
-            ContactTypeEntity entity = ContactTypeProvider.getSvc().getContactTypeProviderPort().getContactType(id);
+            ContactTypeEntity entity = ContactTypeProvider.getSvc().getContactType(id);
             if (entity != null)
                 return new ContactType(entity);
         }
@@ -42,7 +44,7 @@ public class ContactTypeProvider implements Provider<ContactType> {
     @Override
     public ContactType save(ContactType item) {
         if (ContactTypeProvider.getSvc() != null) {
-            ContactTypeEntity entity = ContactTypeProvider.getSvc().getContactTypeProviderPort().saveContactType(item.toEntity());
+            ContactTypeEntity entity = ContactTypeProvider.getSvc().saveContactType(item.toEntity());
             if (entity != null)
                 return new ContactType(entity);
         }
@@ -52,7 +54,7 @@ public class ContactTypeProvider implements Provider<ContactType> {
     @Override
     public boolean delete(int id) {
         if (ContactTypeProvider.getSvc() != null)
-            return ContactTypeProvider.getSvc().getContactTypeProviderPort().deleteContactType(id);
+            return ContactTypeProvider.getSvc().deleteContactType(id);
         return false;
     }
 
@@ -66,9 +68,9 @@ public class ContactTypeProvider implements Provider<ContactType> {
     }
 
     @Override
-    public List<RefBoxListItem<ContactType>> search(List<String> expr) {
+    public List<RefBoxListItem<ContactType>> search(List<String> expr, int max) {
         if (ContactTypeProvider.getSvc() != null) {
-            List<ContactTypeEntity> entities = ContactTypeProvider.getSvc().getContactTypeProviderPort().searchContactType(expr);
+            List<ContactTypeEntity> entities = ContactTypeProvider.getSvc().searchContactType(expr, max);
             List<RefBoxListItem<ContactType>> result = new ArrayList<>();
             if (entities != null)
                 for (ContactTypeEntity entity : entities)

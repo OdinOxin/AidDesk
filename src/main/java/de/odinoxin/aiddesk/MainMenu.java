@@ -127,7 +127,7 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
     }
 
     @Override
-    public List<RefBoxListItem<PluginItem>> search(List<String> expr) {
+    public List<RefBoxListItem<PluginItem>> search(List<String> expr, int max) {
         List<RefBoxListItem<PluginItem>> items = new ArrayList<>();
         for (PluginItem item : PLUGIN_ITEMS)
             items.add(getRefBoxItem(item));

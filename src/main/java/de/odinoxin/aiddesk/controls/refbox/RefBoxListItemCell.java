@@ -1,5 +1,6 @@
 package de.odinoxin.aiddesk.controls.refbox;
 
+import de.odinoxin.aidcloud.provider.TranslatorProvider;
 import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
@@ -16,33 +17,46 @@ class RefBoxListItemCell<T extends RecordItem> extends ListCell<RefBoxListItem<T
 
     private GridPane grdItem;
     private int matched;
+    private int max;
+
+
+    public RefBoxListItemCell(int max) {
+        this.max = max;
+    }
 
     @Override
     protected void updateItem(RefBoxListItem<T> item, boolean empty) {
         super.updateItem(item, empty);
 
-        if (item != null) {
+        if (item != null && this.getIndex() <= this.max) {
             try {
                 this.matched = 0;
-                String idText = String.valueOf(item.getRecord().getId());
                 this.grdItem = FXMLLoader.load(RefBox.class.getResource("/controls/refboxlistitem.fxml"));
-                this.markup("ID", idText, item.getHighlight());
-                this.markup("Text", item.getText(), item.getHighlight());
-                this.markup("SubText", item.getSubText(), item.getHighlight());
 
-                if (item.getHighlight() != null)
-                    for (String hightlight : item.getHighlight())
-                        if (idText.equals(hightlight)) {
-                            item.setMatch(Double.MAX_VALUE);
-                            this.matched = -1;
-                        }
-                if (matched >= 0) {
-                    int length = idText.length();
-                    if (item.getText() != null)
-                        length += item.getText().length();
-                    if (item.getSubText() != null)
-                        length += item.getSubText().length();
-                    item.setMatch((double) matched / length);
+                if (this.getIndex() < this.max) {
+                    String idText = String.valueOf(item.getRecord().getId());
+                    this.markup("ID", idText, item.getHighlight());
+                    this.markup("Text", item.getText(), item.getHighlight());
+                    this.markup("SubText", item.getSubText(), item.getHighlight());
+
+                    if (item.getHighlight() != null)
+                        for (String hightlight : item.getHighlight())
+                            if (idText.equals(hightlight)) {
+                                item.setMatch(Double.MAX_VALUE);
+                                this.matched = -1;
+                            }
+                    if (this.matched >= 0) {
+                        int length = idText.length();
+                        if (item.getText() != null)
+                            length += item.getText().length();
+                        if (item.getSubText() != null)
+                            length += item.getSubText().length();
+                        item.setMatch((double) this.matched / length);
+                    }
+                } else {
+                    item.setRecord(null);
+                    this.markup("Text", TranslatorProvider.getTranslation("More items avaiable!"), null);
+                    this.markup("SubText", TranslatorProvider.getTranslation("Load more items..."), null);
                 }
                 this.setGraphic(this.grdItem);
             } catch (IOException ex) {

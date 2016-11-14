@@ -13,25 +13,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactInformationProvider implements Provider<ContactInformation> {
-    private static ContactInformationProviderService svc;
+    private static de.odinoxin.aidcloud.service.ContactInformationProvider svc;
 
-    private static ContactInformationProviderService getSvc() {
+    private static de.odinoxin.aidcloud.service.ContactInformationProvider getSvc() {
         if (svc == null) {
             if (Login.getServerUrl() == null)
                 return null;
             try {
-                svc = new ContactInformationProviderService(new URL(Login.getServerUrl() + "/ContactInformationProvider?wsdl"));
+                svc = new ContactInformationProviderService(new URL(Login.getServerUrl() + "/ContactInformationProvider?wsdl")).getContactInformationProviderPort();
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             }
         }
+        if (svc != null)
+            Requester.setRequestHeaders(svc);
         return svc;
     }
 
     @Override
     public ContactInformation get(int id) {
         if (ContactInformationProvider.getSvc() != null) {
-            ContactInformationEntity entity = ContactInformationProvider.getSvc().getContactInformationProviderPort().getContactInformation(id);
+            ContactInformationEntity entity = ContactInformationProvider.getSvc().getContactInformation(id);
             if (entity != null)
                 return new ContactInformation(entity);
         }
@@ -41,7 +43,7 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
     @Override
     public ContactInformation save(ContactInformation item) {
         if (ContactInformationProvider.getSvc() != null) {
-            ContactInformationEntity entity = ContactInformationProvider.getSvc().getContactInformationProviderPort().saveContactInformation(item.toEntity());
+            ContactInformationEntity entity = ContactInformationProvider.getSvc().saveContactInformation(item.toEntity());
             if (entity != null)
                 return new ContactInformation(entity);
         }
@@ -51,7 +53,7 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
     @Override
     public boolean delete(int id) {
         if (ContactInformationProvider.getSvc() != null)
-            return ContactInformationProvider.getSvc().getContactInformationProviderPort().deleteContactInformation(id);
+            return ContactInformationProvider.getSvc().deleteContactInformation(id);
         return false;
     }
 
@@ -66,9 +68,9 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
     }
 
     @Override
-    public List<RefBoxListItem<ContactInformation>> search(List<String> expr) {
+    public List<RefBoxListItem<ContactInformation>> search(List<String> expr, int max) {
         if (ContactInformationProvider.getSvc() != null) {
-            List<ContactInformationEntity> entities = ContactInformationProvider.getSvc().getContactInformationProviderPort().searchContactInformation(expr);
+            List<ContactInformationEntity> entities = ContactInformationProvider.getSvc().searchContactInformation(expr, max);
             List<RefBoxListItem<ContactInformation>> result = new ArrayList<>();
             if (entities != null)
                 for (ContactInformationEntity entity : entities)

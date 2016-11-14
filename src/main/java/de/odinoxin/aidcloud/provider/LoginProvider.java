@@ -13,24 +13,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginProvider implements Provider<Person> {
-    private static de.odinoxin.aidcloud.service.Login loginSvc;
+    private static de.odinoxin.aidcloud.service.Login svc;
 
     private static de.odinoxin.aidcloud.service.Login getSvc() {
-        if (loginSvc == null) {
+        if (svc == null) {
             if (Login.getServerUrl() == null)
                 return null;
             try {
-                loginSvc = new LoginService(new URL(Login.getServerUrl() + "/Login?wsdl")).getLoginPort();
+                svc = new LoginService(new URL(Login.getServerUrl() + "/Login?wsdl")).getLoginPort();
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             }
         }
-        return loginSvc;
+        return svc;
     }
 
-    public static boolean checkLogin(int userId, String pwd) {
+    public static String getSession(int id, String pwd) {
         if (LoginProvider.getSvc() != null)
-            return LoginProvider.getSvc().checkLogin(userId, pwd);
+            return LoginProvider.getSvc().getSession(id, pwd);
+        return null;
+    }
+
+    public static boolean checkLogin(int id, String pwd) {
+        if (LoginProvider.getSvc() != null)
+            return LoginProvider.getSvc().checkLogin(id, pwd);
         return false;
     }
 
@@ -59,9 +65,9 @@ public class LoginProvider implements Provider<Person> {
     }
 
     @Override
-    public List<RefBoxListItem<Person>> search(List<String> expr) {
+    public List<RefBoxListItem<Person>> search(List<String> expr, int max) {
         if (LoginProvider.getSvc() != null) {
-            List<PersonEntity> entities = LoginProvider.getSvc().searchLogin(expr);
+            List<PersonEntity> entities = LoginProvider.getSvc().searchLogin(expr, max);
             List<RefBoxListItem<Person>> result = new ArrayList<>();
             if (entities != null)
                 for (PersonEntity entity : entities)

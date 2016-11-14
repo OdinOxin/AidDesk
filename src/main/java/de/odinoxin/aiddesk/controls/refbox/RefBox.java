@@ -29,6 +29,8 @@ import java.util.List;
 
 public class RefBox<T extends RecordItem> extends VBox {
 
+    private static final int MAX_SEARCH_RESULT = 10;
+
     @FXML
     private TextField txfText;
     @FXML
@@ -284,7 +286,7 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.txfText.onActionProperty().set(value);
     }
 
-    public void update() {
+    private void update() {
         this.ignoreTextChange = true;
         RefBoxListItem<T> item;
         if (this.provider != null) {
@@ -312,16 +314,20 @@ public class RefBox<T extends RecordItem> extends VBox {
     }
 
     private void search() {
+        this.search(MAX_SEARCH_RESULT);
+    }
+
+    private void search(int max) {
         this.txfText.requestFocus();
         if (this.refBoxList != null)
             this.refBoxList.hide();
         this.refBoxList = new RefBoxList<>(this.localToScreen(0, this.txfText.getHeight()));
         this.refBoxList.setPrefWidth(this.getWidth());
-        this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell());
+        this.refBoxList.getSuggestionsList().setCellFactory(param -> new RefBoxListItemCell(max));
 
         String[] highlight = this.txfText.getText() == null || this.txfText.getText().isEmpty() ? null : this.txfText.getText().split(" ");
         if (this.provider != null) {
-            List<RefBoxListItem<T>> result = this.provider.search(highlight == null ? null : Arrays.asList(highlight));
+            List<RefBoxListItem<T>> result = this.provider.search(highlight == null ? null : Arrays.asList(highlight), max);
             if (result != null) {
                 for (RefBoxListItem<T> item : result)
                     item.setHighlight(highlight);
@@ -336,7 +342,12 @@ public class RefBox<T extends RecordItem> extends VBox {
                                 this.btnSearch.requestFocus();
                             case ENTER:
                                 RefBoxListItem<T> item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
-                                this.setObj(item == null ? null : item.getRecord());
+                                if (item != null) {
+                                    if (item.getRecord() == null)
+                                        this.search(max + MAX_SEARCH_RESULT);
+                                    else
+                                        this.setObj(item.getRecord());
+                                }
                                 break;
                             case A:
                                 if (ev.isControlDown())
@@ -351,7 +362,12 @@ public class RefBox<T extends RecordItem> extends VBox {
                     {
                         if (ev.getButton() == MouseButton.PRIMARY && ev.getClickCount() == 2) {
                             RefBoxListItem<T> item = this.refBoxList.getSuggestionsList().getSelectionModel().getSelectedItem();
-                            this.setObj(item == null ? null : item.getRecord());
+                            if (item != null) {
+                                if (item.getRecord() == null)
+                                    this.search(max + MAX_SEARCH_RESULT);
+                                else
+                                    this.setObj(item.getRecord());
+                            }
                         }
                     });
                     for (RefBoxListItem item : this.refBoxList.getSuggestionsList().getItems()) {

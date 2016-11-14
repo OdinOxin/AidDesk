@@ -14,25 +14,27 @@ import java.util.List;
 
 public class LanguageProvider implements Provider<Language> {
 
-    private static LanguageProviderService svc;
+    private static de.odinoxin.aidcloud.service.LanguageProvider svc;
 
-    private static LanguageProviderService getSvc() {
+    private static de.odinoxin.aidcloud.service.LanguageProvider getSvc() {
         if (svc == null) {
             if (Login.getServerUrl() == null)
                 return null;
             try {
-                svc = new LanguageProviderService(new URL(Login.getServerUrl() + "/LanguageProvider?wsdl"));
+                svc = new LanguageProviderService(new URL(Login.getServerUrl() + "/LanguageProvider?wsdl")).getLanguageProviderPort();
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             }
         }
+        if (svc != null)
+            Requester.setRequestHeaders(svc);
         return svc;
     }
 
     @Override
     public Language get(int id) {
         if (LanguageProvider.getSvc() != null) {
-            LanguageEntity entity = LanguageProvider.getSvc().getLanguageProviderPort().getLanguage(id);
+            LanguageEntity entity = LanguageProvider.getSvc().getLanguage(id);
             if (entity != null)
                 return new Language(entity);
         }
@@ -42,7 +44,7 @@ public class LanguageProvider implements Provider<Language> {
     @Override
     public Language save(Language item) {
         if (LanguageProvider.getSvc() != null) {
-            LanguageEntity entity = LanguageProvider.getSvc().getLanguageProviderPort().saveLanguage(item.toEntity());
+            LanguageEntity entity = LanguageProvider.getSvc().saveLanguage(item.toEntity());
             if (entity != null)
                 return new Language(entity);
         }
@@ -52,7 +54,7 @@ public class LanguageProvider implements Provider<Language> {
     @Override
     public boolean delete(int id) {
         if (LanguageProvider.getSvc() != null)
-            return LanguageProvider.getSvc().getLanguageProviderPort().deleteLanguage(id);
+            return LanguageProvider.getSvc().deleteLanguage(id);
         return false;
     }
 
@@ -66,9 +68,9 @@ public class LanguageProvider implements Provider<Language> {
     }
 
     @Override
-    public List<RefBoxListItem<Language>> search(List<String> expr) {
+    public List<RefBoxListItem<Language>> search(List<String> expr, int max) {
         if (LanguageProvider.getSvc() != null) {
-            List<LanguageEntity> entities = LanguageProvider.getSvc().getLanguageProviderPort().searchLanguage(expr);
+            List<LanguageEntity> entities = LanguageProvider.getSvc().searchLanguage(expr, max);
             List<RefBoxListItem<Language>> result = new ArrayList<>();
             if (entities != null)
                 for (LanguageEntity entity : entities)

@@ -13,25 +13,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddressProvider implements Provider<Address> {
-    private static AddressProviderService addressSvc;
+    private static de.odinoxin.aidcloud.service.AddressProvider svc;
 
-    private static AddressProviderService getSvc() {
-        if (addressSvc == null) {
+    private static de.odinoxin.aidcloud.service.AddressProvider getSvc() {
+        if (svc == null) {
             if (Login.getServerUrl() == null)
                 return null;
             try {
-                addressSvc = new AddressProviderService(new URL(Login.getServerUrl() + "/AddressProvider?wsdl"));
+                svc = new AddressProviderService(new URL(Login.getServerUrl() + "/AddressProvider?wsdl")).getAddressProviderPort();
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             }
         }
-        return addressSvc;
+        if (svc != null)
+            Requester.setRequestHeaders(svc);
+        return svc;
     }
 
     @Override
     public Address get(int id) {
         if (AddressProvider.getSvc() != null) {
-            AddressEntity entity = AddressProvider.getSvc().getAddressProviderPort().getAddress(id);
+            AddressEntity entity = AddressProvider.getSvc().getAddress(id);
             if (entity != null)
                 return new Address(entity);
         }
@@ -41,7 +43,7 @@ public class AddressProvider implements Provider<Address> {
     @Override
     public Address save(Address item) {
         if (AddressProvider.getSvc() != null) {
-            AddressEntity entity = AddressProvider.getSvc().getAddressProviderPort().saveAddress(item.toEntity());
+            AddressEntity entity = AddressProvider.getSvc().saveAddress(item.toEntity());
             if (entity != null)
                 return new Address(entity);
         }
@@ -51,7 +53,7 @@ public class AddressProvider implements Provider<Address> {
     @Override
     public boolean delete(int id) {
         if (AddressProvider.getSvc() != null)
-            return AddressProvider.getSvc().getAddressProviderPort().deleteAddress(id);
+            return AddressProvider.getSvc().deleteAddress(id);
         return false;
     }
 
@@ -68,9 +70,9 @@ public class AddressProvider implements Provider<Address> {
     }
 
     @Override
-    public List<RefBoxListItem<Address>> search(List<String> expr) {
+    public List<RefBoxListItem<Address>> search(List<String> expr, int max) {
         if (AddressProvider.getSvc() != null) {
-            List<AddressEntity> entities = AddressProvider.getSvc().getAddressProviderPort().searchAddress(expr);
+            List<AddressEntity> entities = AddressProvider.getSvc().searchAddress(expr, max);
             List<RefBoxListItem<Address>> result = new ArrayList<>();
             if (entities != null)
                 for (AddressEntity entity : entities)

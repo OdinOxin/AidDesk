@@ -13,25 +13,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountryProvider implements Provider<Country> {
-    private static CountryProviderService countriesSvc;
+    private static de.odinoxin.aidcloud.service.CountryProvider svc;
 
-    private static CountryProviderService getSvc() {
-        if (countriesSvc == null) {
+    private static de.odinoxin.aidcloud.service.CountryProvider getSvc() {
+        if (svc == null) {
             if (Login.getServerUrl() == null)
                 return null;
             try {
-                countriesSvc = new CountryProviderService(new URL(Login.getServerUrl() + "/CountryProvider?wsdl"));
+                svc = new CountryProviderService(new URL(Login.getServerUrl() + "/CountryProvider?wsdl")).getCountryProviderPort();
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             }
         }
-        return countriesSvc;
+        if (svc != null)
+            Requester.setRequestHeaders(svc);
+        return svc;
     }
 
     @Override
     public Country get(int id) {
         if (CountryProvider.getSvc() != null) {
-            CountryEntity entity = CountryProvider.getSvc().getCountryProviderPort().getCountry(id);
+            CountryEntity entity = CountryProvider.getSvc().getCountry(id);
             if (entity != null)
                 return new Country(entity);
         }
@@ -41,7 +43,7 @@ public class CountryProvider implements Provider<Country> {
     @Override
     public Country save(Country item) {
         if (CountryProvider.getSvc() != null) {
-            CountryEntity entity = CountryProvider.getSvc().getCountryProviderPort().saveCountry(item.toEntity());
+            CountryEntity entity = CountryProvider.getSvc().saveCountry(item.toEntity());
             if (entity != null)
                 return new Country(entity);
         }
@@ -51,7 +53,7 @@ public class CountryProvider implements Provider<Country> {
     @Override
     public boolean delete(int id) {
         if (CountryProvider.getSvc() != null)
-            return CountryProvider.getSvc().getCountryProviderPort().deleteCountry(id);
+            return CountryProvider.getSvc().deleteCountry(id);
         return false;
     }
 
@@ -67,9 +69,9 @@ public class CountryProvider implements Provider<Country> {
     }
 
     @Override
-    public List<RefBoxListItem<Country>> search(List<String> expr) {
+    public List<RefBoxListItem<Country>> search(List<String> expr, int max) {
         if (CountryProvider.getSvc() != null) {
-            List<CountryEntity> entities = CountryProvider.getSvc().getCountryProviderPort().searchCountry(expr);
+            List<CountryEntity> entities = CountryProvider.getSvc().searchCountry(expr, max);
             List<RefBoxListItem<Country>> result = new ArrayList<>();
             if (entities != null)
                 for (CountryEntity entity : entities)

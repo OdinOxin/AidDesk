@@ -13,25 +13,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonProvider implements Provider<Person> {
-    private static PersonProviderService peopleSvc;
+    private static de.odinoxin.aidcloud.service.PersonProvider svc;
 
-    private static PersonProviderService getSvc() {
-        if (peopleSvc == null) {
+    private static de.odinoxin.aidcloud.service.PersonProvider getSvc() {
+        if (svc == null) {
             if (Login.getServerUrl() == null)
                 return null;
             try {
-                peopleSvc = new PersonProviderService(new URL(Login.getServerUrl() + "/PersonProvider?wsdl"));
+                svc = new PersonProviderService(new URL(Login.getServerUrl() + "/PersonProvider?wsdl")).getPersonProviderPort();
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
             }
         }
-        return peopleSvc;
+        if (svc != null)
+            Requester.setRequestHeaders(svc);
+        return svc;
     }
 
     @Override
     public Person get(int id) {
         if (PersonProvider.getSvc() != null) {
-            PersonEntity entity = PersonProvider.getSvc().getPersonProviderPort().getPerson(id);
+            PersonEntity entity = PersonProvider.getSvc().getPerson(id);
             if (entity != null)
                 return new Person(entity);
         }
@@ -41,7 +43,7 @@ public class PersonProvider implements Provider<Person> {
     @Override
     public Person save(Person item) {
         if (PersonProvider.getSvc() != null) {
-            PersonEntity entity = PersonProvider.getSvc().getPersonProviderPort().savePerson(item.toEntity());
+            PersonEntity entity = PersonProvider.getSvc().savePerson(item.toEntity());
             if (entity != null)
                 return new Person(entity);
         }
@@ -51,7 +53,7 @@ public class PersonProvider implements Provider<Person> {
     @Override
     public boolean delete(int id) {
         if (PersonProvider.getSvc() != null)
-            return PersonProvider.getSvc().getPersonProviderPort().deletePerson(id);
+            return PersonProvider.getSvc().deletePerson(id);
         return false;
     }
 
@@ -72,9 +74,9 @@ public class PersonProvider implements Provider<Person> {
     }
 
     @Override
-    public List<RefBoxListItem<Person>> search(List<String> expr) {
+    public List<RefBoxListItem<Person>> search(List<String> expr, int max) {
         if (PersonProvider.getSvc() != null) {
-            List<PersonEntity> entities = PersonProvider.getSvc().getPersonProviderPort().searchPerson(expr);
+            List<PersonEntity> entities = PersonProvider.getSvc().searchPerson(expr, max);
             List<RefBoxListItem<Person>> result = new ArrayList<>();
             if (entities != null)
                 for (PersonEntity entity : entities) {
@@ -93,7 +95,7 @@ public class PersonProvider implements Provider<Person> {
 
     public static boolean changePwd(int id, String currentPwd, String newPwd) {
         if (PersonProvider.getSvc() != null)
-            return PersonProvider.getSvc().getPersonProviderPort().changePwd(id, currentPwd, newPwd);
+            return PersonProvider.getSvc().changePwd(id, currentPwd, newPwd);
         return false;
     }
 }
