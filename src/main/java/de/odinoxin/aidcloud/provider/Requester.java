@@ -17,7 +17,7 @@ abstract class Requester {
         if (reqCtx != null) {
             Map<String, List<String>> reqHeaders = new HashMap<>();
             reqHeaders.put("Username", Login.getPerson() == null ? null : Collections.singletonList(String.valueOf(Login.getPerson().getId())));
-            reqHeaders.put("Password", Login.getPerson() == null ? null : Collections.singletonList(Login.getSession()));
+            reqHeaders.put("Password", Login.getPerson() == null ? null : Collections.singletonList(Login.getPerson().getPwd()));
             reqCtx.put(MessageContext.HTTP_REQUEST_HEADERS, reqHeaders);
         }
     }

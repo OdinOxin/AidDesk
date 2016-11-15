@@ -75,7 +75,7 @@ public class Login extends Plugin {
         Person p = this.refboxUser.getObj();
         if (p == null)
             return;
-        if (this.openSession(p.getId(), this.pwfPwd.getText())) {
+        if (Login.openSession(p.getId(), this.pwfPwd.getText())) {
             this.close();
             new MainMenu();
             return;
@@ -83,10 +83,11 @@ public class Login extends Plugin {
         new MsgDialog(this, Alert.AlertType.ERROR, "Login", "User or password incorrect!").showAndWait();
     }
 
-    private boolean openSession(int id, String pwd) {
+    public static boolean openSession(int id, String pwd) {
         Login.session = LoginProvider.getSession(id, pwd);
         if (Login.session != null) {
             Login.person = new Person(id); //Not useless, cause of auth info source; Used to perform next line!
+            Login.person.setPwd(pwd);
             Login.person = new PersonProvider().get(id);
             Login.person.setPwd(pwd);
             Login.person.setChanged(false);
