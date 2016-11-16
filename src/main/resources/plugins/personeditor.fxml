@@ -2,9 +2,9 @@
 
 <?import de.odinoxin.aiddesk.controls.Header?>
 <?import de.odinoxin.aiddesk.controls.refbox.RefBox?>
+<?import de.odinoxin.aiddesk.controls.reflist.RefList?>
 <?import de.odinoxin.aiddesk.controls.translateable.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
 <GridPane xmlns="http://javafx.com/javafx/8"
@@ -138,9 +138,9 @@
         <Header text="Contact information"
                 GridPane.rowIndex="2"
                 GridPane.columnIndex="0"/>
-        <ListView id="lvContactInformation"
-                  GridPane.rowIndex="3"
-                  GridPane.columnIndex="0">
-        </ListView>
+        <RefList id="refListContactInformation"
+                 GridPane.rowIndex="3"
+                 GridPane.columnIndex="0">
+        </RefList>
     </GridPane>
 </GridPane>

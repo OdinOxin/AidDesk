@@ -3,7 +3,7 @@ package de.odinoxin.aiddesk.plugins.people;
 import de.odinoxin.aidcloud.provider.*;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
-import de.odinoxin.aiddesk.controls.refbox.RefBoxListCell;
+import de.odinoxin.aiddesk.controls.reflist.RefList;
 import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.dialogs.MsgDialog;
 import de.odinoxin.aiddesk.plugins.Plugin;
@@ -11,9 +11,7 @@ import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.addresses.Address;
 import de.odinoxin.aiddesk.plugins.contact.information.ContactInformation;
 import de.odinoxin.aiddesk.plugins.languages.Language;
-import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 public class PersonEditor extends RecordEditor<Person> {
@@ -24,7 +22,7 @@ public class PersonEditor extends RecordEditor<Person> {
     private Button btnPwd;
     private RefBox<Language> refBoxLanguage;
     private RefBox<Address> refBoxAddress;
-    private ListView<ContactInformation> lvContactInformation;
+    private RefList<ContactInformation> refListContactInformation;
 
     private String currentPwdw;
 
@@ -41,17 +39,8 @@ public class PersonEditor extends RecordEditor<Person> {
         this.refBoxLanguage.setProvider(new LanguageProvider());
         this.refBoxAddress = (RefBox<Address>) this.root.lookup("#refBoxAddress");
         this.refBoxAddress.setProvider(new AddressProvider());
-        this.lvContactInformation = (ListView<ContactInformation>) this.root.lookup("#lvContactInformation");
-//        this.lvContactInformation.getItems().addListener((ListChangeListener.Change<? extends ContactInformation> c) -> {
-//            if (this.getRecordItem() == null)
-//                return;
-//            if (c.wasAdded()) {
-//                if (!this.getRecordItem().getContactInformation().contains(c.getAddedSubList().get(0)))
-//                    this.getRecordItem().getContactInformation().add(c.getAddedSubList().get(0));
-//            } else if (c.wasRemoved())
-//                this.getRecordItem().getContactInformation().remove(c.getRemoved().get(0));
-//        });
-
+        this.refListContactInformation = (RefList<ContactInformation>) this.root.lookup("#refListContactInformation");
+        this.refListContactInformation.setProvider(new ContactInformationProvider());
         this.loadRecord(person);
         if (person == null)
             this.onNew();
@@ -93,11 +82,7 @@ public class PersonEditor extends RecordEditor<Person> {
         this.btnPwd.disableProperty().bind(this.getRecordItem().idProperty().isEqualTo(0));
         this.refBoxLanguage.objProperty().bindBidirectional(this.getRecordItem().languageProperty());
         this.refBoxAddress.objProperty().bindBidirectional(this.getRecordItem().addressProperty());
-        this.lvContactInformation.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> this.lvContactInformation.getSelectionModel().clearSelection()));
-        this.lvContactInformation.setCellFactory(param -> new RefBoxListCell<>(new ContactInformationProvider(), this.getRecordItem().getContactInformation()));
-        this.lvContactInformation.getItems().clear();
-        this.lvContactInformation.getItems().add(null);
-        this.lvContactInformation.getItems().addAll(this.getRecordItem().getContactInformation());
+        this.refListContactInformation.bindBidirectional(this.getRecordItem().contactInformationProperty());
         this.getRecordItem().setChanged(false);
     }
 
@@ -106,8 +91,8 @@ public class PersonEditor extends RecordEditor<Person> {
         return new PersonProvider();
     }
 
-    void changePwd(String oldPwd, String newPwd) {
-        this.currentPwdw = oldPwd;
+    void changePwd(String currentPwd, String newPwd) {
+        this.currentPwdw = currentPwd;
         this.getRecordItem().setPwd(newPwd);
     }
 }
