@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
 <VBox xmlns="http://javafx.com/javafx/8"
       id="humansGrid"
       style="-fx-background-color: lightgray">
@@ -31,6 +32,21 @@
             <RefBox id="refBoxKey"
                     prefWidth="300"
                     showNewButton="true"/>
+            <Button id="btnRefresh"
+                    minWidth="35"
+                    maxWidth="35"
+                    minHeight="31"
+                    maxHeight="31">
+                <graphic>
+                    <SVGPath scaleX="0.04" scaleY="0.04"
+                             content="M125.938,208.901l-39.102-39.408c-25.01,32.209-40.502,69.32-45.251,107.941h56.06
+                                C101.54,253.299,111.234,229.71,125.938,208.901z M97.646,332.881h-56.06c4.748,38.621,19.978,75.775,44.988,107.941l39.08-39.365
+                                C111.234,380.626,101.54,357.301,97.646,332.881z M125.654,480.515c32.209,24.967,69.67,39.955,108.181,44.638V468.83
+                                c-24.135-4.157-47.439-13.61-68.248-28.555L125.654,480.515z M289.304,85.162V0l-126.19,126.212l126.212,123.476V141.222
+                                c78.839,13.304,138.706,81.552,138.706,163.935s-59.889,150.653-138.706,164.001v55.994
+                                c109.626-13.61,194.241-106.759,194.241-219.995C483.545,191.987,398.93,98.751,289.304,85.162z"/>
+                </graphic>
+            </Button>
         </HBox>
         <HBox GridPane.columnIndex="1"
               alignment="CENTER_RIGHT"

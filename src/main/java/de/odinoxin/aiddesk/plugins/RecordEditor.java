@@ -21,6 +21,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     private TextField txfId;
     private RefBox<T> refBoxKey;
+    private Button btnRefresh;
     private Provider<T> provider;
     private Button btnSave;
     private Button btnDiscard;
@@ -49,6 +50,8 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 this.onNew();
             });
             this.refBoxKey.objProperty().addListener((observable, oldValue, newValue) -> this.loadRecord(newValue == null || this.provider == null ? null : this.provider.get(newValue.getId())));
+            this.btnRefresh = (Button) this.root.lookup("#btnRefresh");
+            this.btnRefresh.setOnAction(ev -> this.loadRecord(this.provider.get(this.getRecordItem().getId())));
             this.txfId = (TextField) this.root.lookup("#txfId");
             ((ScrollPane) this.root.lookup("#scpDetails")).setContent(recordView);
 
