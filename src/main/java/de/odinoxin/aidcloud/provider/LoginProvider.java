@@ -46,7 +46,7 @@ public class LoginProvider implements Provider<Person> {
     }
 
     @Override
-    public Person save(Person item) {
+    public Person save(Person item, Person original) {
         return null;
     }
 

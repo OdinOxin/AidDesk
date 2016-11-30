@@ -1,6 +1,7 @@
 package de.odinoxin.aiddesk.plugins.people;
 
 import de.odinoxin.aidcloud.provider.*;
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.controls.reflist.RefList;
@@ -52,11 +53,11 @@ public class PersonEditor extends RecordEditor<Person> {
     }
 
     @Override
-    protected Person onSave() {
+    protected Person onSave() throws ConcurrentFault_Exception {
         if (this.currentPwdw != null && this.getRecordItem().getPwd() != null)
             if (!PersonProvider.changePwd(this.getRecordItem().getId(), this.currentPwdw, this.getRecordItem().getPwd()))
                 new MsgDialog(this, Alert.AlertType.ERROR, "Fehlgeschlagen!", "Passwort konnte nicht geändert werden.").showAndWait();
-        return this.getProvider().save(this.getRecordItem());
+        return this.getProvider().save(this.getRecordItem(), this.getOriginalItem());
     }
 
     @Override

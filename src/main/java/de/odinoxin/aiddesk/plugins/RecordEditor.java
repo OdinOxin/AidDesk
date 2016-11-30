@@ -2,6 +2,7 @@ package de.odinoxin.aiddesk.plugins;
 
 import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aidcloud.provider.TranslatorProvider;
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.controls.translateable.Button;
 import de.odinoxin.aiddesk.dialogs.Callback;
@@ -58,11 +59,17 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.btnSave = (Button) this.root.lookup("#btnSave");
             this.btnSave.setOnAction(ev ->
             {
-                T newObj = this.onSave();
-                if (newObj != null) {
-                    this.getRecordItem().setChanged(false);
-                    this.loadRecord(newObj);
-                    this.refBoxKey.setObj(newObj);
+                try {
+                    T newObj = this.onSave();
+                    if (newObj != null) {
+                        this.getRecordItem().setChanged(false);
+                        this.loadRecord(newObj);
+                        this.refBoxKey.setObj(newObj);
+                    }
+                } catch (ConcurrentFault_Exception ex) {
+                    ex.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             });
             setButtonEnter(this.btnSave);
@@ -151,7 +158,7 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     protected abstract void onNew();
 
-    protected abstract T onSave();
+    protected abstract T onSave() throws ConcurrentFault_Exception;
 
     protected void setStoreable(boolean storeable) {
         this.storeable.set(storeable);
@@ -166,7 +173,11 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
     protected abstract void setRecord(T record);
 
     public T getRecordItem() {
-        return recordItem.get();
+        return this.recordItem.get();
+    }
+
+    public T getOriginalItem() {
+        return this.original;
     }
 
     protected void setRecordItem(T recordItem) {

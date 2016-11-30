@@ -1,5 +1,6 @@
 package de.odinoxin.aidcloud.provider;
 
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aidcloud.service.ContactInformationEntity;
 import de.odinoxin.aidcloud.service.ContactInformationProviderService;
 import de.odinoxin.aiddesk.Login;
@@ -41,9 +42,9 @@ public class ContactInformationProvider implements Provider<ContactInformation> 
     }
 
     @Override
-    public ContactInformation save(ContactInformation item) {
+    public ContactInformation save(ContactInformation item, ContactInformation original) throws ConcurrentFault_Exception {
         if (ContactInformationProvider.getSvc() != null) {
-            ContactInformationEntity entity = ContactInformationProvider.getSvc().saveContactInformation(item.toEntity());
+            ContactInformationEntity entity = ContactInformationProvider.getSvc().saveContactInformation(item.toEntity(), original.toEntity());
             if (entity != null)
                 return new ContactInformation(entity);
         }

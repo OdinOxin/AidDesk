@@ -1,5 +1,6 @@
 package de.odinoxin.aidcloud.provider;
 
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aidcloud.service.PersonEntity;
 import de.odinoxin.aidcloud.service.PersonProviderService;
 import de.odinoxin.aiddesk.Login;
@@ -41,9 +42,9 @@ public class PersonProvider implements Provider<Person> {
     }
 
     @Override
-    public Person save(Person item) {
+    public Person save(Person item, Person original) throws ConcurrentFault_Exception {
         if (PersonProvider.getSvc() != null) {
-            PersonEntity entity = PersonProvider.getSvc().savePerson(item.toEntity());
+            PersonEntity entity = PersonProvider.getSvc().savePerson(item.toEntity(), original.toEntity());
             if (entity != null)
                 return new Person(entity);
         }
