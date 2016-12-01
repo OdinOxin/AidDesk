@@ -3,6 +3,7 @@ package de.odinoxin.aiddesk.plugins.addresses;
 import de.odinoxin.aidcloud.provider.AddressProvider;
 import de.odinoxin.aidcloud.provider.CountryProvider;
 import de.odinoxin.aidcloud.provider.Provider;
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.countries.Country;
@@ -38,8 +39,8 @@ public class AddressEditor extends RecordEditor<Address> {
     }
 
     @Override
-    protected Address onSave() {
-        return this.getProvider().save(this.getRecordItem());
+    protected Address onSave() throws ConcurrentFault_Exception {
+        return this.getProvider().save(this.getRecordItem(), this.getOriginalItem());
     }
 
     @Override

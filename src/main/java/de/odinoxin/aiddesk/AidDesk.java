@@ -7,6 +7,7 @@ public class AidDesk extends Application {
 
     /**
      * Lanches AidDesk
+     *
      * @param args Command parameters
      */
     public static void main(String[] args) {
@@ -16,6 +17,7 @@ public class AidDesk extends Application {
 
     /**
      * Starts the Application
+     *
      * @param primaryStage The primary stage (unused)
      * @throws Exception May throw an Exception
      */

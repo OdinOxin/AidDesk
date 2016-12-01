@@ -108,7 +108,7 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
     }
 
     @Override
-    public PluginItem save(PluginItem item) {
+    public PluginItem save(PluginItem item, PluginItem original) {
         return null;
     }
 

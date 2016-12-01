@@ -2,6 +2,7 @@ package de.odinoxin.aiddesk.plugins.languages;
 
 import de.odinoxin.aidcloud.provider.LanguageProvider;
 import de.odinoxin.aidcloud.provider.Provider;
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import javafx.application.Platform;
 import javafx.scene.control.TextField;
@@ -28,8 +29,8 @@ public class LanguageEditor extends RecordEditor<Language> {
     }
 
     @Override
-    protected Language onSave() {
-        return this.getProvider().save(this.getRecordItem());
+    protected Language onSave() throws ConcurrentFault_Exception {
+        return this.getProvider().save(this.getRecordItem(), this.getOriginalItem());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package de.odinoxin.aidcloud.provider;
 
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aidcloud.service.CountryEntity;
 import de.odinoxin.aidcloud.service.CountryProviderService;
 import de.odinoxin.aiddesk.Login;
@@ -41,9 +42,9 @@ public class CountryProvider implements Provider<Country> {
     }
 
     @Override
-    public Country save(Country item) {
+    public Country save(Country item, Country original) throws ConcurrentFault_Exception {
         if (CountryProvider.getSvc() != null) {
-            CountryEntity entity = CountryProvider.getSvc().saveCountry(item.toEntity());
+            CountryEntity entity = CountryProvider.getSvc().saveCountry(item.toEntity(), original.toEntity());
             if (entity != null)
                 return new Country(entity);
         }

@@ -2,6 +2,7 @@ package de.odinoxin.aidcloud.provider;
 
 import de.odinoxin.aidcloud.service.AddressEntity;
 import de.odinoxin.aidcloud.service.AddressProviderService;
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aiddesk.Login;
 import de.odinoxin.aiddesk.controls.refbox.RefBoxListItem;
 import de.odinoxin.aiddesk.plugins.addresses.Address;
@@ -41,9 +42,9 @@ public class AddressProvider implements Provider<Address> {
     }
 
     @Override
-    public Address save(Address item) {
+    public Address save(Address item, Address original) throws ConcurrentFault_Exception {
         if (AddressProvider.getSvc() != null) {
-            AddressEntity entity = AddressProvider.getSvc().saveAddress(item.toEntity());
+            AddressEntity entity = AddressProvider.getSvc().saveAddress(item.toEntity(), original.toEntity());
             if (entity != null)
                 return new Address(entity);
         }

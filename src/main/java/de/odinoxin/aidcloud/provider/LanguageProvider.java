@@ -1,5 +1,6 @@
 package de.odinoxin.aidcloud.provider;
 
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aidcloud.service.LanguageEntity;
 import de.odinoxin.aidcloud.service.LanguageProviderService;
 import de.odinoxin.aiddesk.Login;
@@ -42,9 +43,9 @@ public class LanguageProvider implements Provider<Language> {
     }
 
     @Override
-    public Language save(Language item) {
+    public Language save(Language item, Language original) throws ConcurrentFault_Exception {
         if (LanguageProvider.getSvc() != null) {
-            LanguageEntity entity = LanguageProvider.getSvc().saveLanguage(item.toEntity());
+            LanguageEntity entity = LanguageProvider.getSvc().saveLanguage(item.toEntity(), original.toEntity());
             if (entity != null)
                 return new Language(entity);
         }

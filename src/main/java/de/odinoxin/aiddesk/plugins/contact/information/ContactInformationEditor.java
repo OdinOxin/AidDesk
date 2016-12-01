@@ -3,6 +3,7 @@ package de.odinoxin.aiddesk.plugins.contact.information;
 import de.odinoxin.aidcloud.provider.ContactInformationProvider;
 import de.odinoxin.aidcloud.provider.ContactTypeProvider;
 import de.odinoxin.aidcloud.provider.Provider;
+import de.odinoxin.aidcloud.service.ConcurrentFault_Exception;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.contact.types.ContactType;
@@ -31,8 +32,8 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
     }
 
     @Override
-    protected ContactInformation onSave() {
-        return this.getProvider().save(this.getRecordItem());
+    protected ContactInformation onSave() throws ConcurrentFault_Exception {
+        return this.getProvider().save(this.getRecordItem(), this.getOriginalItem());
     }
 
     @Override
