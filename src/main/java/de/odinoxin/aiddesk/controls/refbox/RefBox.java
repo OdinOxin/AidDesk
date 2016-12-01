@@ -27,6 +27,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * RefBox control.
+ *
+ * @param <T> The type to deal with.
+ */
 public class RefBox<T extends RecordItem> extends VBox {
 
     private static final int MAX_SEARCH_RESULT = 10;
@@ -45,19 +50,44 @@ public class RefBox<T extends RecordItem> extends VBox {
     private TextArea txfDetails;
     private RefBoxList<T> refBoxList;
 
-    private ObjectProperty<T> obj = new SimpleObjectProperty<>(this, "obj", null);
+    /**
+     * The current record.
+     */
+    private ObjectProperty<T> record = new SimpleObjectProperty<>(this, "record", null);
+    /**
+     * Whether the new button is displayed.
+     */
     private BooleanProperty showNewButton = new SimpleBooleanProperty(this, "showNewButton", false);
+    /**
+     * Whether the edit button is displayed.
+     */
     private BooleanProperty showEditButton = new SimpleBooleanProperty(this, "showEditButton", false);
+    /**
+     * Whether the detail area is displayed.
+     */
     private BooleanProperty showDetails = new SimpleBooleanProperty(this, "showDetails", false);
     private BooleanProperty translate = new SimpleBooleanProperty(this, "translate", false);
+    /**
+     * How many rows in the details area are expected.
+     * 2 by default.
+     */
     private IntegerProperty detailsRows = new SimpleIntegerProperty(this, "detailsRows", 2);
+    /**
+     * The current state.
+     */
     private ObjectProperty<State> state = new SimpleObjectProperty<>();
 
     private boolean ignoreTextChange;
     private boolean keepText;
 
+    /**
+     * The related provider.
+     */
     private Provider<T> provider;
 
+    /**
+     * Initializes the {@link RefBox} and its behavior.
+     */
     public RefBox() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/controls/refbox.fxml"));
         fxmlLoader.setRoot(this);
@@ -79,11 +109,11 @@ public class RefBox<T extends RecordItem> extends VBox {
             if (this.ignoreTextChange)
                 return;
             this.keepText = true;
-            this.setObj(null);
+            this.setRecord(null);
             this.keepText = false;
             this.search();
         });
-        this.obj.addListener((observable, oldValue, newValue) -> this.update());
+        this.record.addListener((observable, oldValue, newValue) -> this.update());
         this.state.addListener((observable, oldValue, newValue) ->
         {
             switch (newValue) {
@@ -111,7 +141,7 @@ public class RefBox<T extends RecordItem> extends VBox {
             if (this.getProvider() != null) {
                 RecordEditor<T> editor = this.getProvider().openEditor(null);
                 if (editor != null)
-                    editor.recordItem().addListener((observable, oldValue, newValue) -> this.setObj(newValue));
+                    editor.recordItem().addListener((observable, oldValue, newValue) -> this.setRecord(newValue));
             }
         });
         this.btnNew.setOnKeyPressed(ev ->
@@ -135,9 +165,9 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.btnEdit.maxHeightProperty().bind(this.txfText.heightProperty());
         this.btnEdit.setOnAction(ev -> {
             if (this.getProvider() != null) {
-                RecordEditor<T> editor = this.getProvider().openEditor(this.getObj());
+                RecordEditor<T> editor = this.getProvider().openEditor(this.getRecord());
                 if (editor != null)
-                    editor.recordItem().addListener((observable, oldValue, newValue) -> this.setObj(newValue));
+                    editor.recordItem().addListener((observable, oldValue, newValue) -> this.setRecord(newValue));
             }
         });
         this.btnEdit.setOnKeyPressed(ev ->
@@ -179,8 +209,28 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.detailsRows.addListener((observable, oldValue, newValue) -> this.txfDetails.setPrefHeight((int) newValue * 20 + 15));
         this.txfDetails.setPrefHeight(this.getDetailsRows() * 20 + 15);
 
-        this.setObj(null);
+        this.setRecord(null);
         this.update();
+    }
+
+    /**
+     * Returns the referenced record.
+     *
+     * @return The referenced record.
+     */
+    public T getRecord() {
+        return record.get();
+    }
+
+    /**
+     * Sets the record to reference.
+     *
+     * @param record The record to reference.
+     */
+    public void setRecord(T record) {
+        this.record.set(record);
+        if (this.refBoxList != null)
+            this.refBoxList.hide();
     }
 
     public String getText() {
@@ -189,16 +239,6 @@ public class RefBox<T extends RecordItem> extends VBox {
 
     public void setText(String text) {
         this.txfText.setText(text);
-    }
-
-    public T getObj() {
-        return obj.get();
-    }
-
-    public void setObj(T obj) {
-        this.obj.set(obj);
-        if (this.refBoxList != null)
-            this.refBoxList.hide();
     }
 
     public boolean isShowNewButton() {
@@ -254,8 +294,8 @@ public class RefBox<T extends RecordItem> extends VBox {
         return this.txfText.textProperty();
     }
 
-    public ObjectProperty<T> objProperty() {
-        return obj;
+    public ObjectProperty<T> recordProperty() {
+        return record;
     }
 
     public BooleanProperty showNewButton() {
@@ -286,12 +326,15 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.txfText.onActionProperty().set(value);
     }
 
+    /**
+     * Updates the state and style, based on the current record.
+     */
     private void update() {
         this.ignoreTextChange = true;
         RefBoxListItem<T> item;
         if (this.provider != null) {
-            if (this.getObj() != null) {
-                item = this.provider.getRefBoxItem(this.getObj());
+            if (this.getRecord() != null) {
+                item = this.provider.getRefBoxItem(this.getRecord());
                 this.setText(item.getText());
                 this.txfDetails.setText(item.getSubText());
                 this.state.set(State.LOGGED_IN);
@@ -301,7 +344,7 @@ public class RefBox<T extends RecordItem> extends VBox {
                     this.txfText.setText("");
                 this.txfDetails.setText("");
             }
-            boolean showEditBtn = this.getObj() != null && this.isShowEditButton();
+            boolean showEditBtn = this.getRecord() != null && this.isShowEditButton();
             this.btnEdit.setVisible(showEditBtn);
             this.btnEdit.setManaged(showEditBtn);
         } else if (!this.isDisabled()) {
@@ -317,6 +360,11 @@ public class RefBox<T extends RecordItem> extends VBox {
         this.search(MAX_SEARCH_RESULT);
     }
 
+    /**
+     * Searches for matching records and displays the suggestions list with the found records ordered by match percentage.
+     *
+     * @param max Number of maximum results to search for.
+     */
     private void search(int max) {
         this.txfText.requestFocus();
         if (this.refBoxList != null)
@@ -346,7 +394,7 @@ public class RefBox<T extends RecordItem> extends VBox {
                                     if (item.getRecord() == null)
                                         this.search(max + MAX_SEARCH_RESULT);
                                     else
-                                        this.setObj(item.getRecord());
+                                        this.setRecord(item.getRecord());
                                 }
                                 break;
                             case A:
@@ -366,7 +414,7 @@ public class RefBox<T extends RecordItem> extends VBox {
                                 if (item.getRecord() == null)
                                     this.search(max + MAX_SEARCH_RESULT);
                                 else
-                                    this.setObj(item.getRecord());
+                                    this.setRecord(item.getRecord());
                             }
                         }
                     });
@@ -399,6 +447,12 @@ public class RefBox<T extends RecordItem> extends VBox {
         }
     }
 
+    /**
+     * Returns a {@link ChangeListener}, which highlights the given button with a blue shadow, when the observed value becomes true and undoes these changes, when the observed value becomes false.
+     *
+     * @param btn The button to highlight.
+     * @return A new {@link ChangeListener} as described above.
+     */
     private ChangeListener<Boolean> getBtnHighlighter(Button btn) {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue) {
@@ -419,15 +473,21 @@ public class RefBox<T extends RecordItem> extends VBox {
         };
     }
 
-    private enum State {
-        NO_RESULTS,
-        SEARCHING,
-        LOGGED_IN,
-    }
-
+    /**
+     * Requests the focus on the {@link TextField}, when te {@link RefBox} requests focus.
+     */
     @Override
     public void requestFocus() {
         super.requestFocus();
         this.txfText.requestFocus();
+    }
+
+    /**
+     * States, which the RefBox could assume.
+     */
+    private enum State {
+        NO_RESULTS,
+        SEARCHING,
+        LOGGED_IN,
     }
 }

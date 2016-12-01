@@ -8,11 +8,15 @@ import javafx.stage.Popup;
 
 import java.io.IOException;
 
-public class RefBoxList<T extends RecordItem> extends Popup {
+/**
+ * Suggestion list as {@link Popup} below the {@link RefBox}.
+ * @param <T> The type of the records.
+ */
+class RefBoxList<T extends RecordItem> extends Popup {
 
     private ListView<RefBoxListItem<T>> lvSuggestions;
 
-    public RefBoxList(Point2D pos) {
+    RefBoxList(Point2D pos) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(RefBoxList.class.getResource("/controls/refboxlist.fxml"));
             this.lvSuggestions = fxmlLoader.load();
@@ -28,11 +32,11 @@ public class RefBoxList<T extends RecordItem> extends Popup {
         this.getContent().add(this.lvSuggestions);
     }
 
-    public ListView<RefBoxListItem<T>> getSuggestionsList() {
+    ListView<RefBoxListItem<T>> getSuggestionsList() {
         return this.lvSuggestions;
     }
 
-    public void setPrefWidth(double prefWidth) {
+    void setPrefWidth(double prefWidth) {
         super.setWidth(prefWidth);
         lvSuggestions.setPrefWidth(prefWidth);
     }

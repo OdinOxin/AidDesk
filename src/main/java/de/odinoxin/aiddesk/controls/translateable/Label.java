@@ -8,6 +8,9 @@ import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 
+/**
+ * Label, translating itself by users selected language.
+ */
 public class Label extends HBox {
 
     private StringProperty text = new SimpleStringProperty(this, "text", null);

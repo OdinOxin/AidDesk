@@ -17,7 +17,7 @@ public class LanguageEditor extends RecordEditor<Language> {
         this.txfName = (TextField) this.root.lookup("#txfName");
         this.txfCode = (TextField) this.root.lookup("#txfCode");
 
-        this.loadRecord(language);
+        this.attemptLoadRecord(language);
         if (language == null)
             this.onNew();
     }

@@ -7,6 +7,11 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
 
+/**
+ * A list of {@link de.odinoxin.aiddesk.controls.refbox.RefBox}es.
+ *
+ * @param <T> The type of the records.
+ */
 public class RefList<T extends RecordItem> extends VBox {
 
     private ObservableList<T> items;
@@ -17,26 +22,53 @@ public class RefList<T extends RecordItem> extends VBox {
         this.bindBidirectional(FXCollections.observableArrayList());
     }
 
+    /**
+     * Sets the provider.
+     *
+     * @param provider The provider to set.
+     */
     public void setProvider(Provider<T> provider) {
         this.provider = provider;
         for (int i = 0; i < this.getChildren().size(); i++)
             ((RefListCell<T>) this.getChildren().get(i)).setProvider(provider);
     }
 
+    /**
+     * Returns the record at the specific index.
+     *
+     * @param index The index to lookup at.
+     * @return The record at the specific index.
+     */
     public T get(int index) {
         if (index < 0 || index >= this.items.size())
             return null;
         return this.items.get(index);
     }
 
+    /**
+     * Adds the given record to the list.
+     *
+     * @param item The item to add.
+     */
     public void add(T item) {
         this.items.add(item);
     }
 
+    /**
+     * Replaces the record at the given index.
+     *
+     * @param index The index to replace the record at.
+     * @param item  The item to replace with.
+     */
     public void set(int index, T item) {
         this.items.set(index, item);
     }
 
+    /**
+     * Binds the {@link RefList} to the given records.
+     *
+     * @param items The records to bind to.
+     */
     public void bindBidirectional(ObservableList<T> items) {
         this.items = items;
         this.items.addListener((ListChangeListener.Change<? extends T> c) -> {

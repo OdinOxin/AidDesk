@@ -19,7 +19,7 @@ public class ContactTypeEditor extends RecordEditor<ContactType> {
         this.txfCode = (TextField) this.root.lookup("#txfCode");
         this.txfRegex = (TextField) this.root.lookup("#txfRegex");
 
-        this.loadRecord(contactType);
+        this.attemptLoadRecord(contactType);
         if (contactType == null)
             this.onNew();
     }

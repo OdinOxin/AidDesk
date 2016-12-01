@@ -21,12 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Main menu of AidDesk
+ */
 public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
 
     private RefBox<PluginItem> refBoxPlugins;
     private Button btnLogot;
     private Button btnExit;
 
+    /**
+     * Avaiable plugins
+     */
     private static final PluginItem[] PLUGIN_ITEMS =
             {
                     new PluginItem(0, "MainMenu"),
@@ -36,14 +42,14 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
                     new PluginItem(4, "ContactTypeEditor"),
                     new PluginItem(5, "ContactInformationEditor"),
             };
-    private static List<Plugin> plugins = new ArrayList<>();
+
 
     public MainMenu() {
         super("/mainmenu.fxml", "Main menu");
 
         this.refBoxPlugins = (RefBox<PluginItem>) this.root.lookup("#refBoxPlugins");
         this.refBoxPlugins.setProvider(this);
-        this.refBoxPlugins.objProperty().addListener((observable, oldValue, newValue) -> {
+        this.refBoxPlugins.recordProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 switch (newValue.getId()) {
                     case 1:
@@ -62,7 +68,7 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
                         new ContactInformationEditor(null);
                         break;
                 }
-                this.refBoxPlugins.setObj(null);
+                this.refBoxPlugins.setRecord(null);
             }
         });
         this.btnLogot = (Button) this.root.lookup("#btnLogout");
@@ -72,7 +78,7 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
             DecisionDialog dialog = new DecisionDialog(this, "Log out?", "Log out and close all related windows?");
             Optional<ButtonType> res = dialog.showAndWait();
             if (ButtonType.OK.equals(res.get())) {
-                for (Plugin plugin : plugins)
+                for (Plugin plugin : Plugin.getRunningPlugins())
                     plugin.close();
                 this.close();
                 new Login();
@@ -83,7 +89,7 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
             DecisionDialog dialog = new DecisionDialog(this, "Exit?", "Exit AidDesk?");
             Optional<ButtonType> res = dialog.showAndWait();
             if (ButtonType.OK.equals(res.get())) {
-                for (Plugin plugin : plugins)
+                for (Plugin plugin : Plugin.getRunningPlugins())
                     plugin.close();
                 this.close();
             }
@@ -94,14 +100,6 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
         this.show();
         this.sizeToScene();
         this.centerOnScreen();
-    }
-
-    public static void addPlugin(Plugin plugin) {
-        plugins.add(plugin);
-    }
-
-    public static void removePlugin(Plugin plugin) {
-        plugins.remove(plugin);
     }
 
     @Override
@@ -135,7 +133,7 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
     }
 
     @Override
-    public PluginItemEditor openEditor(PluginItem entity) {
+    public RecordEditor<PluginItem> openEditor(PluginItem entity) {
         return null;
     }
 
@@ -159,12 +157,6 @@ public class MainMenu extends Plugin implements Provider<MainMenu.PluginItem> {
         @Override
         public Object toEntity() {
             return null;
-        }
-    }
-
-    private static abstract class PluginItemEditor extends RecordEditor<PluginItem> {
-        private PluginItemEditor() {
-            super(null, null);
         }
     }
 }

@@ -6,6 +6,9 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 
+/**
+ * Information {@link Alert}.
+ */
 public class MsgDialog extends Alert {
 
     public MsgDialog(Window owner, AlertType type, String title, String msg) {

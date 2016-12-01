@@ -7,6 +7,9 @@ import de.odinoxin.aiddesk.Login;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Translation provider.
+ */
 public abstract class TranslatorProvider {
     private static Translator svc;
 
@@ -23,6 +26,11 @@ public abstract class TranslatorProvider {
         return svc;
     }
 
+    /**
+     * Returns translation for the given text, by users selected language.
+     * @param text The text to translate.
+     * @return The translated text.
+     */
     public static String getTranslation(String text) {
         if (TranslatorProvider.getSvc() != null)
             return TranslatorProvider.getSvc().getTranslation(text, Login.getPerson() != null ? Login.getPerson().getLanguage() != null ? Login.getPerson().getLanguage().getCode() : null : null);

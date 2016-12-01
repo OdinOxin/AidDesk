@@ -17,20 +17,31 @@ import javafx.scene.control.TextField;
 
 import java.util.Optional;
 
+/**
+ * Base class for RecordEditors.
+ * @param <T> The type of the RecordItem to edit
+ */
 public abstract class RecordEditor<T extends RecordItem> extends Plugin {
 
     private TextField txfId;
     private RefBox<T> refBoxKey;
     private Button btnRefresh;
-    private Provider<T> provider;
     private Button btnSave;
     private Button btnDiscard;
-
     private Button btnDelete;
+
+    private Provider<T> provider;
+    /**
+     * The current record.
+     */
     private ObjectProperty<T> recordItem = new SimpleObjectProperty<>();
     private BooleanProperty storeable = new SimpleBooleanProperty(true);
     private BooleanProperty deletable = new SimpleBooleanProperty(true);
     private ReadOnlyBooleanWrapper changedWrapper = new ReadOnlyBooleanWrapper();
+    /**
+     * The original, unmodified RecordItem from the service.
+     * For resetting use-cases.
+     */
     private T original;
 
     public RecordEditor(String res, String title) {
@@ -45,13 +56,13 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.refBoxKey.setProvider(this.provider);
             this.refBoxKey.setOnNewAction(ev ->
             {
-                this.loadRecord(null);
-                this.refBoxKey.setObj(this.getRecordItem());
+                this.attemptLoadRecord(null);
+                this.refBoxKey.setRecord(this.getRecordItem());
                 this.onNew();
             });
-            this.refBoxKey.objProperty().addListener((observable, oldValue, newValue) -> this.loadRecord(newValue == null || this.provider == null ? null : this.provider.get(newValue.getId())));
+            this.refBoxKey.recordProperty().addListener((observable, oldValue, newValue) -> this.attemptLoadRecord(newValue == null || this.provider == null ? null : this.provider.get(newValue.getId())));
             this.btnRefresh = (Button) this.root.lookup("#btnRefresh");
-            this.btnRefresh.setOnAction(ev -> this.loadRecord(this.provider.get(this.getRecordItem().getId())));
+            this.btnRefresh.setOnAction(ev -> this.attemptLoadRecord(this.provider.get(this.getRecordItem().getId())));
             this.txfId = (TextField) this.root.lookup("#txfId");
             ((ScrollPane) this.root.lookup("#scpDetails")).setContent(recordView);
 
@@ -61,8 +72,8 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                 T newObj = this.onSave();
                 if (newObj != null) {
                     this.getRecordItem().setChanged(false);
-                    this.loadRecord(newObj);
-                    this.refBoxKey.setObj(newObj);
+                    this.attemptLoadRecord(newObj);
+                    this.refBoxKey.setRecord(newObj);
                 }
             });
             setButtonEnter(this.btnSave);
@@ -101,8 +112,8 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
                     if (dialogRes.isPresent() && ButtonType.OK.equals(dialogRes.get())) {
                         boolean succeeded = this.onDelete();
                         if (succeeded) {
-                            this.loadRecord(null);
-                            this.refBoxKey.setObj(null);
+                            this.attemptLoadRecord(null);
+                            this.refBoxKey.setRecord(null);
                             this.onNew();
                             new MsgDialog(this, Alert.AlertType.INFORMATION, "Deleted!", "Successfully deleted.").show();
                         }
@@ -118,19 +129,34 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
         }
     }
 
+    /**
+     * Discard all current changes, by restoring the original item.
+     */
     private void discard() {
-        this.loadRecord(this.original);
+        this.attemptLoadRecord(this.original);
     }
 
+    /**
+     * Returns the current record.
+     * @return The current record.
+     */
     public ObjectProperty<T> recordItem() {
         return recordItem;
     }
 
+    /**
+     * Indicates, whether the current record has any changes.
+     * @return ReadOnlyBooleanProperty to listen to the first change.
+     */
     public ReadOnlyBooleanProperty isChanged() {
         return this.changedWrapper.getReadOnlyProperty();
     }
 
-    protected void loadRecord(T record) {
+    /**
+     * Attempts to load the given record.
+     * @param record The record to load.
+     */
+    protected void attemptLoadRecord(T record) {
         Callback apply = () ->
         {
             this.setRecord(record);
@@ -144,42 +170,84 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             if (ButtonType.OK.equals(dialogRes.get()))
                 apply.call();
             else
-                this.refBoxKey.setObj(this.getRecordItem());
+                this.refBoxKey.setRecord(this.getRecordItem());
         } else
             apply.call();
     }
 
+    /**
+     * Called, when a new record was created.
+     */
     protected abstract void onNew();
 
+    /**
+     * Called, when the current record should be saved.
+     * @return The saved record.
+     */
     protected abstract T onSave();
 
+    /**
+     * Sets, whether saving is enabled.
+     * @param storeable True, if saving is enabled; False otherwise.
+     */
     protected void setStoreable(boolean storeable) {
         this.storeable.set(storeable);
     }
 
+    /**
+     * Called, when the current record should be deleted.
+     * @return Success indicator
+     */
     protected abstract boolean onDelete();
 
+    /**
+     * Sets, whether the deleting is enabled.
+     * @param deletable True, if deleting is enabled; False otherwise.
+     */
     protected void setDeletable(boolean deletable) {
         this.deletable.set(deletable);
     }
 
+    /**
+     * Sets the current item, without checking for current changes to save.
+     * @param record The record to set.
+     */
     protected abstract void setRecord(T record);
 
+    /**
+     * @return The current record item.
+     */
     public T getRecordItem() {
         return recordItem.get();
     }
 
-    protected void setRecordItem(T recordItem) {
-        this.recordItem.set(recordItem);
+    /**
+     * Sets the current record item.
+     * Should only called by implementations of setRecord()!
+     * @param record The record to set.
+     */
+    protected void setRecordItem(T record) {
+        this.recordItem.set(record);
         if (this.changedWrapper.isBound())
             this.changedWrapper.unbind();
-        this.changedWrapper.bind(recordItem.changedProperty());
+        this.changedWrapper.bind(record.changedProperty());
     }
 
+    /**
+     * Binding UI elements to the (new) record.
+     */
     protected abstract void bind();
 
+    /**
+     * Initializes the provider.
+     * @return The initialized provider.
+     */
     protected abstract Provider<T> initProvider();
 
+    /**
+     * Returns the provider.
+     * @return The provider.
+     */
     protected Provider<T> getProvider() {
         return this.provider;
     }

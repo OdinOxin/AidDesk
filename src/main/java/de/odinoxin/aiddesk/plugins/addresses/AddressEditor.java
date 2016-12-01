@@ -6,7 +6,6 @@ import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.countries.Country;
-import de.odinoxin.aiddesk.plugins.countries.CountryEditor;
 import javafx.application.Platform;
 import javafx.scene.control.TextField;
 
@@ -28,7 +27,7 @@ public class AddressEditor extends RecordEditor<Address> {
         this.refBoxCountry = (RefBox<Country>) this.root.lookup("#refBoxCountry");
         this.refBoxCountry.setProvider(new CountryProvider());
 
-        this.loadRecord(address);
+        this.attemptLoadRecord(address);
         if (address == null)
             this.onNew();
     }
@@ -62,7 +61,7 @@ public class AddressEditor extends RecordEditor<Address> {
         this.txftxfHsNo.textProperty().bindBidirectional(this.getRecordItem().hsNoProperty());
         this.txftxfZip.textProperty().bindBidirectional(this.getRecordItem().zipProperty());
         this.txftxfCity.textProperty().bindBidirectional(this.getRecordItem().cityProperty());
-        this.refBoxCountry.objProperty().bindBidirectional(this.getRecordItem().countryProperty());
+        this.refBoxCountry.recordProperty().bindBidirectional(this.getRecordItem().countryProperty());
         this.getRecordItem().setChanged(false);
     }
 

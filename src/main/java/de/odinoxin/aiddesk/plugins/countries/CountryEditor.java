@@ -20,7 +20,7 @@ public class CountryEditor extends RecordEditor<Country> {
         this.txfName = (TextField) this.root.lookup("#txfName");
         this.txfAreaCode = (TextField) this.root.lookup("#txfAreaCode");
 
-        this.loadRecord(country);
+        this.attemptLoadRecord(country);
         if (country == null)
             this.onNew();
     }

@@ -41,7 +41,7 @@ public class PersonEditor extends RecordEditor<Person> {
         this.refBoxAddress.setProvider(new AddressProvider());
         this.refListContactInformation = (RefList<ContactInformation>) this.root.lookup("#refListContactInformation");
         this.refListContactInformation.setProvider(new ContactInformationProvider());
-        this.loadRecord(person);
+        this.attemptLoadRecord(person);
         if (person == null)
             this.onNew();
     }
@@ -80,8 +80,8 @@ public class PersonEditor extends RecordEditor<Person> {
         this.txfName.textProperty().bindBidirectional(this.getRecordItem().nameProperty());
         this.txfCode.textProperty().bindBidirectional(this.getRecordItem().codeProperty());
         this.btnPwd.disableProperty().bind(this.getRecordItem().idProperty().isEqualTo(0));
-        this.refBoxLanguage.objProperty().bindBidirectional(this.getRecordItem().languageProperty());
-        this.refBoxAddress.objProperty().bindBidirectional(this.getRecordItem().addressProperty());
+        this.refBoxLanguage.recordProperty().bindBidirectional(this.getRecordItem().languageProperty());
+        this.refBoxAddress.recordProperty().bindBidirectional(this.getRecordItem().addressProperty());
         this.refListContactInformation.bindBidirectional(this.getRecordItem().contactInformationProperty());
         this.getRecordItem().setChanged(false);
     }

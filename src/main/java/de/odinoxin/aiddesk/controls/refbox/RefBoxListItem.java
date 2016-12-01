@@ -4,12 +4,31 @@ import de.odinoxin.aiddesk.plugins.RecordItem;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
+/**
+ * Datamodel for {@link RefBoxList} items, representing a {@link RecordItem}.
+ * @param <T> The type of the record.
+ */
 public class RefBoxListItem<T extends RecordItem> {
 
+    /**
+     * The record to represent.
+     */
     private T record;
+    /**
+     * The main text.
+     */
     private String text;
+    /**
+     * The sub text.
+     */
     private String subText;
+    /**
+     * Text occurrences to highlight.
+     */
     private String[] highlight;
+    /**
+     * Match percentage.
+     */
     private DoubleProperty matchProperty = new SimpleDoubleProperty(this, "match");
 
     public RefBoxListItem(T record, String text, String subText) {

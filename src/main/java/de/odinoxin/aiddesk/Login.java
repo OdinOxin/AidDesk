@@ -17,6 +17,10 @@ import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * The Login plugin.
+ * UI to log in to AidCloud.
+ */
 public class Login extends Plugin {
 
     private static String serverUrl;
@@ -72,7 +76,7 @@ public class Login extends Plugin {
     }
 
     private void tryLogin() {
-        Person p = this.refboxUser.getObj();
+        Person p = this.refboxUser.getRecord();
         if (p == null)
             return;
         if (Login.openSession(p.getId(), this.pwfPwd.getText())) {

@@ -13,17 +13,25 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * {@link ListCell} for {@link RefBoxListItem}.
+ * @param <T> The type of the record.
+ */
 class RefBoxListItemCell<T extends RecordItem> extends ListCell<RefBoxListItem<T>> {
 
     private GridPane grdItem;
     private int matched;
     private int max;
 
-
     public RefBoxListItemCell(int max) {
         this.max = max;
     }
 
+    /**
+     * Updates the content and style.
+     * @param item The new record to represent.
+     * @param empty Whether the record is a null item, or empty.
+     */
     @Override
     protected void updateItem(RefBoxListItem<T> item, boolean empty) {
         super.updateItem(item, empty);
@@ -121,6 +129,12 @@ class RefBoxListItemCell<T extends RecordItem> extends ListCell<RefBoxListItem<T
             this.addText(tfl, subText, value);
     }
 
+    /**
+     * Adds a {@link Text} the the given {@link TextFlow}.
+     * @param tfl The {@link TextFlow} to add the new {@link Text}.
+     * @param subText Whether the style for subtexts should be used.
+     * @param text The content.
+     */
     private void addText(TextFlow tfl, boolean subText, String text) {
         Text txt = new Text(text);
         if (subText)

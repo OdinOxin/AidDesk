@@ -11,6 +11,9 @@ import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 
+/**
+ * Header control
+ */
 public class Header extends HBox {
 
     @FXML

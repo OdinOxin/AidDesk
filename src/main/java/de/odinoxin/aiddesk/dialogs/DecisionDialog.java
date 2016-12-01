@@ -8,6 +8,9 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 
+/**
+ * Confirmation {@link Alert}, where the use has to make a decision.
+ */
 public class DecisionDialog extends Alert {
 
     public DecisionDialog(Window owner, String title, String msg) {

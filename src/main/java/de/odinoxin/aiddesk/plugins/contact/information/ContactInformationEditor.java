@@ -6,7 +6,6 @@ import de.odinoxin.aidcloud.provider.Provider;
 import de.odinoxin.aiddesk.controls.refbox.RefBox;
 import de.odinoxin.aiddesk.plugins.RecordEditor;
 import de.odinoxin.aiddesk.plugins.contact.types.ContactType;
-import de.odinoxin.aiddesk.plugins.contact.types.ContactTypeEditor;
 import javafx.scene.control.TextField;
 
 public class ContactInformationEditor extends RecordEditor<ContactInformation> {
@@ -21,7 +20,7 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
         this.refBoxContactType.setProvider(new ContactTypeProvider());
         this.txfInformation = (TextField) this.root.lookup("#txfInformation");
 
-        this.loadRecord(contactInformation);
+        this.attemptLoadRecord(contactInformation);
         if (contactInformation == null)
             this.onNew();
     }
@@ -51,7 +50,7 @@ public class ContactInformationEditor extends RecordEditor<ContactInformation> {
 
     @Override
     protected void bind() {
-        this.refBoxContactType.objProperty().bindBidirectional(this.getRecordItem().contactTypeProperty());
+        this.refBoxContactType.recordProperty().bindBidirectional(this.getRecordItem().contactTypeProperty());
         this.txfInformation.textProperty().bindBidirectional(this.getRecordItem().informationProperty());
         this.getRecordItem().setChanged(false);
     }
