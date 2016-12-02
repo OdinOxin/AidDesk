@@ -8,13 +8,13 @@
          xmlns:fx="http://javafx.com/fxml"
          spacing="5">
 
-    <Button id="btnRemove">
+    <Button fx:id="btnRemove">
         <graphic>
             <SVGPath scaleX="2.5" scaleY="2.5"
                      content="M 0 0 h 1 l 2 2 l 2 -2 h 1 v 1 l -2 2 l 2 2 v 1 h -1 l -2 -2 l -2 2 h -1 v -1 l 2 -2 l -2 -2 z"/>
         </graphic>
     </Button>
-    <RefBox id="refBox"
+    <RefBox fx:id="refBox"
             HBox.hgrow="ALWAYS"
             maxWidth="Infinity"/>
 

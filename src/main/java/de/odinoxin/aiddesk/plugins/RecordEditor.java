@@ -71,83 +71,75 @@ public abstract class RecordEditor<T extends RecordItem> extends Plugin {
             this.btnSave = (Button) this.root.lookup("#btnSave");
             this.btnSave.setOnAction(ev ->
             {
-<<<<<<<HEAD
-                T newObj = this.onSave();
-                if (newObj != null) {
-                    this.getRecordItem().setChanged(false);
-                    this.attemptLoadRecord(newObj);
-                    this.refBoxKey.setRecord(newObj);
-=======
-                    try {
-                        T newObj = this.onSave();
-                        if (newObj != null) {
-                            this.getRecordItem().setChanged(false);
-                            this.loadRecord(newObj);
-                            this.refBoxKey.setObj(newObj);
-                        }
-                    } catch (ConcurrentFault_Exception ex) {
-                        ex.printStackTrace();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
->>>>>>>ConcurrentCheck
+                try {
+                    T newObj = this.onSave();
+                    if (newObj != null) {
+                        this.getRecordItem().setChanged(false);
+                        this.attemptLoadRecord(newObj);
+                        this.refBoxKey.setRecord(newObj);
                     }
-                });
-                setButtonEnter(this.btnSave);
-                this.btnDiscard = (Button) this.root.lookup("#btnDiscard");
-                this.btnDiscard.setOnAction(ev -> this.discard());
-                setButtonEnter(this.btnDiscard);
-                this.recordItem().addListener((observable, oldValue, newValue) ->
-                {
-                    if (newValue == null) {
-                        this.original = null;
-                        this.txfId.setText("");
-                        this.btnSave.setDisable(true);
-                        this.btnDiscard.setDisable(true);
-                        this.btnDelete.setDisable(true);
-                    } else {
-                        this.original = (T) newValue.clone();
-                        this.txfId.setText(newValue.getId() == 0 ? TranslatorProvider.getTranslation("New") : String.valueOf(newValue.getId()));
-                        if (this.btnSave.disableProperty().isBound())
-                            this.btnSave.disableProperty().unbind();
-                        this.btnSave.disableProperty().bind(this.storeable.not().or(newValue.changedProperty().not()));
-                        if (this.btnDiscard.disableProperty().isBound())
-                            this.btnDiscard.disableProperty().unbind();
-                        this.btnDiscard.disableProperty().bind(newValue.changedProperty().not());
-                        if (this.btnDelete.disableProperty().isBound())
-                            this.btnDelete.disableProperty().unbind();
-                        this.btnDelete.disableProperty().bind(this.deletable.not().or(newValue.idProperty().isEqualTo(0)));
-                    }
-                });
+                } catch (ConcurrentFault_Exception ex) {
+                    ex.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            setButtonEnter(this.btnSave);
+            this.btnDiscard = (Button) this.root.lookup("#btnDiscard");
+            this.btnDiscard.setOnAction(ev -> this.discard());
+            setButtonEnter(this.btnDiscard);
+            this.recordItem().addListener((observable, oldValue, newValue) ->
+            {
+                if (newValue == null) {
+                    this.original = null;
+                    this.txfId.setText("");
+                    this.btnSave.setDisable(true);
+                    this.btnDiscard.setDisable(true);
+                    this.btnDelete.setDisable(true);
+                } else {
+                    this.original = (T) newValue.clone();
+                    this.txfId.setText(newValue.getId() == 0 ? TranslatorProvider.getTranslation("New") : String.valueOf(newValue.getId()));
+                    if (this.btnSave.disableProperty().isBound())
+                        this.btnSave.disableProperty().unbind();
+                    this.btnSave.disableProperty().bind(this.storeable.not().or(newValue.changedProperty().not()));
+                    if (this.btnDiscard.disableProperty().isBound())
+                        this.btnDiscard.disableProperty().unbind();
+                    this.btnDiscard.disableProperty().bind(newValue.changedProperty().not());
+                    if (this.btnDelete.disableProperty().isBound())
+                        this.btnDelete.disableProperty().unbind();
+                    this.btnDelete.disableProperty().bind(this.deletable.not().or(newValue.idProperty().isEqualTo(0)));
+                }
+            });
 
-                this.btnDelete = (Button) this.root.lookup("#btnDelete");
-                this.btnDelete.setOnAction(ev ->
-                {
-                    if (this.getRecordItem() != null && this.getRecordItem().getId() != 0) {
-                        DecisionDialog dialog = new DecisionDialog(this, "Delete data?", "Delete data irrevocably?");
-                        Optional<ButtonType> dialogRes = dialog.showAndWait();
-                        if (dialogRes.isPresent() && ButtonType.OK.equals(dialogRes.get())) {
-                            boolean succeeded = this.onDelete();
-                            if (succeeded) {
-                                this.attemptLoadRecord(null);
-                                this.refBoxKey.setRecord(null);
-                                this.onNew();
-                                new MsgDialog(this, Alert.AlertType.INFORMATION, "Deleted!", "Successfully deleted.").show();
-                            }
+            this.btnDelete = (Button) this.root.lookup("#btnDelete");
+            this.btnDelete.setOnAction(ev ->
+            {
+                if (this.getRecordItem() != null && this.getRecordItem().getId() != 0) {
+                    DecisionDialog dialog = new DecisionDialog(this, "Delete data?", "Delete data irrevocably?");
+                    Optional<ButtonType> dialogRes = dialog.showAndWait();
+                    if (dialogRes.isPresent() && ButtonType.OK.equals(dialogRes.get())) {
+                        boolean succeeded = this.onDelete();
+                        if (succeeded) {
+                            this.attemptLoadRecord(null);
+                            this.refBoxKey.setRecord(null);
+                            this.onNew();
+                            new MsgDialog(this, Alert.AlertType.INFORMATION, "Deleted!", "Successfully deleted.").show();
                         }
                     }
-                });
-                setButtonEnter(this.btnDelete);
-                this.show();
-                this.sizeToScene();
-                this.centerOnScreen();
-            } catch(Exception ex){
-                ex.printStackTrace();
-            }
+                }
+            });
+            setButtonEnter(this.btnDelete);
+            this.show();
+            this.sizeToScene();
+            this.centerOnScreen();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+    }
 
-        /**
-         * Discard all current changes, by restoring the original item.
-         */
+    /**
+     * Discard all current changes, by restoring the original item.
+     */
 
     private void discard() {
         this.attemptLoadRecord(this.original);
